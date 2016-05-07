@@ -1,0 +1,1 @@
+/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-W67XbmY2.tmp/0/bower_components/ember-cli-test-loader/test-loader.js

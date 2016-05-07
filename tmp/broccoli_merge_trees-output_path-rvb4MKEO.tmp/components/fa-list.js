@@ -1,0 +1,1 @@
+/Users/alyyakan/Desktop/mock-kodr/tmp/broccoli_merge_trees-input_base_path-JHU6V8zd.tmp/13/components/fa-list.js

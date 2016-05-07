@@ -1,0 +1,1 @@
+/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-jFPkFl0z.tmp/0/index.js

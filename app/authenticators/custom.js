@@ -1,8 +1,10 @@
 import Ember from 'ember';
 import OAuth2 from 'mock-kodr/authenticators/oauth2';
+import { storageFor } from 'ember-local-storage';
 
 export default OAuth2.extend({
   session: Ember.inject.service('session'),
+  current_user: storageFor('current_user'),
   authenticate(credentials) {
     var that = this;
     return new Ember.RSVP.Promise(function(resolve, reject) {
@@ -21,11 +23,10 @@ export default OAuth2.extend({
               // resolve (including the user id) as the AJAX request was successful; all properties this promise resolves
               // with will be available through the session
               console.log(response)
-              // that.set('session.access_token', response.access_token);
-              // that.set('session.user_id', response.user_id);
-              // that.set('session.email', response.email);
-              // that.set('session.username', response.username);
-              that.get('session').set('datalocale', response.username);
+              that.set('current_user.id', response.user_id);
+              that.set('current_user.token', response.token);
+              that.set('current_user.email', response.email);
+              that.set('current_user.username', response.username);
               resolve({
                   access_token: response.access_token,
                   user_id: response.user_id

@@ -1,1 +1,0 @@
-/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-xdhfxvf8.tmp/0/instance-initializers/setup-session-restoration.js

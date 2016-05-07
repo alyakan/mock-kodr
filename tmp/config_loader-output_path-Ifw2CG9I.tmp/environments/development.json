@@ -1,0 +1,1 @@
+{"modulePrefix":"mock-kodr","environment":"development","baseURL":"/","locationType":"auto","EmberENV":{"FEATURES":{}},"APP":{"name":"mock-kodr","version":"0.0.0+78ac4701"},"exportApplicationGlobal":true,"browserify":{"tests":true}}

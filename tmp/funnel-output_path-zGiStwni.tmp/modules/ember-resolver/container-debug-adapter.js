@@ -1,0 +1,1 @@
+/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-0GUuRAgz.tmp/0/container-debug-adapter.js

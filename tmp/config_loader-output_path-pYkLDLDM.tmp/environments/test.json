@@ -1,1 +1,0 @@
-{"modulePrefix":"mock-kodr","environment":"test","baseURL":"/","locationType":"none","EmberENV":{"FEATURES":{}},"APP":{"LOG_ACTIVE_GENERATION":false,"LOG_VIEW_LOOKUPS":false,"rootElement":"#ember-testing","name":"mock-kodr","version":"0.0.0+438588d6"},"exportApplicationGlobal":true,"browserify":{"tests":true}}

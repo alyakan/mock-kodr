@@ -1,0 +1,1 @@
+/Users/alyyakan/Desktop/mock-kodr/tmp/broccoli_merge_trees-input_base_path-jylRZiYv.tmp/16/instance-initializers/ember-simple-auth.js

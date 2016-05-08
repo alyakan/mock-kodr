@@ -24,6 +24,9 @@ define('mock-kodr/authenticators/custom', ['exports', 'ember', 'mock-kodr/authen
                         that.set('current_user.token', response.token);
                         that.set('current_user.email', response.email);
                         that.set('current_user.username', response.username);
+                        $.ajaxSetup({
+                            headers: { 'X-K-Authorization': 'Bearer ' + response.token }
+                        });
                         resolve({
                             access_token: response.access_token,
                             user_id: response.user_id

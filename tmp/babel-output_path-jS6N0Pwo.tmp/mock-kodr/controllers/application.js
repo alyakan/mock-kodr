@@ -5,6 +5,10 @@ define('mock-kodr/controllers/application', ['exports', 'ember', 'ember-local-st
     actions: {
       session: _ember['default'].inject.service('session'),
       invalidateSession: function invalidateSession() {
+        _ember['default'].$.ajax({
+          type: 'DELETE',
+          url: '/logout'
+        });
         this.set('current_user', null);
         this.get('session').invalidate();
       }

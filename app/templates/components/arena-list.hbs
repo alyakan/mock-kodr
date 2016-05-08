@@ -1,0 +1,15 @@
+<div class="container">
+	<div class="page-header">
+	  <h3>Arenas</h3>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="list-group">
+				{{#each model as |arena|}}
+					{{arena-item arena=arena}}
+				{{/each}}
+			</div>
+		</div>
+	</div>
+	{{yield}}	
+</div>

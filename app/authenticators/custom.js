@@ -11,13 +11,13 @@ export default OAuth2.extend({
       // make the request to authenticate the user at endpoint /v3/token
       
       Ember.$.ajax({
-          url: '/token',
-          type: 'POST',
-          data: {
-              grant_type: 'password',
-              identification: credentials.identification,
-              password: credentials.password
-          }
+        url: '/token',
+        type: 'POST',
+        data: {
+            grant_type: 'password',
+            identification: credentials.identification,
+            password: credentials.password
+        }
       }).then(function(response) {
           Ember.run(function() {
               // resolve (including the user id) as the AJAX request was successful; all properties this promise resolves
@@ -27,6 +27,9 @@ export default OAuth2.extend({
               that.set('current_user.token', response.token);
               that.set('current_user.email', response.email);
               that.set('current_user.username', response.username);
+              $.ajaxSetup({
+                headers: { 'X-K-Authorization': 'Bearer ' + response.token }
+              });
               resolve({
                   access_token: response.access_token,
                   user_id: response.user_id

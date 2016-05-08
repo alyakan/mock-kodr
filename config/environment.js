@@ -5,7 +5,7 @@ module.exports = function(environment) {
     modulePrefix: 'mock-kodr',
     environment: environment,
     baseURL: '/',
-    locationType: 'auto',
+    locationType: 'hash',
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
@@ -16,6 +16,16 @@ module.exports = function(environment) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
+    },
+    contentSecurityPolicy: {
+      'default-src': "'none'",
+      'frame-src': "'self' 'unsafe-inline'",
+      'script-src': "'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.mathjax.org http://www.google-analytics.com https://ssl.google-analytics.com", // Allow scripts from https://cdn.mxpnl.com
+      'font-src': "'self' https://fonts.gstatic.com", // Allow fonts to be loaded from http://fonts.gstatic.com
+      'connect-src': "'self' http://localhost:3000/ ws://localhost:4200 http://custom-api.local", // Allow data (ajax/websocket) from api.mixpanel.com and custom-api.local
+      'img-src': "'self' data: http://www.google-analytics.com",
+      'style-src': "'self' 'unsafe-inline' https://cdnjs.cloudflare.com http://fonts.googleapis.com", // Allow inline styles and loaded CSS from http://fonts.googleapis.com 
+      'media-src': "'self'"
     }
   };
 
@@ -42,6 +52,22 @@ module.exports = function(environment) {
   if (environment === 'production') {
 
   }
+
+  ENV['simple-auth'] = {
+    session: 'session:custom',
+    authorizer: 'simple-auth-authorizer:token',
+    // crossOriginWhitelist: [ENV.APP.API_HOST]
+  };
+
+  ENV['simple-auth-token'] = {
+    serverTokenEndpoint: '/token',
+    identificationField: 'identification',
+    passwordField: 'password',
+    tokenPropertyName: 'access_token',
+    authorizationPrefix: 'Bearer ',
+    authorizationHeaderName: 'X-K-Authorization',
+    headers: {},
+  };
 
   return ENV;
 };

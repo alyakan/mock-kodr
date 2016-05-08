@@ -6,6 +6,8 @@ define('mock-kodr/router', ['exports', 'ember', 'mock-kodr/config/environment'],
 
   Router.map(function () {
     this.route('login');
+    this.route('arenas');
+    this.route('user-arenas');
   });
 
   exports['default'] = Router;

@@ -7,8 +7,13 @@ export default Ember.Controller.extend({
 	actions: {
 		session: Ember.inject.service('session'),
     invalidateSession() {
+    	Ember.$.ajax({
+        type: 'DELETE',
+        url: '/logout'
+      });
     	this.set('current_user', null);
       this.get('session').invalidate();
+      
     }
   }
 });

@@ -58,6 +58,9 @@ define('mock-kodr/authenticators/custom', ['exports', 'ember', 'mock-kodr/authen
                         that.set('current_user.token', response.token);
                         that.set('current_user.email', response.email);
                         that.set('current_user.username', response.username);
+                        $.ajaxSetup({
+                            headers: { 'X-K-Authorization': 'Bearer ' + response.token }
+                        });
                         resolve({
                             access_token: response.access_token,
                             user_id: response.user_id
@@ -87,6 +90,12 @@ define('mock-kodr/components/app-version', ['exports', 'ember-cli-app-version/co
     version: version,
     name: name
   });
+});
+define('mock-kodr/components/arena-item', ['exports', 'ember'], function (exports, _ember) {
+  exports['default'] = _ember['default'].Component.extend({});
+});
+define('mock-kodr/components/arena-list', ['exports', 'ember'], function (exports, _ember) {
+  exports['default'] = _ember['default'].Component.extend({});
 });
 define('mock-kodr/components/fa-icon', ['exports', 'ember-font-awesome/components/fa-icon'], function (exports, _emberFontAwesomeComponentsFaIcon) {
   Object.defineProperty(exports, 'default', {
@@ -144,6 +153,10 @@ define('mock-kodr/controllers/application', ['exports', 'ember', 'ember-local-st
     actions: {
       session: _ember['default'].inject.service('session'),
       invalidateSession: function invalidateSession() {
+        _ember['default'].$.ajax({
+          type: 'DELETE',
+          url: '/logout'
+        });
         this.set('current_user', null);
         this.get('session').invalidate();
       }
@@ -354,6 +367,38 @@ define('mock-kodr/instance-initializers/ember-simple-auth', ['exports', 'ember-s
     }
   };
 });
+define('mock-kodr/models/arena', ['exports', 'ember-data/model', 'ember-data/attr', 'ember-data'], function (exports, _emberDataModel, _emberDataAttr, _emberData) {
+  exports['default'] = _emberDataModel['default'].extend({
+    name: (0, _emberDataAttr['default'])('string'),
+    description: (0, _emberDataAttr['default'])('string'),
+    isPublished: (0, _emberDataAttr['default'])('boolean')
+  });
+});
+// challenges: DS.hasMany('challenge', {async:true, inverse: 'arena'}),
+define('mock-kodr/models/user-arena', ['exports', 'ember-data', 'ember'], function (exports, _emberData, _ember) {
+
+   var attr = _emberData['default'].attr;
+
+   exports['default'] = _emberData['default'].Model.extend({
+      exp: attr('number'),
+      completed: attr('number'),
+      complete: attr('boolean'),
+      user: _emberData['default'].belongsTo('user', { inverse: 'userArenas', async: true }),
+      locked: attr('boolean'),
+      prerequisit: _emberData['default'].belongsTo('arena', { inverse: 'users', async: true }),
+      progress: _ember['default'].computed('trials', 'completed', function () {
+         // Number of completed trials / Total number of trials
+         var prog = this.get('completed') / this.get('trials').toArray().length * 100;
+         return Math.round(prog);
+      }).property('progress')
+   });
+});
+// trials: DS.hasMany('trials', {inverse: 'userArena', async:true}),
+define('mock-kodr/models/user', ['exports', 'ember-data/model', 'ember-data/attr'], function (exports, _emberDataModel, _emberDataAttr) {
+  exports['default'] = _emberDataModel['default'].extend({
+    email: (0, _emberDataAttr['default'])('string')
+  });
+});
 define('mock-kodr/resolver', ['exports', 'ember-resolver'], function (exports, _emberResolver) {
   exports['default'] = _emberResolver['default'];
 });
@@ -365,6 +410,8 @@ define('mock-kodr/router', ['exports', 'ember', 'mock-kodr/config/environment'],
 
   Router.map(function () {
     this.route('login');
+    this.route('arenas');
+    this.route('user-arenas');
   });
 
   exports['default'] = Router;
@@ -372,8 +419,30 @@ define('mock-kodr/router', ['exports', 'ember', 'mock-kodr/config/environment'],
 define('mock-kodr/routes/application', ['exports', 'ember', 'ember-simple-auth/mixins/application-route-mixin'], function (exports, _ember, _emberSimpleAuthMixinsApplicationRouteMixin) {
   exports['default'] = _ember['default'].Route.extend(_emberSimpleAuthMixinsApplicationRouteMixin['default'], {});
 });
+define('mock-kodr/routes/arenas', ['exports', 'ember', 'ember-simple-auth/mixins/authenticated-route-mixin'], function (exports, _ember, _emberSimpleAuthMixinsAuthenticatedRouteMixin) {
+	exports['default'] = _ember['default'].Route.extend(_emberSimpleAuthMixinsAuthenticatedRouteMixin['default'], {
+		model: function model() {
+			return this.store.findAll('arena');
+		}
+	});
+});
 define('mock-kodr/routes/login', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = _ember['default'].Route.extend({});
+});
+define('mock-kodr/routes/user-arenas', ['exports', 'ember', 'ember-simple-auth/mixins/authenticated-route-mixin'], function (exports, _ember, _emberSimpleAuthMixinsAuthenticatedRouteMixin) {
+	exports['default'] = _ember['default'].Route.extend(_emberSimpleAuthMixinsAuthenticatedRouteMixin['default'], {
+		model: function model() {
+			return this.store.findAll('userArena');
+		}
+	});
+});
+define('mock-kodr/serializers/application', ['exports', 'ember-data'], function (exports, _emberData) {
+
+    var ApplicationSerializer = _emberData['default'].RESTSerializer.extend({
+        primaryKey: '_id'
+    });
+
+    exports['default'] = ApplicationSerializer;
 });
 define('mock-kodr/services/ajax', ['exports', 'ember-ajax/services/ajax'], function (exports, _emberAjaxServicesAjax) {
   Object.defineProperty(exports, 'default', {
@@ -429,6 +498,88 @@ define('mock-kodr/storages/current-user', ['exports', 'ember-local-storage/local
 define("mock-kodr/templates/application", ["exports"], function (exports) {
   exports["default"] = Ember.HTMLBars.template((function () {
     var child0 = (function () {
+      return {
+        meta: {
+          "fragmentReason": false,
+          "revision": "Ember@2.3.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 18,
+              "column": 8
+            },
+            "end": {
+              "line": 20,
+              "column": 8
+            }
+          },
+          "moduleName": "mock-kodr/templates/application.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("          ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("i");
+          dom.setAttribute(el1, "class", "fa fa-gamepad");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode(" Arenas\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() {
+          return [];
+        },
+        statements: [],
+        locals: [],
+        templates: []
+      };
+    })();
+    var child1 = (function () {
+      return {
+        meta: {
+          "fragmentReason": false,
+          "revision": "Ember@2.3.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 23,
+              "column": 8
+            },
+            "end": {
+              "line": 25,
+              "column": 8
+            }
+          },
+          "moduleName": "mock-kodr/templates/application.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("          ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("i");
+          dom.setAttribute(el1, "class", "fa fa-gamepad");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode(" User Arenas\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() {
+          return [];
+        },
+        statements: [],
+        locals: [],
+        templates: []
+      };
+    })();
+    var child2 = (function () {
       return {
         meta: {
           "fragmentReason": false,
@@ -504,7 +655,7 @@ define("mock-kodr/templates/application", ["exports"], function (exports) {
         templates: []
       };
     })();
-    var child1 = (function () {
+    var child3 = (function () {
       return {
         meta: {
           "fragmentReason": false,
@@ -621,9 +772,34 @@ define("mock-kodr/templates/application", ["exports"], function (exports) {
         var el4 = dom.createTextNode("\n    ");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n    \n");
+        var el3 = dom.createTextNode("\n    \n    ");
         dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("    ");
+        var el3 = dom.createElement("ul");
+        dom.setAttribute(el3, "class", "nav navbar-nav");
+        var el4 = dom.createTextNode("\n      ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("\n");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createComment("");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("      ");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n      ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("\n");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createComment("");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("      ");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n    ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("ul");
         dom.setAttribute(el3, "class", "nav navbar-nav navbar-right");
@@ -666,16 +842,329 @@ define("mock-kodr/templates/application", ["exports"], function (exports) {
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var element1 = dom.childAt(fragment, [2]);
-        var morphs = new Array(3);
-        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [0, 1, 5]), 1, 1);
-        morphs[1] = dom.createMorphAt(element1, 3, 3);
-        morphs[2] = dom.createMorphAt(element1, 5, 5);
+        var element1 = dom.childAt(fragment, [0, 1]);
+        var element2 = dom.childAt(element1, [4]);
+        var element3 = dom.childAt(fragment, [2]);
+        var morphs = new Array(5);
+        morphs[0] = dom.createMorphAt(dom.childAt(element2, [1]), 1, 1);
+        morphs[1] = dom.createMorphAt(dom.childAt(element2, [3]), 1, 1);
+        morphs[2] = dom.createMorphAt(dom.childAt(element1, [6]), 1, 1);
+        morphs[3] = dom.createMorphAt(element3, 3, 3);
+        morphs[4] = dom.createMorphAt(element3, 5, 5);
         return morphs;
       },
-      statements: [["block", "if", [["get", "session.isAuthenticated", ["loc", [null, [29, 12], [29, 35]]]]], [], 0, 1, ["loc", [null, [29, 6], [43, 13]]]], ["content", "outlet", ["loc", [null, [50, 3], [50, 13]]]], ["inline", "login-page", [], ["store", ["subexpr", "@mut", [["get", "store", ["loc", [null, [51, 23], [51, 28]]]]], [], []]], ["loc", [null, [51, 4], [51, 30]]]]],
+      statements: [["block", "link-to", ["arenas"], [], 0, null, ["loc", [null, [18, 8], [20, 20]]]], ["block", "link-to", ["user-arenas"], [], 1, null, ["loc", [null, [23, 8], [25, 20]]]], ["block", "if", [["get", "session.isAuthenticated", ["loc", [null, [29, 12], [29, 35]]]]], [], 2, 3, ["loc", [null, [29, 6], [43, 13]]]], ["content", "outlet", ["loc", [null, [50, 3], [50, 13]]]], ["inline", "login-page", [], ["store", ["subexpr", "@mut", [["get", "store", ["loc", [null, [51, 23], [51, 28]]]]], [], []]], ["loc", [null, [51, 4], [51, 30]]]]],
       locals: [],
-      templates: [child0, child1]
+      templates: [child0, child1, child2, child3]
+    };
+  })());
+});
+define("mock-kodr/templates/arenas", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "missing-wrapper",
+          "problems": ["wrong-type", "multiple-nodes"]
+        },
+        "revision": "Ember@2.3.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 3,
+            "column": 0
+          }
+        },
+        "moduleName": "mock-kodr/templates/arenas.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(2);
+        morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+        morphs[1] = dom.createMorphAt(fragment, 2, 2, contextualElement);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [["inline", "arena-list", [], ["model", ["subexpr", "@mut", [["get", "model", ["loc", [null, [1, 19], [1, 24]]]]], [], []]], ["loc", [null, [1, 0], [1, 26]]]], ["content", "outlet", ["loc", [null, [2, 0], [2, 10]]]]],
+      locals: [],
+      templates: []
+    };
+  })());
+});
+define("mock-kodr/templates/components/arena-item", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "missing-wrapper",
+          "problems": ["multiple-nodes", "wrong-type"]
+        },
+        "revision": "Ember@2.3.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 33,
+            "column": 0
+          }
+        },
+        "moduleName": "mock-kodr/templates/components/arena-item.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("style");
+        dom.setAttribute(el1, "type", "text/css");
+        var el2 = dom.createTextNode("\n	.wrap {\n		height: 100%;\n	}\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "list-group-item");
+        var el2 = dom.createTextNode("\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("h4");
+        dom.setAttribute(el2, "class", "list-group-item-heading");
+        var el3 = dom.createTextNode("\n		\n	\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        dom.setAttribute(el3, "class", "pull-right");
+        var el4 = dom.createTextNode("\n			\n			");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("a");
+        dom.setAttribute(el4, "href", "");
+        dom.setAttribute(el4, "class", "btn-primary btn-sm");
+        var el5 = dom.createTextNode("\n				");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createElement("i");
+        dom.setAttribute(el5, "class", "fa fa-play");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode(" Try\n			");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("		");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("kbd");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n	");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("p");
+        dom.setAttribute(el2, "class", "list-group-item-text");
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("br");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "progress");
+        var el3 = dom.createTextNode("\n	  ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        dom.setAttribute(el3, "class", "progress-bar progress-bar-success progress-bar-striped");
+        dom.setAttribute(el3, "role", "progressbar");
+        dom.setAttribute(el3, "aria-valuenow", "70");
+        dom.setAttribute(el3, "aria-valuemin", "0");
+        dom.setAttribute(el3, "aria-valuemax", "100");
+        dom.setAttribute(el3, "style", "width:70%");
+        var el4 = dom.createTextNode("\n	    70%\n	  ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n	");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element0 = dom.childAt(fragment, [2]);
+        var morphs = new Array(3);
+        morphs[0] = dom.createMorphAt(dom.childAt(element0, [1, 3]), 0, 0);
+        morphs[1] = dom.createMorphAt(dom.childAt(element0, [3]), 0, 0);
+        morphs[2] = dom.createMorphAt(fragment, 4, 4, contextualElement);
+        return morphs;
+      },
+      statements: [["content", "arena.name", ["loc", [null, [20, 7], [20, 21]]]], ["content", "arena.description", ["loc", [null, [22, 33], [22, 54]]]], ["content", "yield", ["loc", [null, [32, 0], [32, 9]]]]],
+      locals: [],
+      templates: []
+    };
+  })());
+});
+define("mock-kodr/templates/components/arena-list", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    var child0 = (function () {
+      return {
+        meta: {
+          "fragmentReason": false,
+          "revision": "Ember@2.3.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 8,
+              "column": 4
+            },
+            "end": {
+              "line": 10,
+              "column": 4
+            }
+          },
+          "moduleName": "mock-kodr/templates/components/arena-list.hbs"
+        },
+        isEmpty: false,
+        arity: 1,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("					");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createComment("");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+          return morphs;
+        },
+        statements: [["inline", "arena-item", [], ["arena", ["subexpr", "@mut", [["get", "arena", ["loc", [null, [9, 24], [9, 29]]]]], [], []]], ["loc", [null, [9, 5], [9, 31]]]]],
+        locals: ["arena"],
+        templates: []
+      };
+    })();
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "triple-curlies"
+        },
+        "revision": "Ember@2.3.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 15,
+            "column": 6
+          }
+        },
+        "moduleName": "mock-kodr/templates/components/arena-list.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "container");
+        var el2 = dom.createTextNode("\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "page-header");
+        var el3 = dom.createTextNode("\n	  ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("h3");
+        var el4 = dom.createTextNode("Arenas");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n	");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "row");
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        dom.setAttribute(el3, "class", "col-md-12");
+        var el4 = dom.createTextNode("\n			");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("div");
+        dom.setAttribute(el4, "class", "list-group");
+        var el5 = dom.createTextNode("\n");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createComment("");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("			");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n		");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n	");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("	\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element0 = dom.childAt(fragment, [0]);
+        var morphs = new Array(2);
+        morphs[0] = dom.createMorphAt(dom.childAt(element0, [3, 1, 1]), 1, 1);
+        morphs[1] = dom.createMorphAt(element0, 5, 5);
+        return morphs;
+      },
+      statements: [["block", "each", [["get", "model", ["loc", [null, [8, 12], [8, 17]]]]], [], 0, null, ["loc", [null, [8, 4], [10, 13]]]], ["content", "yield", ["loc", [null, [14, 1], [14, 10]]]]],
+      locals: [],
+      templates: [child0]
     };
   })());
 });
@@ -958,6 +1447,52 @@ define("mock-kodr/templates/login", ["exports"], function (exports) {
     };
   })());
 });
+define("mock-kodr/templates/user-arenas", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "missing-wrapper",
+          "problems": ["wrong-type"]
+        },
+        "revision": "Ember@2.3.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 0
+          }
+        },
+        "moduleName": "mock-kodr/templates/user-arenas.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [["content", "outlet", ["loc", [null, [1, 0], [1, 10]]]]],
+      locals: [],
+      templates: []
+    };
+  })());
+});
 /* jshint ignore:start */
 
 
@@ -990,7 +1525,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("mock-kodr/app")["default"].create({"name":"mock-kodr","version":"0.0.0+78ac4701"});
+  require("mock-kodr/app")["default"].create({"name":"mock-kodr","version":"0.0.0+a859eab5"});
 }
 
 /* jshint ignore:end */

@@ -7,7 +7,11 @@ const Router = Ember.Router.extend({
 
 Router.map(function() {
   this.route('login');
-  this.route('arenas');
+  this.resource('arenas', {
+    path: '/arenas'
+  }, function() {
+    this.route('create');
+  });
   this.resource('userArenas', {
   	path: '/user-arenas'
   });

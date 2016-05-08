@@ -1,1 +1,0 @@
-/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-nXuOVqQz.tmp/0/components/app-version.js

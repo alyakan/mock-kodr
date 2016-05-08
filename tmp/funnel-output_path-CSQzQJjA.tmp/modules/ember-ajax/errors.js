@@ -1,1 +1,0 @@
-/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-DuLbuFp2.tmp/0/errors.js

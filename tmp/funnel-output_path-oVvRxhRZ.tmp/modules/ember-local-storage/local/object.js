@@ -1,1 +1,0 @@
-/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-TbNTQsMn.tmp/0/local/object.js

@@ -1,0 +1,1 @@
+/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-n4XSitSi.tmp/0/utils/is-descriptor.js

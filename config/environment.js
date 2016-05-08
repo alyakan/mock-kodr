@@ -52,10 +52,14 @@ module.exports = function(environment) {
   if (environment === 'production') {
 
   }
+  ENV['simple-auth-devise'] = {
+    identificationAttributeName: 'email'
+  };
 
   ENV['simple-auth'] = {
     session: 'session:custom',
     authorizer: 'simple-auth-authorizer:token',
+    // authorizer: 'simple-auth-authorizer:token',
     // crossOriginWhitelist: [ENV.APP.API_HOST]
   };
 

@@ -8,7 +8,9 @@ const Router = Ember.Router.extend({
 Router.map(function() {
   this.route('login');
   this.route('arenas');
-  this.route('user-arenas');
+  this.resource('userArenas', {
+  	path: '/user-arenas'
+  });
 });
 
 export default Router;

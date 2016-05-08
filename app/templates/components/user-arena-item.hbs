@@ -1,0 +1,32 @@
+<style type="text/css">
+	.wrap {
+		height: 100%;
+	}
+</style>
+<div class="list-group-item">
+	<h4 class="list-group-item-heading">
+		
+	
+		<div class="pull-right">
+			
+			<a href="" class="btn-primary btn-sm">
+				<i class="fa fa-play"></i> Try
+			</a>
+			{{!-- {{#link-to 'index' userArena class="btn-primary btn-sm"}}
+                    <i class="fa fa-play"></i> Randomly Try
+                {{/link-to}} --}}
+		</div>
+
+		<kbd>{{userArena.arena.name}}</kbd>
+	</h4>
+	<p class="list-group-item-text">{{userArena.description}}</p>
+	<br>
+	<div class="progress">
+	  <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="70"
+	  aria-valuemin="0" aria-valuemax="100" style="width:70%">
+	    {{userArena.progress}}%
+	  </div>
+	</div>
+
+</div>
+{{yield}}

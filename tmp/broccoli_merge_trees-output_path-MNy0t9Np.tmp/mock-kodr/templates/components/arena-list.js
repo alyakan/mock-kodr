@@ -1,1 +1,0 @@
-/Users/alyyakan/Desktop/mock-kodr/tmp/broccoli_merge_trees-input_base_path-pik61ipi.tmp/1/mock-kodr/templates/components/arena-list.js

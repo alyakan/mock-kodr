@@ -15,7 +15,6 @@ export default Ember.Component.extend({
       this.get('session').authenticate('authenticator:custom', credentials).catch((reason) => {
         this.set('errorMessage', reason.error || reason);
       });
-      
 
     }
 

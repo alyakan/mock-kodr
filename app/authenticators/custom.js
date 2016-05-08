@@ -22,14 +22,12 @@ export default OAuth2.extend({
           Ember.run(function() {
               // resolve (including the user id) as the AJAX request was successful; all properties this promise resolves
               // with will be available through the session
-              console.log(response)
               that.set('current_user.id', response.user_id);
               that.set('current_user.token', response.token);
               that.set('current_user.email', response.email);
               that.set('current_user.username', response.username);
-              $.ajaxSetup({
-                headers: { 'X-K-Authorization': 'Bearer ' + response.token }
-              });
+              that.set('current_user.user', response.user)
+              
               resolve({
                   access_token: response.access_token,
                   user_id: response.user_id

@@ -32,7 +32,7 @@ Router.map(function() {
       this.route('create');
     });      
   });
-  
+  this.resource('concepts');
 });
 
 export default Router;

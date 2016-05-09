@@ -15,7 +15,7 @@ define('mock-kodr/models/challenge', ['exports', 'ember-data', 'mock-kodr/models
             defaultValue: null
         }),
         exp: attr('number', {
-            defaultValue: 10
+            defaultValue: 0
         }),
         // blueprint: attr('mixed', {
         //     defaultValue: function(model) {
@@ -51,6 +51,10 @@ define('mock-kodr/models/challenge', ['exports', 'ember-data', 'mock-kodr/models
             inverse: 'challenges'
         }),
         author: _emberData['default'].belongsTo('user', {
+            async: true,
+            inverse: 'challenges'
+        }),
+        concepts: _emberData['default'].hasMany('concept', {
             async: true,
             inverse: 'challenges'
         }),

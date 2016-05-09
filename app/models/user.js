@@ -17,4 +17,8 @@ export default DS.Model.extend({
   trials: hasMany('trial',{async: true, inverse: 'user'}),
   arenas: hasMany('arena', {async: true, inverse: 'author'}),
   challenges: hasMany('challenge', {async: true, inverse: 'author'}),
+  concepts: hasMany('concept', {async: true, inverse: 'author'}),
+  atLeastTeacher: Ember.computed('role', function() {
+    return (this.get('role') === 'admin' || this.get('role') === 'teacher')
+  }).property('atLeastTeacher'),
 });

@@ -16,7 +16,7 @@ export default DS.Model.extend({
         defaultValue: null
     }),
     exp: attr('number', {
-        defaultValue: 10
+        defaultValue: 0
     }),
     // blueprint: attr('mixed', {
     //     defaultValue: function(model) {
@@ -52,6 +52,10 @@ export default DS.Model.extend({
         inverse: 'challenges'
     }),
     author: DS.belongsTo('user', {
+        async: true,
+        inverse: 'challenges'
+    }),
+    concepts: DS.hasMany('concept', {
         async: true,
         inverse: 'challenges'
     }),

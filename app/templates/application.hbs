@@ -10,20 +10,28 @@
       </button>
     </div> --}}
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">Kodr</a>
+      <a class="navbar-brand" href="/">Kodr</a>
     </div>
     
     <ul class="nav navbar-nav">
-      <li>
-        {{#link-to 'arenas'}}
-          <i class="fa fa-gamepad"></i> Arenas
-        {{/link-to}}
-      </li>
+      
       <li>
         {{#link-to 'userArenas'}}
           <i class="fa fa-gamepad"></i> User Arenas
         {{/link-to}}
       </li>
+      {{#if current_user.atLeastTeacher}}
+        <li>
+          {{#link-to 'arenas'}}
+            <i class="fa fa-gamepad"></i> Arenas
+          {{/link-to}}
+        </li>
+        <li>
+          {{#link-to 'concepts'}}
+            <i class="fa fa-tags"></i> Concepts
+          {{/link-to}}
+        </li>
+      {{/if}}
     </ul>
     <ul class="nav navbar-nav navbar-right">
       {{#if session.isAuthenticated}}

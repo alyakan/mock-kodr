@@ -1,4 +1,55 @@
 export default Ember.HTMLBars.template((function() {
+  var child0 = (function() {
+    return {
+      meta: {
+        "fragmentReason": false,
+        "revision": "Ember@2.3.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 15,
+            "column": 13
+          },
+          "end": {
+            "line": 17,
+            "column": 10
+          }
+        },
+        "moduleName": "mock-kodr/templates/components/challenge-item.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("button");
+        dom.setAttribute(el1,"class","btn btn-primary btn-sm");
+        var el2 = dom.createTextNode("\n		            ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("i");
+        dom.setAttribute(el2,"class","fa fa-pencil-square-o");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode(" Edit");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element0 = dom.childAt(fragment, [0]);
+        var morphs = new Array(1);
+        morphs[0] = dom.createElementMorph(element0);
+        return morphs;
+      },
+      statements: [
+        ["element","action",["edit"],[],["loc",[null,[15,60],[15,77]]]]
+      ],
+      locals: [],
+      templates: []
+    };
+  }());
   return {
     meta: {
       "fragmentReason": {
@@ -16,7 +67,7 @@ export default Ember.HTMLBars.template((function() {
           "column": 0
         },
         "end": {
-          "line": 35,
+          "line": 41,
           "column": 0
         }
       },
@@ -66,7 +117,11 @@ export default Ember.HTMLBars.template((function() {
       var el6 = dom.createTextNode(" Try");
       dom.appendChild(el5, el6);
       dom.appendChild(el4, el5);
-      var el5 = dom.createTextNode("\n			");
+      var el5 = dom.createTextNode("\n	            ");
+      dom.appendChild(el4, el5);
+      var el5 = dom.createComment("");
+      dom.appendChild(el4, el5);
+      var el5 = dom.createTextNode("	            \n			");
       dom.appendChild(el4, el5);
       dom.appendChild(el3, el4);
       var el4 = dom.createTextNode("\n\n			");
@@ -126,7 +181,7 @@ export default Ember.HTMLBars.template((function() {
       var el3 = dom.createTextNode("\n\n	");
       dom.appendChild(el2, el3);
       dom.appendChild(el1, el2);
-      var el2 = dom.createTextNode("	\n");
+      var el2 = dom.createTextNode("	\n\n	\n");
       dom.appendChild(el1, el2);
       dom.appendChild(el0, el1);
       var el1 = dom.createTextNode("\n\n");
@@ -138,19 +193,22 @@ export default Ember.HTMLBars.template((function() {
       return el0;
     },
     buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-      var element0 = dom.childAt(fragment, [0, 1]);
-      var morphs = new Array(3);
-      morphs[0] = dom.createMorphAt(dom.childAt(element0, [1, 3, 1]),0,0);
-      morphs[1] = dom.createMorphAt(dom.childAt(element0, [3, 1, 1, 0, 0, 0]),1,1);
-      morphs[2] = dom.createMorphAt(fragment,2,2,contextualElement);
+      var element1 = dom.childAt(fragment, [0, 1]);
+      var element2 = dom.childAt(element1, [1]);
+      var morphs = new Array(4);
+      morphs[0] = dom.createMorphAt(dom.childAt(element2, [1]),6,6);
+      morphs[1] = dom.createMorphAt(dom.childAt(element2, [3, 1]),0,0);
+      morphs[2] = dom.createMorphAt(dom.childAt(element1, [3, 1, 1, 0, 0, 0]),1,1);
+      morphs[3] = dom.createMorphAt(fragment,2,2,contextualElement);
       return morphs;
     },
     statements: [
-      ["content","challenge.name",["loc",[null,[18,7],[18,25]]]],
-      ["content","challenge.exp",["loc",[null,[25,54],[25,71]]]],
-      ["content","yield",["loc",[null,[34,0],[34,9]]]]
+      ["block","link-to",["challenge.edit",["get","challenge",["loc",[null,[15,41],[15,50]]]]],[],0,null,["loc",[null,[15,13],[17,22]]]],
+      ["content","challenge.name",["loc",[null,[22,7],[22,25]]]],
+      ["content","challenge.exp",["loc",[null,[29,54],[29,71]]]],
+      ["content","yield",["loc",[null,[40,0],[40,9]]]]
     ],
     locals: [],
-    templates: []
+    templates: [child0]
   };
 }()));

@@ -137,7 +137,7 @@ export default Ember.HTMLBars.template((function() {
       var el2 = dom.createElement("a");
       dom.setAttribute(el2,"href","#");
       dom.setAttribute(el2,"id","toggle-btn");
-      dom.setAttribute(el2,"class","btn btn-success btn-block");
+      dom.setAttribute(el2,"class","btn btn-primary btn-block");
       var el3 = dom.createElement("i");
       dom.setAttribute(el3,"class","fa fa-plus-square-o");
       dom.appendChild(el2, el3);

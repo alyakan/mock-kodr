@@ -12,6 +12,10 @@
 	            {{/link-to}} --}}
 	            <a class='challenge-discussion btn btn-info btn-sm' href="#"><i class="fa fa-comment"></i> Discussion</a>
 	            <a href="" class="btn btn-primary btn-sm"><i class="fa fa-play"></i> Try</a>
+	            {{#link-to 'challenge.edit' challenge}}<button {{action 'edit'}} class="btn btn-primary btn-sm">
+		            <i class="fa fa-pencil-square-o"></i> Edit</button>
+		        {{/link-to}}
+	            
 			</div>
 
 			<h4 class="list-group-item-heading">
@@ -29,6 +33,8 @@
 	    </section>
 
 	</div>	
+
+	
 </div>
 
 {{yield}}

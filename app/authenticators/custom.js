@@ -26,6 +26,7 @@ export default OAuth2.extend({
               that.set('current_user.token', response.token);
               that.set('current_user.email', response.email);
               that.set('current_user.username', response.username);
+              that.set('current_user.atLeastTeacher', (response.user.role === 'admin' || response.user.role === 'teacher'))
               that.set('current_user.user', response.user)
               
               resolve({

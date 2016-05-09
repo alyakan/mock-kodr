@@ -31,6 +31,7 @@ define('mock-kodr/router', ['exports', 'ember', 'mock-kodr/config/environment'],
         this.route('create');
       });
     });
+    this.resource('concepts');
   });
 
   exports['default'] = Router;

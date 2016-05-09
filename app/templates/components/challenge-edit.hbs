@@ -1,0 +1,41 @@
+{{!-- <button id="modal-trigger" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Challenge: {{challenge.name}}</h4>
+      </div>
+      <div class="modal-body">
+        <form id="challenge-edit-form" class="form-group" {{action 'save' on='submit'}}>
+				<label for="name">Challenge Name:</label>
+				{{input value=challenge.name class="form-control" placeholder='Challenge Name'}}<br>
+				<label for="exp">Experience Points:</label>
+				{{input value=challenge.exp class="form-control" placeholder='Experience Points' type='number'}}<br>
+				<label for="author">Author:</label>
+				{{input class="form-control" disabled="true" value=current_user.username}}<br>
+				<label for="arena">Arena:</label>
+				{{input class="form-control" disabled="true" value=challenge.arena.name}}<br>
+
+				<button type="submit" class="btn btn-success btn-block" type="submit"><i class="fa fa-plus-square-o"></i> Save Challenge</button>
+				<a href="#"{{action "toggleForm"}} class="btn btn-danger btn-block"><i class="fa fa-cancel"></i> Cancel</a>
+				{{#if errorMessage}}
+			    <p>{{errorMessage}}</p>
+			  {{/if}}
+			</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+{{yield}}
+ --}}

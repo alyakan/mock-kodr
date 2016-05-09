@@ -23,6 +23,7 @@ define('mock-kodr/authenticators/custom', ['exports', 'ember', 'mock-kodr/authen
                         that.set('current_user.token', response.token);
                         that.set('current_user.email', response.email);
                         that.set('current_user.username', response.username);
+                        that.set('current_user.atLeastTeacher', response.user.role === 'admin' || response.user.role === 'teacher');
                         that.set('current_user.user', response.user);
 
                         resolve({

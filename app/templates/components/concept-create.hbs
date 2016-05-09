@@ -1,0 +1,28 @@
+<div class="container">
+	<div class="page-header">
+	</div>
+	<a href="#" id="toggle-btn" {{action "toggleForm"}} class="btn btn-primary btn-block"><i class="fa fa-plus-square-o"></i> Add Concept</a>
+	<div class="row collapse">
+		<div class="col-md-4">
+			<form class="form-group" {{action 'save' on='submit'}}>
+				<label for="name">Concept Name:</label>
+				{{input id='name' value=name class="form-control" placeholder='Concept Name'}}<br>
+				<label for="description">Maximum Experience Points:</label>
+				{{input id='max_exp' value=max_exp class="form-control" placeholder='Maximum Experience Points' type='number'}}<br>
+				<label for="name">Author:</label>
+				{{input id='author' class="form-control" disabled="true" value=current_user.username}}<br>
+
+				<button type="submit" class="btn btn-success btn-block" type="submit"><i class="fa fa-plus-square-o"></i> Add Concept</button>
+				<a href="#"{{action "toggleForm"}} class="btn btn-danger btn-block"><i class="fa fa-cancel"></i> Cancel</a>
+				{{#if errorMessage}}
+					<p>{{errorMessage}}</p>
+				{{/if}}
+			</form>
+		</div>
+		<div class="col-md-8 text-center">
+			<h1>Add a Concept</h1>
+			<h1><i class="fa fa-tags fa-5x" aria-hidden="true"></i></h1>
+		</div>
+	</div>	
+</div>
+{{yield}}

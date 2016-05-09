@@ -1,0 +1,36 @@
+{{concept-create store=store}}
+<div class="container">
+	<div class="page-header">
+		
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<table class="table table-hover">
+			    
+			    <tbody>
+			    	
+				    {{#each model as |concept|}}
+					    <tr>
+					    	<td>
+					    		<span class="label label-default"><i class="fa fa-tags"></i> {{concept.name}}</span>
+					    	</td>
+					    	<td>
+					    		<small class="text-muted"><em><code><a>Max Exp: {{concept.max_exp}}</a></code></em></small>
+					    	</td>
+					    	<td>
+					    		<a>{{concept.author.username}}</a>
+					    	</td>
+					    	<td>
+					    		<a href="" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>
+					    	</td>
+							
+							
+					    </tr>
+					{{/each}}
+			    </tbody>
+			  </table>
+			
+		</div>
+	</div>
+</div>
+{{outlet}}

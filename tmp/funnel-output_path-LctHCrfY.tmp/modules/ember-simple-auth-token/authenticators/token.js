@@ -1,1 +1,0 @@
-/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-9Bm3MgYq.tmp/0/authenticators/token.js

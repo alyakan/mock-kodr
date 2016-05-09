@@ -1,0 +1,1 @@
+/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-1NaFzJO8.tmp/0/serializers/serializer.js

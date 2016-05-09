@@ -27,7 +27,12 @@
 	            
 	        <div>
 		        <small class="text-muted"><em><code><a>Exp: {{challenge.exp}}</a></code></em></small>
-	            <span class="label label-default"><i class="fa fa-tags"></i> Tags</span>
+		        {{#each challenge.concepts as |concept|}}
+		        	<span class="label label-default"><i class="fa fa-tags"></i> {{concept.name}}</span>
+		        {{else}}
+		        	<span class="label label-default"><i class="fa fa-tags"></i> No Tags</span>
+		        {{/each}}
+	            
 	            
 	        </div>
 	    </section>

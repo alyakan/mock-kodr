@@ -1,0 +1,1 @@
+/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-ZOC5IB2s.tmp/0/fake-owner.js

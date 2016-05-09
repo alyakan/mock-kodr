@@ -1,0 +1,1 @@
+/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-XHPdhQYF.tmp/0/components/fa-list.js

@@ -1,0 +1,1 @@
+/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-vpVUe5Y6.tmp/0/mixins/object.js

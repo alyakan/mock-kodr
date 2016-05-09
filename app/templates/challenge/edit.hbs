@@ -12,20 +12,23 @@
       </div>
       <div class="modal-body">
         <form id="challenge-edit-form" class="form-group" {{action 'save' on='submit'}}>
-				<label for="name">Challenge Name:</label>
-				{{input id="name-edit" value=model.name class="form-control" placeholder='Challenge Name'}}<br>
-				<label for="exp">Experience Points:</label>
-				{{input id="exp-edit" value=model.exp class="form-control" placeholder='Experience Points' type='number'}}<br>
-				<label for="author">Author:</label>
-				{{input class="form-control" disabled="true" value=current_user.username}}<br>
-				<label for="arena">Arena:</label>
-				{{input class="form-control" disabled="true" value=model.arena.name}}<br>
-
-				<button type="submit" class="btn btn-success btn-block" type="submit"><i class="fa fa-plus-square-o"></i> Save Challenge</button>
-				{{#if errorMessage}}
-			    <p>{{errorMessage}}</p>
-			  {{/if}}
-			</form>
+			<label for="name">Challenge Name:</label>
+			{{input id="name-edit" value=model.name class="form-control" placeholder='Challenge Name'}}<br>
+			<label for="exp">Experience Points:</label>
+			{{input id="exp-edit" value=model.exp class="form-control" placeholder='Experience Points' type='number'}}<br>
+			<label>Concepts:</label>
+		    {{#power-select-multiple selected=chosenConcepts searchField="name" renderInPlace="true" options=concepts onchange=(action (mut chosenConcepts)) as |concept|}}
+		      {{concept.name}}
+		    {{/power-select-multiple}}<br>
+			<label for="author">Author:</label>
+			{{input class="form-control" disabled="true" value=current_user.username}}<br>
+			<label for="arena">Arena:</label>
+			{{input class="form-control" disabled="true" value=model.arena.name}}<br>
+			<button type="submit" class="btn btn-success btn-block" type="submit"><i class="fa fa-plus-square-o"></i> Save Challenge</button>
+			{{#if errorMessage}}
+		    <p>{{errorMessage}}</p>
+		  {{/if}}
+		</form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

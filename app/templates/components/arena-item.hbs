@@ -8,15 +8,16 @@
 		
 	
 		<div class="pull-right">
-			<a href="" class="btn-primary btn-sm">
+			{{!-- <a href="" class="btn-primary btn-sm">
 				<i class="fa fa-play"></i> Try
-			</a>
-			{{!-- {{#link-to 'index' userArena class="btn-primary btn-sm"}}
-                    <i class="fa fa-play"></i> Randomly Try
-                {{/link-to}} --}}
+			</a> --}}
+			{{#link-to 'arena' arena.id class="btn-primary btn-sm"}}
+                <i class="fa fa-play"></i> Try
+            {{/link-to}}
 		</div>
-
-		<kbd>{{arena.name}}</kbd>
+		<h4 class="list-group-item-heading">
+			<a>{{arena.name}}</a>
+		</h4>
 	</h4>
 	{{#if arena.prerequisit}}
 		<small class="text-muted"><em>Prerequisit: <code><a>{{arena.prerequisit.name}}</a></code></em></small>

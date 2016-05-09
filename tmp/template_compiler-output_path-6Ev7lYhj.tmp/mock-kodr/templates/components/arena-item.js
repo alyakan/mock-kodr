@@ -7,11 +7,52 @@ export default Ember.HTMLBars.template((function() {
         "loc": {
           "source": null,
           "start": {
-            "line": 21,
+            "line": 14,
+            "column": 3
+          },
+          "end": {
+            "line": 16,
+            "column": 12
+          }
+        },
+        "moduleName": "mock-kodr/templates/components/arena-item.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createTextNode("                ");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("i");
+        dom.setAttribute(el1,"class","fa fa-play");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode(" Try\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes() { return []; },
+      statements: [
+
+      ],
+      locals: [],
+      templates: []
+    };
+  }());
+  var child1 = (function() {
+    return {
+      meta: {
+        "fragmentReason": false,
+        "revision": "Ember@2.3.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 22,
             "column": 1
           },
           "end": {
-            "line": 23,
+            "line": 24,
             "column": 1
           }
         },
@@ -48,13 +89,13 @@ export default Ember.HTMLBars.template((function() {
         return morphs;
       },
       statements: [
-        ["content","arena.prerequisit.name",["loc",[null,[22,54],[22,80]]]]
+        ["content","arena.prerequisit.name",["loc",[null,[23,54],[23,80]]]]
       ],
       locals: [],
       templates: []
     };
   }());
-  var child1 = (function() {
+  var child2 = (function() {
     return {
       meta: {
         "fragmentReason": false,
@@ -62,11 +103,11 @@ export default Ember.HTMLBars.template((function() {
         "loc": {
           "source": null,
           "start": {
-            "line": 23,
+            "line": 24,
             "column": 1
           },
           "end": {
-            "line": 25,
+            "line": 26,
             "column": 1
           }
         },
@@ -120,7 +161,7 @@ export default Ember.HTMLBars.template((function() {
           "column": 0
         },
         "end": {
-          "line": 31,
+          "line": 32,
           "column": 0
         }
       },
@@ -149,28 +190,24 @@ export default Ember.HTMLBars.template((function() {
       dom.appendChild(el2, el3);
       var el3 = dom.createElement("div");
       dom.setAttribute(el3,"class","pull-right");
-      var el4 = dom.createTextNode("\n			");
-      dom.appendChild(el3, el4);
-      var el4 = dom.createElement("a");
-      dom.setAttribute(el4,"href","");
-      dom.setAttribute(el4,"class","btn-primary btn-sm");
-      var el5 = dom.createTextNode("\n				");
-      dom.appendChild(el4, el5);
-      var el5 = dom.createElement("i");
-      dom.setAttribute(el5,"class","fa fa-play");
-      dom.appendChild(el4, el5);
-      var el5 = dom.createTextNode(" Try\n			");
-      dom.appendChild(el4, el5);
-      dom.appendChild(el3, el4);
       var el4 = dom.createTextNode("\n");
+      dom.appendChild(el3, el4);
+      var el4 = dom.createComment("");
       dom.appendChild(el3, el4);
       var el4 = dom.createTextNode("		");
       dom.appendChild(el3, el4);
       dom.appendChild(el2, el3);
-      var el3 = dom.createTextNode("\n\n		");
+      var el3 = dom.createTextNode("\n		");
       dom.appendChild(el2, el3);
-      var el3 = dom.createElement("kbd");
-      var el4 = dom.createComment("");
+      var el3 = dom.createElement("h4");
+      dom.setAttribute(el3,"class","list-group-item-heading");
+      var el4 = dom.createTextNode("\n			");
+      dom.appendChild(el3, el4);
+      var el4 = dom.createElement("a");
+      var el5 = dom.createComment("");
+      dom.appendChild(el4, el5);
+      dom.appendChild(el3, el4);
+      var el4 = dom.createTextNode("\n		");
       dom.appendChild(el3, el4);
       dom.appendChild(el2, el3);
       var el3 = dom.createTextNode("\n	");
@@ -204,20 +241,23 @@ export default Ember.HTMLBars.template((function() {
     },
     buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
       var element0 = dom.childAt(fragment, [2]);
-      var morphs = new Array(4);
-      morphs[0] = dom.createMorphAt(dom.childAt(element0, [1, 3]),0,0);
-      morphs[1] = dom.createMorphAt(element0,3,3);
-      morphs[2] = dom.createMorphAt(dom.childAt(element0, [7]),0,0);
-      morphs[3] = dom.createMorphAt(fragment,4,4,contextualElement);
+      var element1 = dom.childAt(element0, [1]);
+      var morphs = new Array(5);
+      morphs[0] = dom.createMorphAt(dom.childAt(element1, [1]),1,1);
+      morphs[1] = dom.createMorphAt(dom.childAt(element1, [3, 1]),0,0);
+      morphs[2] = dom.createMorphAt(element0,3,3);
+      morphs[3] = dom.createMorphAt(dom.childAt(element0, [7]),0,0);
+      morphs[4] = dom.createMorphAt(fragment,4,4,contextualElement);
       return morphs;
     },
     statements: [
-      ["content","arena.name",["loc",[null,[19,7],[19,21]]]],
-      ["block","if",[["get","arena.prerequisit",["loc",[null,[21,7],[21,24]]]]],[],0,1,["loc",[null,[21,1],[25,8]]]],
-      ["content","arena.description",["loc",[null,[27,43],[27,64]]]],
-      ["content","yield",["loc",[null,[30,0],[30,9]]]]
+      ["block","link-to",["arena",["get","arena.id",["loc",[null,[14,22],[14,30]]]]],["class","btn-primary btn-sm"],0,null,["loc",[null,[14,3],[16,24]]]],
+      ["content","arena.name",["loc",[null,[19,6],[19,20]]]],
+      ["block","if",[["get","arena.prerequisit",["loc",[null,[22,7],[22,24]]]]],[],1,2,["loc",[null,[22,1],[26,8]]]],
+      ["content","arena.description",["loc",[null,[28,43],[28,64]]]],
+      ["content","yield",["loc",[null,[31,0],[31,9]]]]
     ],
     locals: [],
-    templates: [child0, child1]
+    templates: [child0, child1, child2]
   };
 }()));

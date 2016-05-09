@@ -15,6 +15,7 @@ define('mock-kodr/models/user', ['exports', 'ember-data'], function (exports, _e
     lectureGroup: attr('string'),
     userArenas: hasMany('userArena', { async: true, inverse: 'user' }),
     trials: hasMany('trial', { async: true, inverse: 'user' }),
-    arenas: hasMany('arena', { async: true, inverse: 'author' })
+    arenas: hasMany('arena', { async: true, inverse: 'author' }),
+    challenges: hasMany('challenge', { async: true, inverse: 'author' })
   });
 });

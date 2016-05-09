@@ -22,7 +22,8 @@ define('mock-kodr/models/arena', ['exports', 'ember-data/model', 'ember-data/att
     author: _emberData['default'].belongsTo('user', { async: true, inverse: 'arenas' }),
     prerequisit: _emberData['default'].belongsTo('arena', { defaultValue: null }),
     trials: _emberData['default'].hasMany('trial', { async: true, inverse: 'arena' }),
-    users: _emberData['default'].hasMany('userArena', { async: true, inverse: 'arena' })
+    users: _emberData['default'].hasMany('userArena', { async: true, inverse: 'arena' }),
+    challenges: _emberData['default'].hasMany('challenge', { async: true, inverse: 'arena' })
   });
 
   // Arena.reopen({
@@ -42,6 +43,5 @@ define('mock-kodr/models/arena', ['exports', 'ember-data/model', 'ember-data/att
   //   }
   // });
 
-  // challenges: DS.hasMany('challenge', {async:true, inverse: 'arena'}),
   exports['default'] = Arena;
 });

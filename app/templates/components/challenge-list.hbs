@@ -1,0 +1,6 @@
+{{#each challenges as |challenge| }}
+    {{challenge-item challenge=challenge store=store}}
+{{else}}
+    <p>No Challanges set yet</p>
+{{/each}}
+{{yield}}

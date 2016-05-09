@@ -1,0 +1,33 @@
+<div class="container">
+	<div class="page-header">
+	</div>
+	<a href="#" id="toggle-btn" {{action "toggleForm"}} class="btn btn-primary btn-block"><i class="fa fa-plus-square-o"></i> Add Challenge</a>
+	<div class="row collapse">
+		<div class="col-md-4">
+			<form class="form-group" {{action 'save' on='submit'}}>
+				<label for="name">Challenge Name:</label>
+				{{input id='name' value=name class="form-control" placeholder='Challenge Name'}}<br>
+				<label for="description">Experience Points:</label>
+				{{input id='exp' value=exp class="form-control" placeholder='Experience Points' type='number'}}<br>
+				<label for="name">Author:</label>
+				{{input id='author' class="form-control" disabled="true" value=current_user.username}}<br>
+				<label for="name">Arena:</label>
+				{{input id='arena' class="form-control" disabled="true" value=arena.name}}<br>
+
+				<button type="submit" class="btn btn-success btn-block" type="submit"><i class="fa fa-plus-square-o"></i> Add  Challenge</button>
+				<a href="#"{{action "toggleForm"}} class="btn btn-danger btn-block"><i class="fa fa-cancel"></i> Cancel</a>
+				{{#if errorMessage}}
+			    <p>{{errorMessage}}</p>
+			  {{/if}}
+			</form>
+		</div>
+		<div class="col-md-8 text-center">
+			<h1>Add a Challenge</h1>
+			<h1><i class="fa fa-gamepad fa-5x" aria-hidden="true"></i></h1>
+		</div>
+	</div>	
+</div>
+
+
+
+{{yield}}

@@ -16,7 +16,6 @@ define('mock-kodr/components/arena-create', ['exports', 'ember', 'ember-local-st
 					this.store.findRecord('arena', pre_id).then(function (p) {
 						arena.prerequisit = p.id;
 						arena.mock = true;
-						console.log(arena);
 						$.ajaxSetup({
 							headers: { 'X-K-Authorization': 'Bearer ' + that.get('current_user.token') }
 						});
@@ -28,7 +27,6 @@ define('mock-kodr/components/arena-create', ['exports', 'ember', 'ember-local-st
 							}
 						}).then(function (response) {
 							that.store.createRecord('arena', arena);
-							console.log(response);
 						});
 					});
 				} else {
@@ -44,7 +42,6 @@ define('mock-kodr/components/arena-create', ['exports', 'ember', 'ember-local-st
 						}
 					}).then(function (response) {
 						that.store.createRecord('arena', arena);
-						console.log(response);
 					});
 				}
 

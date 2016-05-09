@@ -1,0 +1,16 @@
+<div class="container text-center">
+	<div class="page-header">
+		<h2>{{model.name}}</h2>
+	</div>
+	<code>{{model.description}}</code>
+</div>
+<style type="text/css">
+	.wrap {
+		height: 100%;
+	}
+</style>
+{{challenge-create arena=model store=store}}
+<br><br>
+{{challenge-list challenges=challenges store=store}}
+
+{{outlet}}

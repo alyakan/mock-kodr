@@ -18,7 +18,6 @@ export default Ember.Component.extend({
   			this.store.findRecord('arena', pre_id).then(function(p) {
 					arena.prerequisit = p.id;
 					arena.mock = true;
-					console.log(arena)
 					$.ajaxSetup({
 					    headers: { 'X-K-Authorization': 'Bearer ' + that.get('current_user.token') }
 					});
@@ -30,7 +29,6 @@ export default Ember.Component.extend({
 		        }
 		      }).then(function(response) {
 		      	that.store.createRecord('arena', arena);
-		      	console.log(response)
 		      })
 	  			
 	  		});
@@ -47,7 +45,6 @@ export default Ember.Component.extend({
 	        }
 	      }).then(function(response) {
 	      	that.store.createRecord('arena', arena);
-	      	console.log(response)
 	      })
   		}
   		

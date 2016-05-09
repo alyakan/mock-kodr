@@ -26,7 +26,7 @@ var Arena = DS.Model.extend({
   prerequisit: DS.belongsTo('arena', {defaultValue:null}),
   trials: DS.hasMany('trial', {async:true, inverse: 'arena'}),
   users: DS.hasMany('userArena', {async:true, inverse: 'arena'}),
-  // challenges: DS.hasMany('challenge', {async:true, inverse: 'arena'}),
+  challenges: DS.hasMany('challenge', {async:true, inverse: 'arena'}),
 });
 
 // Arena.reopen({

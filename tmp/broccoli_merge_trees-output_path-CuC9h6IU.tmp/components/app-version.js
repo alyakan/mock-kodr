@@ -1,0 +1,1 @@
+/Users/alyyakan/Desktop/mock-kodr/tmp/broccoli_merge_trees-input_base_path-Yt4MNDaQ.tmp/2/components/app-version.js

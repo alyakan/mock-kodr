@@ -17,8 +17,7 @@ export default Ember.Controller.extend({
 				arr.push({
 					name: c.get('name'),
 					id: c.get('id')
-				});
-				
+				});			
 			});
   		that.set('concepts', arr);
   	});
@@ -56,7 +55,6 @@ export default Ember.Controller.extend({
         }
       }).then(function(response) {
       	that.store.findRecord('challenge', that.get('model').get('id')).then(function(ch) {
-
       		ch.set('name', challenge.name);
       		ch.set('exp', challenge.exp);
       		ch.set('concepts', ch.get('concepts'));

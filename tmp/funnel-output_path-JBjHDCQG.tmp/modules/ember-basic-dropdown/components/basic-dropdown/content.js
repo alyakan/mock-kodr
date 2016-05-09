@@ -1,1 +1,0 @@
-/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-yqojcPFn.tmp/0/components/basic-dropdown/content.js

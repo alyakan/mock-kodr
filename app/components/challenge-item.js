@@ -6,10 +6,13 @@ export default Ember.Component.extend({
 	concepts: [],
 	trigger: function() {
   	var that = this;
-  	this.store.findRecord('challenge', this.get('challenge').get('id')).then(function(ch) {
-  		that.set('challenge', ch);
-  		that.set('concepts', ch.get('concepts'))
+  	Ember.run.scheduleOnce('afterRender', this, function() {
+  		this.store.findRecord('challenge', this.get('challenge').get('id')).then(function(ch) {
+  			that.set('challenge', ch);
+  			that.set('concepts', ch.get('concepts'));
+  		});
   	});
+  	
   }.on('init'),
 	actions: {
 		edit: function() {

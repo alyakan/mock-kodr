@@ -51,6 +51,58 @@ export default Ember.HTMLBars.template((function() {
     };
   }());
   var child1 = (function() {
+    var child0 = (function() {
+      return {
+        meta: {
+          "fragmentReason": false,
+          "revision": "Ember@2.3.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 31,
+              "column": 11
+            },
+            "end": {
+              "line": 33,
+              "column": 11
+            }
+          },
+          "moduleName": "mock-kodr/templates/components/challenge-item.hbs"
+        },
+        isEmpty: false,
+        arity: 1,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("			        	");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("span");
+          dom.setAttribute(el1,"class","label label-default");
+          var el2 = dom.createElement("i");
+          dom.setAttribute(el2,"class","fa fa-tags");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode(" ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createComment("");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]),2,2);
+          return morphs;
+        },
+        statements: [
+          ["content","concept.name",["loc",[null,[32,73],[32,89]]]]
+        ],
+        locals: ["concept"],
+        templates: []
+      };
+    }());
     return {
       meta: {
         "fragmentReason": false,
@@ -62,60 +114,8 @@ export default Ember.HTMLBars.template((function() {
             "column": 10
           },
           "end": {
-            "line": 32,
-            "column": 10
-          }
-        },
-        "moduleName": "mock-kodr/templates/components/challenge-item.hbs"
-      },
-      isEmpty: false,
-      arity: 1,
-      cachedFragment: null,
-      hasRendered: false,
-      buildFragment: function buildFragment(dom) {
-        var el0 = dom.createDocumentFragment();
-        var el1 = dom.createTextNode("		        	");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createElement("span");
-        dom.setAttribute(el1,"class","label label-default");
-        var el2 = dom.createElement("i");
-        dom.setAttribute(el2,"class","fa fa-tags");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode(" ");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createComment("");
-        dom.appendChild(el1, el2);
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n");
-        dom.appendChild(el0, el1);
-        return el0;
-      },
-      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]),2,2);
-        return morphs;
-      },
-      statements: [
-        ["content","concept.name",["loc",[null,[31,72],[31,88]]]]
-      ],
-      locals: ["concept"],
-      templates: []
-    };
-  }());
-  var child2 = (function() {
-    return {
-      meta: {
-        "fragmentReason": false,
-        "revision": "Ember@2.3.2",
-        "loc": {
-          "source": null,
-          "start": {
-            "line": 32,
-            "column": 10
-          },
-          "end": {
             "line": 34,
-            "column": 10
+            "column": 7
           }
         },
         "moduleName": "mock-kodr/templates/components/challenge-item.hbs"
@@ -126,26 +126,204 @@ export default Ember.HTMLBars.template((function() {
       hasRendered: false,
       buildFragment: function buildFragment(dom) {
         var el0 = dom.createDocumentFragment();
-        var el1 = dom.createTextNode("		        	");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createElement("span");
-        dom.setAttribute(el1,"class","label label-default");
-        var el2 = dom.createElement("i");
-        dom.setAttribute(el2,"class","fa fa-tags");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode(" No Tags");
-        dom.appendChild(el1, el2);
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n");
+        var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
         return el0;
       },
-      buildRenderNodes: function buildRenderNodes() { return []; },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
+        dom.insertBoundary(fragment, 0);
+        dom.insertBoundary(fragment, null);
+        return morphs;
+      },
       statements: [
-
+        ["block","each",[["get","challenge.concepts",["loc",[null,[31,19],[31,37]]]]],[],0,null,["loc",[null,[31,11],[33,20]]]]
       ],
       locals: [],
-      templates: []
+      templates: [child0]
+    };
+  }());
+  var child2 = (function() {
+    var child0 = (function() {
+      var child0 = (function() {
+        return {
+          meta: {
+            "fragmentReason": false,
+            "revision": "Ember@2.3.2",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 36,
+                "column": 9
+              },
+              "end": {
+                "line": 38,
+                "column": 12
+              }
+            },
+            "moduleName": "mock-kodr/templates/components/challenge-item.hbs"
+          },
+          isEmpty: false,
+          arity: 1,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("				        	");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("span");
+            dom.setAttribute(el1,"class","label label-default");
+            var el2 = dom.createElement("i");
+            dom.setAttribute(el2,"class","fa fa-tags");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode(" ");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createComment("");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]),2,2);
+            return morphs;
+          },
+          statements: [
+            ["content","concept.name",["loc",[null,[37,74],[37,90]]]]
+          ],
+          locals: ["concept"],
+          templates: []
+        };
+      }());
+      return {
+        meta: {
+          "fragmentReason": false,
+          "revision": "Ember@2.3.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 35,
+              "column": 8
+            },
+            "end": {
+              "line": 39,
+              "column": 8
+            }
+          },
+          "moduleName": "mock-kodr/templates/components/challenge-item.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment("");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [
+          ["block","each",[["get","concepts",["loc",[null,[36,17],[36,25]]]]],[],0,null,["loc",[null,[36,9],[38,21]]]]
+        ],
+        locals: [],
+        templates: [child0]
+      };
+    }());
+    var child1 = (function() {
+      return {
+        meta: {
+          "fragmentReason": false,
+          "revision": "Ember@2.3.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 39,
+              "column": 8
+            },
+            "end": {
+              "line": 41,
+              "column": 11
+            }
+          },
+          "moduleName": "mock-kodr/templates/components/challenge-item.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("			        	");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("span");
+          dom.setAttribute(el1,"class","label label-default");
+          var el2 = dom.createElement("i");
+          dom.setAttribute(el2,"class","fa fa-tags");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode(" No Tags");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() { return []; },
+        statements: [
+
+        ],
+        locals: [],
+        templates: []
+      };
+    }());
+    return {
+      meta: {
+        "fragmentReason": false,
+        "revision": "Ember@2.3.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 34,
+            "column": 7
+          },
+          "end": {
+            "line": 42,
+            "column": 7
+          }
+        },
+        "moduleName": "mock-kodr/templates/components/challenge-item.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
+        dom.insertBoundary(fragment, 0);
+        dom.insertBoundary(fragment, null);
+        return morphs;
+      },
+      statements: [
+        ["block","if",[["get","concepts",["loc",[null,[35,14],[35,22]]]]],[],0,1,["loc",[null,[35,8],[41,18]]]]
+      ],
+      locals: [],
+      templates: [child0, child1]
     };
   }());
   return {
@@ -165,7 +343,7 @@ export default Ember.HTMLBars.template((function() {
           "column": 0
         },
         "end": {
-          "line": 46,
+          "line": 55,
           "column": 0
         }
       },
@@ -264,7 +442,7 @@ export default Ember.HTMLBars.template((function() {
       dom.appendChild(el4, el5);
       var el5 = dom.createComment("");
       dom.appendChild(el4, el5);
-      var el5 = dom.createTextNode("	            \n	            \n	        ");
+      var el5 = dom.createTextNode("\n	            \n	            \n	        ");
       dom.appendChild(el4, el5);
       dom.appendChild(el3, el4);
       var el4 = dom.createTextNode("\n	    ");
@@ -300,8 +478,8 @@ export default Ember.HTMLBars.template((function() {
       ["block","link-to",["challenge.edit",["get","challenge",["loc",[null,[15,41],[15,50]]]]],[],0,null,["loc",[null,[15,13],[17,22]]]],
       ["content","challenge.name",["loc",[null,[22,7],[22,25]]]],
       ["content","challenge.exp",["loc",[null,[29,54],[29,71]]]],
-      ["block","each",[["get","challenge.concepts",["loc",[null,[30,18],[30,36]]]]],[],1,2,["loc",[null,[30,10],[34,19]]]],
-      ["content","yield",["loc",[null,[45,0],[45,9]]]]
+      ["block","if",[["get","challenge.concepts",["loc",[null,[30,16],[30,34]]]]],[],1,2,["loc",[null,[30,10],[42,14]]]],
+      ["content","yield",["loc",[null,[54,0],[54,9]]]]
     ],
     locals: [],
     templates: [child0, child1, child2]

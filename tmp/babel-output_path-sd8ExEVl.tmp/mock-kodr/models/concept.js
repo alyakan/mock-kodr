@@ -2,9 +2,7 @@ define('mock-kodr/models/concept', ['exports', 'ember-data/model', 'ember-data']
   var attr = _emberData['default'].attr;
   var hasMany = _emberData['default'].hasMany;
   exports['default'] = _emberData['default'].Model.extend({
-    name: attr('string', {
-      defaultValue: "New Concept"
-    }),
+    name: attr('string'),
     max_exp: attr('number', {
       defaultValue: 10
     }),

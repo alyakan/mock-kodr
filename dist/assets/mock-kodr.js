@@ -1080,9 +1080,7 @@ define('mock-kodr/models/concept', ['exports', 'ember-data/model', 'ember-data']
   var attr = _emberData['default'].attr;
   var hasMany = _emberData['default'].hasMany;
   exports['default'] = _emberData['default'].Model.extend({
-    name: attr('string', {
-      defaultValue: "New Concept"
-    }),
+    name: attr('string'),
     max_exp: attr('number', {
       defaultValue: 10
     }),
@@ -3376,14 +3374,18 @@ define("mock-kodr/templates/components/challenge-item", ["exports"], function (e
             var el0 = dom.createDocumentFragment();
             var el1 = dom.createTextNode("			        	");
             dom.appendChild(el0, el1);
-            var el1 = dom.createElement("span");
+            var el1 = dom.createElement("div");
             dom.setAttribute(el1, "class", "label label-default");
-            var el2 = dom.createElement("i");
-            dom.setAttribute(el2, "class", "fa fa-tags");
-            dom.appendChild(el1, el2);
-            var el2 = dom.createTextNode(" ");
-            dom.appendChild(el1, el2);
-            var el2 = dom.createComment("");
+            var el2 = dom.createElement("a");
+            dom.setAttribute(el2, "href", "#");
+            dom.setAttribute(el2, "style", "color: white");
+            var el3 = dom.createElement("i");
+            dom.setAttribute(el3, "class", "fa fa-tags");
+            dom.appendChild(el2, el3);
+            var el3 = dom.createTextNode(" ");
+            dom.appendChild(el2, el3);
+            var el3 = dom.createComment("");
+            dom.appendChild(el2, el3);
             dom.appendChild(el1, el2);
             dom.appendChild(el0, el1);
             var el1 = dom.createTextNode("\n");
@@ -3392,10 +3394,10 @@ define("mock-kodr/templates/components/challenge-item", ["exports"], function (e
           },
           buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
             var morphs = new Array(1);
-            morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 2, 2);
+            morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1, 0]), 2, 2);
             return morphs;
           },
-          statements: [["content", "concept.name", ["loc", [null, [32, 73], [32, 89]]]]],
+          statements: [["content", "concept.name", ["loc", [null, [32, 105], [32, 121]]]]],
           locals: ["concept"],
           templates: []
         };
@@ -3467,14 +3469,18 @@ define("mock-kodr/templates/components/challenge-item", ["exports"], function (e
               var el0 = dom.createDocumentFragment();
               var el1 = dom.createTextNode("				        	");
               dom.appendChild(el0, el1);
-              var el1 = dom.createElement("span");
+              var el1 = dom.createElement("div");
               dom.setAttribute(el1, "class", "label label-default");
-              var el2 = dom.createElement("i");
-              dom.setAttribute(el2, "class", "fa fa-tags");
-              dom.appendChild(el1, el2);
-              var el2 = dom.createTextNode(" ");
-              dom.appendChild(el1, el2);
-              var el2 = dom.createComment("");
+              var el2 = dom.createElement("a");
+              dom.setAttribute(el2, "href", "#");
+              dom.setAttribute(el2, "style", "color: white");
+              var el3 = dom.createElement("i");
+              dom.setAttribute(el3, "class", "fa fa-tags");
+              dom.appendChild(el2, el3);
+              var el3 = dom.createTextNode(" ");
+              dom.appendChild(el2, el3);
+              var el3 = dom.createComment("");
+              dom.appendChild(el2, el3);
               dom.appendChild(el1, el2);
               dom.appendChild(el0, el1);
               var el1 = dom.createTextNode("\n");
@@ -3483,10 +3489,10 @@ define("mock-kodr/templates/components/challenge-item", ["exports"], function (e
             },
             buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
               var morphs = new Array(1);
-              morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 2, 2);
+              morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1, 0]), 2, 2);
               return morphs;
             },
-            statements: [["content", "concept.name", ["loc", [null, [37, 74], [37, 90]]]]],
+            statements: [["content", "concept.name", ["loc", [null, [37, 106], [37, 122]]]]],
             locals: ["concept"],
             templates: []
           };

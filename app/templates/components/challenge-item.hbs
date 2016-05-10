@@ -29,12 +29,12 @@
 		        <small class="text-muted"><em><code><a>Exp: {{challenge.exp}}</a></code></em></small>
 		        {{#if challenge.concepts}}
 			        {{#each challenge.concepts as |concept|}}
-			        	<span class="label label-default"><i class="fa fa-tags"></i> {{concept.name}}</span>
+			        	<div class="label label-default"><a href="#" style="color: white"><i class="fa fa-tags"></i> {{concept.name}}</a></div>
 			        {{/each}}
 			    {{else}}
 			    	{{#if concepts}}
 			    		{{#each concepts as |concept|}}
-				        	<span class="label label-default"><i class="fa fa-tags"></i> {{concept.name}}</span>
+				        	<div class="label label-default"><a href="#" style="color: white"><i class="fa fa-tags"></i> {{concept.name}}</a></div>
 				        {{/each}}
 				    {{else}}
 			        	<span class="label label-default"><i class="fa fa-tags"></i> No Tags</span>

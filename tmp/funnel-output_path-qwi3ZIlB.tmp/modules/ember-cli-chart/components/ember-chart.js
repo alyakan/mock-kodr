@@ -1,0 +1,1 @@
+/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-Rxh5C6uY.tmp/0/components/ember-chart.js

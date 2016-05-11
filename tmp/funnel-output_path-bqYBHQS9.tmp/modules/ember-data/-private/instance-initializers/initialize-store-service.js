@@ -1,0 +1,1 @@
+/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-I8lwqQ1D.tmp/0/-private/instance-initializers/initialize-store-service.js

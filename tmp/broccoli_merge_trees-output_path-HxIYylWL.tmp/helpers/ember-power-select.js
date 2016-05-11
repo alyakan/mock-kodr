@@ -1,0 +1,1 @@
+/Users/alyyakan/Desktop/mock-kodr/node_modules/ember-power-select/test-support/helpers/ember-power-select.js

@@ -1,0 +1,1 @@
+/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-LPzD2uuE.tmp/0/initializers/local-storage-adapter.js

@@ -57,6 +57,17 @@
 	<h2>Welcome to Kodr</h2>
   	{{outlet}}
     {{login-page store=store}}
+    {{#if ready}}
+      <div class="row">
+        <div class="col-md-6">
+          {{ember-chart type="Bar" data=lineData width=1000 options=options colours=colours legend=true height=500}}
+        </div>
+        <div class="col-md-6">
+          {{ember-chart type="Bar" data=lineData width=1000 options=options colours=colours legend=true height=500}}
+        </div>
+        
+      </div>
+    {{/if}}
 </div>
 
 

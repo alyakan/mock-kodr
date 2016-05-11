@@ -1,1 +1,0 @@
-/Users/alyyakan/Desktop/mock-kodr/tmp/creator-output_path-b2S3Xz71.tmp/version.js

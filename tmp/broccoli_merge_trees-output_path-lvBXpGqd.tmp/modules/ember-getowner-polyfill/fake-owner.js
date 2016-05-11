@@ -1,0 +1,1 @@
+/Users/alyyakan/Desktop/mock-kodr/tmp/broccoli_merge_trees-input_base_path-PzyDeuCF.tmp/20/modules/ember-getowner-polyfill/fake-owner.js

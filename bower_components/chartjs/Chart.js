@@ -79,7 +79,7 @@
 			scaleStartValue: null,
 
 			// String - Colour of the scale line
-			scaleLineColor: "rgba(0,0,0,.1)",
+			scaleLineColor: "rgba(151,187,205,0.5)",
 
 			// Number - Pixel width of the scale line
 			scaleLineWidth: 1,
@@ -1029,7 +1029,7 @@
 							y: Math.round(tooltipPosition.y),
 							xPadding: this.options.tooltipXPadding,
 							yPadding: this.options.tooltipYPadding,
-							fillColor: this.options.tooltipFillColor,
+							fillColor: this.options.fillColor,
 							textColor: this.options.tooltipFontColor,
 							fontFamily: this.options.tooltipFontFamily,
 							fontStyle: this.options.tooltipFontStyle,

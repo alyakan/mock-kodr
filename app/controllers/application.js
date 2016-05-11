@@ -10,87 +10,50 @@ export default Ember.Controller.extend({
   data: {
     labels: ["January", "February", "March", "April", "May", "June", "July"],
     datasets: [
-          {
-            label: "Challenges over the past week",
-            fill: false,
-            lineTension: 0,
-            fillColor: "rgba(75,192,192,0.4)",
-            backgroundColor: "rgba(75,192,192,0.4)",
-            borderColor: "rgba(75,192,192,1)",
-            borderCapStyle: 'butt',
-            borderDash: [],
-            borderDashOffset: 0.0,
-            borderJoinStyle: 'miter',
-            pointBorderColor: "rgba(75,192,192,1)",
-            pointBackgroundColor: "#fff",
-            pointBorderWidth: 1,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: "rgba(75,192,192,1)",
-            pointHoverBorderColor: "rgba(75,192,192,1)",
-            pointHoverBorderWidth: 2,
-            pointRadius: 1,
-            pointHitRadius: 10,
-            datasetFill: false,
-            data: [3, 2, 4, 2, 4, 2, 2],
-        }
+      {
+        label: "Challenges successfully solved over the past week",
+        fill: false,
+        lineTension: 0,
+        fillColor: "rgba(75,192,192,0.4)",
+        backgroundColor: "rgba(75,192,192,0.4)",
+        borderColor: "rgba(75,192,192,1)",
+        borderCapStyle: 'butt',
+        borderDash: [],
+        borderDashOffset: 0.0,
+        borderJoinStyle: 'miter',
+        pointBorderColor: "rgba(75,192,192,1)",
+        pointBackgroundColor: "#fff",
+        pointBorderWidth: 1,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: "rgba(75,192,192,1)",
+        pointHoverBorderColor: "rgba(75,192,192,1)",
+        pointHoverBorderWidth: 2,
+        pointRadius: 1,
+        pointHitRadius: 10,
+        datasetFill: false,
+        data: [3, 2, 4, 2, 4, 2, 2],
+      }
     ]
   },
-  polarData: {
-      labels: ["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"],
-    datasets: [
-        {
-            label: "My First dataset",
-            fillColor: "rgba(179,181,198,0.4)",
-            borderColor: "rgba(179,181,198,1)",
-            pointBackgroundColor: "rgba(179,181,198,1)",
-            pointBorderColor: "#fff",
-            pointHoverBackgroundColor: "#fff",
-            pointHoverBorderColor: "rgba(179,181,198,1)",
-            data: [65, 59, 90, 81, 56, 55, 40]
-        },
-        {
-            label: "My Second dataset",
-            fillColor: "rgba(255,99,132,0.2)",
-            borderColor: "rgba(255,99,132,1)",
-            pointBackgroundColor: "rgba(255,99,132,1)",
-            pointBorderColor: "#fff",
-            pointHoverBackgroundColor: "#fff",
-            pointHoverBorderColor: "rgba(255,99,132,1)",
-            data: [28, 48, 40, 19, 96, 27, 100]
-        }
-    ]
-  },
-  
+  doData: [{
+    value: 2,
+    color: "#D9E8E1",
+    label: "Incomplete"
+  }, {
+    value: 8,
+    color: "#50E862",
+    label: "Conditionals"
+  }],
   options: {
     responsive: true,
-    lineTension: 0.1,
-    fill: false,
-    datasetFill: false
-
+    bezierCurveTension : 0.1,
+    datasetFill: false,
+    angleLineWidth : 3,
+    angleLineColor : "rgba(179,181,198,.5)",
+    scaleBeginAtZero: true
     // showLines: false,
   },
-  doughnutData: {
-    labels: [
-        "Red",
-        "Green",
-        "Yellow"
-    ],
-    datasets: [
-        {
-            data: [300, 50, 100],
-            backgroundColor: [
-                "#FF6384",
-                "#36A2EB",
-                "#FFCE56"
-            ],
-            hoverBackgroundColor: [
-                "#FF6384",
-                "#36A2EB",
-                "#FFCE56"
-            ]
-        }]
-},
-  type: "Bar",
+  type: "Line",
   ready: false,
   in: function() {
     var current = new Date(Date.now());

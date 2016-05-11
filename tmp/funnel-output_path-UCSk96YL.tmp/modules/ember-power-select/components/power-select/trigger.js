@@ -1,0 +1,1 @@
+/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-i4FWQRsP.tmp/0/components/power-select/trigger.js

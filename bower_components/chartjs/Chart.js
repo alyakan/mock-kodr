@@ -2342,7 +2342,7 @@
 		segmentStrokeWidth : 2,
 
 		//The percentage of the chart that we cut out of the middle.
-		percentageInnerCutout : 50,
+		percentageInnerCutout : 75,
 
 		//Number - Amount of animation steps
 		animationSteps : 100,
@@ -2387,6 +2387,7 @@
 					var activeSegments = (evt.type !== 'mouseout') ? this.getSegmentsAtEvent(evt) : [];
 
 					helpers.each(this.segments,function(segment){
+
 						segment.restore(["fillColor"]);
 					});
 					helpers.each(activeSegments,function(activeSegment){
@@ -2396,7 +2397,6 @@
 				});
 			}
 			this.calculateTotal(data);
-
 			helpers.each(data,function(datapoint, index){
 				this.addData(datapoint, index, true);
 			},this);

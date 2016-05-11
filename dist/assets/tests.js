@@ -148,7 +148,7 @@ define('mock-kodr/tests/controllers/application.jshint', ['exports'], function (
   QUnit.module('JSHint - controllers/application.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'controllers/application.js should pass jshint.\ncontrollers/application.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/application.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/application.js: line 3, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/application.js: line 3, col 28, Missing semicolon.\ncontrollers/application.js: line 4, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/application.js: line 6, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/application.js: line 95, col 5, \'concise methods\' is available in ES6 (use \'esversion: 6\') or Mozilla JS extensions (use moz).\ncontrollers/application.js: line 107, col 26, Missing semicolon.\ncontrollers/application.js: line 111, col 26, Missing semicolon.\n\n9 errors');
+    assert.ok(false, 'controllers/application.js should pass jshint.\ncontrollers/application.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/application.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/application.js: line 3, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/application.js: line 3, col 28, Missing semicolon.\ncontrollers/application.js: line 4, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/application.js: line 6, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/application.js: line 12, col 5, \'concise methods\' is available in ES6 (use \'esversion: 6\') or Mozilla JS extensions (use moz).\n\n7 errors');
   });
 });
 define('mock-kodr/tests/controllers/arena.jshint', ['exports'], function (exports) {
@@ -176,6 +176,15 @@ define('mock-kodr/tests/controllers/challenge/edit.jshint', ['exports'], functio
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(false, 'controllers/challenge/edit.js should pass jshint.\ncontrollers/challenge/edit.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/challenge/edit.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/challenge/edit.js: line 3, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/challenge/edit.js: line 4, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/challenge/edit.js: line 65, col 24, Missing semicolon.\n\n5 errors');
+  });
+});
+define('mock-kodr/tests/controllers/charts.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - controllers/charts.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(false, 'controllers/charts.js should pass jshint.\ncontrollers/charts.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/charts.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/charts.js: line 3, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/charts.js: line 3, col 28, Missing semicolon.\ncontrollers/charts.js: line 4, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/charts.js: line 6, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/charts.js: line 138, col 5, \'concise methods\' is available in ES6 (use \'esversion: 6\') or Mozilla JS extensions (use moz).\ncontrollers/charts.js: line 150, col 26, Missing semicolon.\ncontrollers/charts.js: line 154, col 26, Missing semicolon.\n\n9 errors');
   });
 });
 define('mock-kodr/tests/helpers/destroy-app', ['exports', 'ember'], function (exports, _ember) {
@@ -2246,13 +2255,22 @@ define('mock-kodr/tests/models/user-arena.jshint', ['exports'], function (export
     assert.ok(false, 'models/user-arena.js should pass jshint.\nmodels/user-arena.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nmodels/user-arena.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nmodels/user-arena.js: line 6, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\nmodels/user-arena.js: line 14, col 85, Missing semicolon.\nmodels/user-arena.js: line 15, col 36, Missing semicolon.\nmodels/user-arena.js: line 20, col 30, Missing semicolon.\n\n6 errors');
   });
 });
+define('mock-kodr/tests/models/user-concept.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - models/user-concept.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(false, 'models/user-concept.js should pass jshint.\nmodels/user-concept.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nmodels/user-concept.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nmodels/user-concept.js: line 6, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\n\n3 errors');
+  });
+});
 define('mock-kodr/tests/models/user.jshint', ['exports'], function (exports) {
   'use strict';
 
   QUnit.module('JSHint - models/user.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'models/user.js should pass jshint.\nmodels/user.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nmodels/user.js: line 6, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\nmodels/user.js: line 22, col 76, Missing semicolon.\n\n3 errors');
+    assert.ok(false, 'models/user.js should pass jshint.\nmodels/user.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nmodels/user.js: line 6, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\nmodels/user.js: line 23, col 76, Missing semicolon.\n\n3 errors');
   });
 });
 define('mock-kodr/tests/resolver.jshint', ['exports'], function (exports) {
@@ -2270,7 +2288,7 @@ define('mock-kodr/tests/router.jshint', ['exports'], function (exports) {
   QUnit.module('JSHint - router.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'router.js should pass jshint.\nrouter.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nrouter.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nrouter.js: line 4, col 1, \'const\' is available in ES6 (use \'esversion: 6\') or Mozilla JS extensions (use moz).\nrouter.js: line 38, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\n\n4 errors');
+    assert.ok(false, 'router.js should pass jshint.\nrouter.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nrouter.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nrouter.js: line 4, col 1, \'const\' is available in ES6 (use \'esversion: 6\') or Mozilla JS extensions (use moz).\nrouter.js: line 39, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\n\n4 errors');
   });
 });
 define('mock-kodr/tests/routes/application.jshint', ['exports'], function (exports) {
@@ -2298,6 +2316,15 @@ define('mock-kodr/tests/routes/arenas.jshint', ['exports'], function (exports) {
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(false, 'routes/arenas.js should pass jshint.\nroutes/arenas.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nroutes/arenas.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nroutes/arenas.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\nroutes/arenas.js: line 4, col 5, \'concise methods\' is available in ES6 (use \'esversion: 6\') or Mozilla JS extensions (use moz).\n\n4 errors');
+  });
+});
+define('mock-kodr/tests/routes/charts.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - routes/charts.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(false, 'routes/charts.js should pass jshint.\nroutes/charts.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nroutes/charts.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\n\n2 errors');
   });
 });
 define('mock-kodr/tests/routes/concepts.jshint', ['exports'], function (exports) {
@@ -2455,6 +2482,28 @@ define('mock-kodr/tests/unit/controllers/arenas-test.jshint', ['exports'], funct
     assert.ok(true, 'unit/controllers/arenas-test.js should pass jshint.');
   });
 });
+define('mock-kodr/tests/unit/controllers/charts-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleFor)('controller:charts', 'Unit | Controller | charts', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  });
+
+  // Replace this with your real tests.
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var controller = this.subject();
+    assert.ok(controller);
+  });
+});
+define('mock-kodr/tests/unit/controllers/charts-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - unit/controllers/charts-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/controllers/charts-test.js should pass jshint.');
+  });
+});
 define('mock-kodr/tests/unit/models/activity-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
 
   (0, _emberQunit.moduleForModel)('activity', 'Unit | Model | activity', {
@@ -2565,6 +2614,28 @@ define('mock-kodr/tests/unit/models/user-arena-test.jshint', ['exports'], functi
     assert.ok(true, 'unit/models/user-arena-test.js should pass jshint.');
   });
 });
+define('mock-kodr/tests/unit/models/user-concept-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleForModel)('user-concept', 'Unit | Model | user concept', {
+    // Specify the other units that are required for this test.
+    needs: []
+  });
+
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var model = this.subject();
+    // let store = this.store();
+    assert.ok(!!model);
+  });
+});
+define('mock-kodr/tests/unit/models/user-concept-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - unit/models/user-concept-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/models/user-concept-test.js should pass jshint.');
+  });
+});
 define('mock-kodr/tests/unit/models/user-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
 
   (0, _emberQunit.moduleForModel)('user', 'Unit | Model | user', {
@@ -2648,6 +2719,27 @@ define('mock-kodr/tests/unit/routes/arenas-test.jshint', ['exports'], function (
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'unit/routes/arenas-test.js should pass jshint.');
+  });
+});
+define('mock-kodr/tests/unit/routes/charts-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleFor)('route:charts', 'Unit | Route | charts', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  });
+
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var route = this.subject();
+    assert.ok(route);
+  });
+});
+define('mock-kodr/tests/unit/routes/charts-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - unit/routes/charts-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/routes/charts-test.js should pass jshint.');
   });
 });
 define('mock-kodr/tests/unit/routes/concepts-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {

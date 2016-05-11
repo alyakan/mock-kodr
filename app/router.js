@@ -33,6 +33,7 @@ Router.map(function() {
     });      
   });
   this.resource('concepts');
+  this.route('charts');
 });
 
 export default Router;

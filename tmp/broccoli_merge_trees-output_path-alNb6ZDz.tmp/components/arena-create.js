@@ -1,1 +1,0 @@
-/Users/alyyakan/Desktop/mock-kodr/app/components/arena-create.js

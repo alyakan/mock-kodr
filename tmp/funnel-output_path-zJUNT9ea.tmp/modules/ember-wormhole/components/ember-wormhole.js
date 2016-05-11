@@ -1,1 +1,0 @@
-/Users/alyyakan/Desktop/mock-kodr/tmp/funnel-input_base_path-FH9ZZ4fm.tmp/0/components/ember-wormhole.js

@@ -14,6 +14,7 @@ export default DS.Model.extend({
   labGroup: attr('string'),
   lectureGroup: attr('string'),
   userArenas: hasMany('userArena',{async: true, inverse: 'user'}),
+  userConcepts: hasMany('userConcept',{async: true, inverse: 'user'}),
   trials: hasMany('trial',{async: true, inverse: 'user'}),
   arenas: hasMany('arena', {async: true, inverse: 'author'}),
   challenges: hasMany('challenge', {async: true, inverse: 'author'}),

@@ -1,0 +1,37 @@
+{{#if ready}}
+  <div class="page-header">
+    <h2>Skill Mastery</h2>
+  </div>
+  <div class="alert alert-info">
+  	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+	  <strong>Info!</strong> Concepts that haven't been practiced in a long time are labeled <i class="fa fa-exclamation-triangle"></i>.
+	</div>
+  <div class="row">
+  	{{#each doughtnutData as |data|}}
+  		<div class="col-md-3 well" style="background-color: #fff">
+	      {{ember-chart type="Doughnut" data=data.doughtnutDataList width=250 legend=true height=100 }}
+	      {{#if data.needsPractice}}
+	      	<a href="" class="btn btn-warning btn-block"><i class="fa fa-exclamation-triangle"></i> Practice {{data.conceptName}}</a>
+	      {{else}}
+	      	<a href="" class="btn btn-primary btn-block">Practice {{data.conceptName}}</a>
+	      {{/if}}
+	    </div>
+  	{{/each}}
+  </div>
+  <div class="page-header">
+    <h2>Challenges Solved</h2>
+  </div>
+  <div class="row well">
+
+    <div class="col-md-12">
+      {{ember-chart type=type data=lineData width=1000 options=options legend=true height=200}}
+    </div>
+    
+  </div>
+{{else}}
+	<div class="text-center">
+    <h1>Calculating your statistics and drawing your charts <i class="fa fa-spinner fa-pulse fa-fw margin-bottom" aria-hidden="true"></i></h1>      
+    <p>Go grab a cup of coffee <i class="fa fa-coffee"></i>.</p>
+  </div>  
+{{/if}}
+{{outlet}}

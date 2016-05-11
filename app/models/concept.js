@@ -12,4 +12,5 @@ export default DS.Model.extend({
     inverse: 'concepts'
   }),
   challenges: hasMany('challenge', {async: true, inverse: 'concepts'}),
+  userConcepts: hasMany('userConcept',{async: true, inverse: 'concept'}),
 });

@@ -32,6 +32,11 @@
           {{/link-to}}
         </li>
       {{/if}}
+      <li>
+        {{#link-to 'charts'}}
+          <i class="fa fa-bar-chart-o"></i> Charts & Statistics
+        {{/link-to}}
+      </li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
       {{#if session.isAuthenticated}}
@@ -57,49 +62,7 @@
 	<h2>Welcome to Kodr</h2>
   	{{outlet}}
     {{login-page store=store}}
-    {{#if ready}}
-      <div class="page-header">
-        <h2>Skill Mastery</h2>
-      </div>
-      <div class="row">
-        <div class="col-md-3 well">
-          {{ember-chart type="Doughnut" data=doData width=250 legend=true height=100 }}
-        </div>
-        <div class="col-md-3 well">
-          {{ember-chart type="Doughnut" data=doData width=250 legend=true height=100 }}
-        </div>
-        <div class="col-md-3 well">
-          {{ember-chart type="Doughnut" data=doData width=250 legend=true height=100 }}
-        </div>
-        <div class="col-md-3 well">
-          {{ember-chart type="Doughnut" data=doData width=250 legend=true height=100 }}
-        </div>
-        <div class="col-md-3 well">
-          {{ember-chart type="Doughnut" data=doData width=250 legend=true height=100 }}
-        </div>
-        <div class="col-md-3 well">
-          {{ember-chart type="Doughnut" data=doData width=250 legend=true height=100 }}
-        </div>
-        <div class="col-md-3 well">
-          {{ember-chart type="Doughnut" data=doData width=250 legend=true height=100 }}
-        </div>
-        <div class="col-md-3 well">
-          {{ember-chart type="Doughnut" data=doData width=250 legend=true height=100 }}
-        </div>
-      </div>
-      <div class="page-header">
-        <h2>Challenges Solved</h2>
-      </div>
-      <div class="row well">
-
-        <div class="col-md-12">
-          {{ember-chart type=type data=lineData width=1000 options=options legend=true height=200}}
-        </div>
-        
-      </div>
-      
-      
-    {{/if}}
+    
 
 </div>
 

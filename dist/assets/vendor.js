@@ -67582,7 +67582,6 @@ requireModule("ember");
 		Chart = root.Chart,
 		//Cache a local reference to Chart.helpers
 		helpers = Chart.helpers;
-
 	var defaultConfig = {
 		//Boolean - Whether we should show a stroke on each segment
 		segmentShowStroke : true,
@@ -67609,7 +67608,7 @@ requireModule("ember");
 		animateScale : false,
 
 		//String - A legend template
-		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
+		// legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend list-group\"><% for (var i=0; i<segments.length; i++){%><li class=\"list-group-item\"><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
 
 	};
 

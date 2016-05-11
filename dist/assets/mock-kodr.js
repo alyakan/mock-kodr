@@ -416,85 +416,7 @@ define('mock-kodr/controllers/application', ['exports', 'ember', 'ember-local-st
   exports['default'] = _ember['default'].Controller.extend({
     session: _ember['default'].inject.service('session'),
     current_user: (0, _emberLocalStorage.storageFor)('current_user'),
-    lineData: {},
-    data: {
-      labels: ["January", "February", "March", "April", "May", "June", "July"],
-      datasets: [{
-        label: "Challenges successfully solved over the past week",
-        fill: false,
-        lineTension: 0,
-        fillColor: "rgba(75,192,192,0.4)",
-        backgroundColor: "rgba(75,192,192,0.4)",
-        borderColor: "rgba(75,192,192,1)",
-        borderCapStyle: 'butt',
-        borderDash: [],
-        borderDashOffset: 0.0,
-        borderJoinStyle: 'miter',
-        pointBorderColor: "rgba(75,192,192,1)",
-        pointBackgroundColor: "#fff",
-        pointBorderWidth: 1,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: "rgba(75,192,192,1)",
-        pointHoverBorderColor: "rgba(75,192,192,1)",
-        pointHoverBorderWidth: 2,
-        pointRadius: 1,
-        pointHitRadius: 10,
-        datasetFill: false,
-        data: [3, 2, 4, 2, 4, 2, 2]
-      }]
-    },
-    doData: [{
-      value: 2,
-      color: "#D9E8E1",
-      label: "Incomplete"
-    }, {
-      value: 8,
-      color: "#50E862",
-      label: "Conditionals"
-    }],
-    options: {
-      responsive: true,
-      bezierCurveTension: 0.1,
-      datasetFill: false,
-      angleLineWidth: 3,
-      angleLineColor: "rgba(179,181,198,.5)",
-      scaleBeginAtZero: true
-      // showLines: false,
-    },
-    type: "Line",
-    ready: false,
-    'in': (function () {
-      var current = new Date(Date.now());
-      var da = (0, _moment['default'])((0, _moment['default'])(current).subtract(1, 'year').calendar()).format();
-      var lineData = this.get('data');
-      var labels = [];
-      var data = [];
-      var that = this;
 
-      this.store.query('activity', { subjectId: that.get('current_user.id'), verb: "completed", time: { $gt: da } }).then(function (activities) {
-        // Retrieve all date where a challenge was successfully completed
-        var date;
-        activities.map(function (activity) {
-          /*
-            Loop on each activity, group all challenges that were
-            solved on the same day together 
-           */
-          date = new Date(activity.get('time'));
-          date = (0, _moment['default'])(date).format('dddd, MMM Do').toString();
-
-          if (!_lodashLodash['default'].includes(labels, date)) {
-            labels.push(date);
-            data.push(1);
-          } else {
-            data[labels.indexOf(date)] += 1;
-          }
-        });
-        lineData.labels = labels;
-        lineData.datasets.data = data;
-        that.set('lineData', lineData);
-        that.set('ready', true);
-      });
-    }).on('init'),
     actions: {
       session: _ember['default'].inject.service('session'),
       invalidateSession: function invalidateSession() {
@@ -504,58 +426,6 @@ define('mock-kodr/controllers/application', ['exports', 'ember', 'ember-local-st
         });
         this.set('current_user', null);
         this.get('session').invalidate();
-      },
-      changeType: function changeType() {
-
-        if (this.get('type') === 'Bar') {
-          console.log("ok");
-          this.set('type', 'Line');
-        } else {
-          console.log("no");
-          this.set('type', 'Bar');
-        }
-      },
-      changeDate: function changeDate(period) {
-        var lineData = this.get('data');
-        var labels = [];
-        var data = [];
-        var that = this;
-        var current = (0, _moment['default'])(new Date(Date.now()));
-        var previous;
-        switch (period) {
-          case 'week':
-            previous = (0, _moment['default'])(current.subtract(7, 'days').calendar()).format();
-            break;
-          case 'month':
-            previous = (0, _moment['default'])(current.subtract(1, 'month').calendar()).format();
-            break;
-          case 'year':
-            previous = (0, _moment['default'])(current.subtract(1, 'year').calendar()).format();
-            break;
-        }
-        this.store.query('activity', { subjectId: that.get('current_user.id'), verb: "completed", time: { $gt: previous } }).then(function (activities) {
-          // Retrieve all date where a challenge was successfully completed
-          var date;
-          activities.map(function (activity) {
-            /*
-              Loop on each activity, group all challenges that were
-              solved on the same day together 
-             */
-            date = new Date(activity.get('time'));
-            date = (0, _moment['default'])(date).format('dddd, MMM Do').toString();
-
-            if (!_lodashLodash['default'].includes(labels, date)) {
-              labels.push(date);
-              data.push(1);
-            } else {
-              data[labels.indexOf(date)] += 1;
-            }
-          });
-          lineData.labels = labels;
-          lineData.datasets.data = data;
-          that.set('lineData', lineData);
-          that.set('ready', true);
-        });
       }
     }
   });
@@ -634,6 +504,197 @@ define('mock-kodr/controllers/challenge/edit', ['exports', 'ember', 'ember-local
       closeModal: function closeModal() {
         console.log();
         this.transitionToRoute('arena', { arena_id: this.get('model').get('arena').get('id') });
+      }
+    }
+  });
+});
+define('mock-kodr/controllers/charts', ['exports', 'ember', 'ember-local-storage', 'moment', 'lodash/lodash'], function (exports, _ember, _emberLocalStorage, _moment, _lodashLodash) {
+  exports['default'] = _ember['default'].Controller.extend({
+    session: _ember['default'].inject.service('session'),
+    current_user: (0, _emberLocalStorage.storageFor)('current_user'),
+    lineData: {},
+    data: {
+      labels: ["January", "February", "March", "April", "May", "June", "July"],
+      datasets: [{
+        label: "Challenges successfully solved over the past week",
+        fill: false,
+        lineTension: 0,
+        fillColor: "rgba(75,192,192,0.4)",
+        backgroundColor: "rgba(75,192,192,0.4)",
+        borderColor: "rgba(75,192,192,1)",
+        borderCapStyle: 'butt',
+        borderDash: [],
+        borderDashOffset: 0.0,
+        borderJoinStyle: 'miter',
+        pointBorderColor: "rgba(75,192,192,1)",
+        pointBackgroundColor: "#fff",
+        pointBorderWidth: 1,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: "rgba(75,192,192,1)",
+        pointHoverBorderColor: "rgba(75,192,192,1)",
+        pointHoverBorderWidth: 2,
+        pointRadius: 1,
+        pointHitRadius: 10,
+        datasetFill: false,
+        data: [3, 2, 4, 2, 4, 2, 2]
+      }]
+    },
+    doData: [{
+      value: 8,
+      color: "#00B233",
+      label: "Conditionals"
+    }, {
+      value: 2,
+      color: "#7CB2AF",
+      label: "Incomplete"
+    }],
+    options: {
+      responsive: true,
+      bezierCurveTension: 0.1,
+      datasetFill: false,
+      angleLineWidth: 3,
+      angleLineColor: "rgba(179,181,198,.5)",
+      scaleBeginAtZero: true
+      // showLines: false,
+    },
+    type: "Line",
+    ready: false,
+    doughtnutData: [],
+
+    'in': (function () {
+
+      var that = this;
+      this.store.query('userConcept', { user: that.get('current_user.id') }).then(function (userConcepts) {
+        // Retrieve UserConcepts to display concept mastery in a doughnut chart	
+        var dataList = [];
+        userConcepts.map(function (uc) {
+          var segment = [];
+          uc.get('concept').then(function (c) {
+            segment[0] = {
+              value: uc.get('exp'),
+              color: "#00B233",
+              label: c.get('name')
+            };
+            if (uc.get('max_exp') - uc.get('exp') !== 0) {
+              segment[1] = {
+                value: uc.get('max_exp') - uc.get('exp'),
+                color: "#7CB2AF",
+                label: "Incomplete"
+              };
+            } else {
+              segment[1] = {
+                value: 0,
+                color: "#7CB2AF",
+                label: "Complete!"
+              };
+            }
+            var needsPractice = false;
+            var threeDaysAgo = new Date(Date.now());
+            threeDaysAgo = (0, _moment['default'])(threeDaysAgo).subtract(3, 'day').format('dddd, MMM Do');
+            var last_practiced = (0, _moment['default'])(uc.get('last_practiced')).format('dddd, MMM Do');
+            if (threeDaysAgo > last_practiced) {
+              needsPractice = true;
+            }
+            dataList.push({
+              doughtnutDataList: segment,
+              conceptName: c.get('name'),
+              needsPractice: needsPractice
+            });
+          });
+        });
+        that.set('doughtnutData', dataList);
+      }).then(function () {
+        var current = new Date(Date.now());
+        var da = (0, _moment['default'])((0, _moment['default'])(current).subtract(1, 'year').calendar()).format();
+        var lineData = that.get('data');
+        var labels = [];
+        var data = [];
+        that.store.query('activity', { subjectId: that.get('current_user.id'), verb: "completed", time: { $gt: da } }).then(function (activities) {
+          // Retrieve all date where a challenge was successfully completed
+          var date;
+          activities.map(function (activity) {
+            /*
+              Loop on each activity, group all challenges that were
+              solved on the same day together 
+             */
+            date = new Date(activity.get('time'));
+            date = (0, _moment['default'])(date).format('dddd, MMM Do').toString();
+
+            if (!_lodashLodash['default'].includes(labels, date)) {
+              labels.push(date);
+              data.push(1);
+            } else {
+              data[labels.indexOf(date)] += 1;
+            }
+          });
+          lineData.labels = labels;
+          lineData.datasets.data = data;
+          that.set('lineData', lineData);
+          that.set('ready', true);
+        });
+      });
+    }).on('init'),
+    actions: {
+      session: _ember['default'].inject.service('session'),
+      invalidateSession: function invalidateSession() {
+        _ember['default'].$.ajax({
+          type: 'DELETE',
+          url: '/logout'
+        });
+        this.set('current_user', null);
+        this.get('session').invalidate();
+      },
+      changeType: function changeType() {
+
+        if (this.get('type') === 'Bar') {
+          console.log("ok");
+          this.set('type', 'Line');
+        } else {
+          console.log("no");
+          this.set('type', 'Bar');
+        }
+      },
+      changeDate: function changeDate(period) {
+        var lineData = this.get('data');
+        var labels = [];
+        var data = [];
+        var that = this;
+        var current = (0, _moment['default'])(new Date(Date.now()));
+        var previous;
+        switch (period) {
+          case 'week':
+            previous = (0, _moment['default'])(current.subtract(7, 'days').calendar()).format();
+            break;
+          case 'month':
+            previous = (0, _moment['default'])(current.subtract(1, 'month').calendar()).format();
+            break;
+          case 'year':
+            previous = (0, _moment['default'])(current.subtract(1, 'year').calendar()).format();
+            break;
+        }
+        this.store.query('activity', { subjectId: that.get('current_user.id'), verb: "completed", time: { $gt: previous } }).then(function (activities) {
+          // Retrieve all date where a challenge was successfully completed
+          var date;
+          activities.map(function (activity) {
+            /*
+              Loop on each activity, group all challenges that were
+              solved on the same day together 
+             */
+            date = new Date(activity.get('time'));
+            date = (0, _moment['default'])(date).format('dddd, MMM Do').toString();
+
+            if (!_lodashLodash['default'].includes(labels, date)) {
+              labels.push(date);
+              data.push(1);
+            } else {
+              data[labels.indexOf(date)] += 1;
+            }
+          });
+          lineData.labels = labels;
+          lineData.datasets.data = data;
+          that.set('lineData', lineData);
+          that.set('ready', true);
+        });
       }
     }
   });
@@ -1272,7 +1333,8 @@ define('mock-kodr/models/concept', ['exports', 'ember-data/model', 'ember-data']
       async: true,
       inverse: 'concepts'
     }),
-    challenges: hasMany('challenge', { async: true, inverse: 'concepts' })
+    challenges: hasMany('challenge', { async: true, inverse: 'concepts' }),
+    userConcepts: hasMany('userConcept', { async: true, inverse: 'concept' })
   });
 });
 define('mock-kodr/models/mixed', ['exports', 'ember'], function (exports, _ember) {
@@ -1366,6 +1428,31 @@ define('mock-kodr/models/user-arena', ['exports', 'ember-data', 'ember'], functi
   });
 });
 // trials: DS.hasMany('trials', {inverse: 'userArena', async:true}),
+define('mock-kodr/models/user-concept', ['exports', 'ember-data', 'ember'], function (exports, _emberData, _ember) {
+
+  var attr = _emberData['default'].attr;
+
+  exports['default'] = _emberData['default'].Model.extend({
+    exp: attr('number'),
+    max_exp: attr('number'),
+    last_practiced: attr('date'),
+    slope: attr('number'),
+    x: attr('number'),
+    // progress: Ember.computed('trials', 'completed', function() {
+    // // Number of completed trials / Total number of trials
+
+    // 	var prog = (this.get('completed') / this.get('trials').toArray().length) * 100
+    //   console.log(Ember.typeOf(prog))
+    //   if (prog > 0)
+    //     var a = 0;
+    //   else
+    //     prog = 0;
+    // 	return Math.round(prog)
+    // }).property('progress'),
+    user: _emberData['default'].belongsTo('user', { inverse: 'userConcepts', async: true }),
+    concept: _emberData['default'].belongsTo('concept', { inverse: 'userConcepts', async: true })
+  });
+});
 define('mock-kodr/models/user', ['exports', 'ember-data'], function (exports, _emberData) {
 
   var attr = _emberData['default'].attr;
@@ -1382,6 +1469,7 @@ define('mock-kodr/models/user', ['exports', 'ember-data'], function (exports, _e
     labGroup: attr('string'),
     lectureGroup: attr('string'),
     userArenas: hasMany('userArena', { async: true, inverse: 'user' }),
+    userConcepts: hasMany('userConcept', { async: true, inverse: 'user' }),
     trials: hasMany('trial', { async: true, inverse: 'user' }),
     arenas: hasMany('arena', { async: true, inverse: 'author' }),
     challenges: hasMany('challenge', { async: true, inverse: 'author' }),
@@ -1428,6 +1516,7 @@ define('mock-kodr/router', ['exports', 'ember', 'mock-kodr/config/environment'],
       });
     });
     this.resource('concepts');
+    this.route('charts');
   });
 
   exports['default'] = Router;
@@ -1452,6 +1541,9 @@ define('mock-kodr/routes/arenas', ['exports', 'ember', 'ember-simple-auth/mixins
 			return this.store.findAll('arena');
 		}
 	});
+});
+define('mock-kodr/routes/charts', ['exports', 'ember'], function (exports, _ember) {
+  exports['default'] = _ember['default'].Route.extend({});
 });
 define('mock-kodr/routes/concepts', ['exports', 'ember'], function (exports, _ember) {
 	exports['default'] = _ember['default'].Route.extend({
@@ -1726,11 +1818,52 @@ define("mock-kodr/templates/application", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 37,
+              "line": 36,
+              "column": 8
+            },
+            "end": {
+              "line": 38,
+              "column": 8
+            }
+          },
+          "moduleName": "mock-kodr/templates/application.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("          ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("i");
+          dom.setAttribute(el1, "class", "fa fa-bar-chart-o");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode(" Charts & Statistics\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() {
+          return [];
+        },
+        statements: [],
+        locals: [],
+        templates: []
+      };
+    })();
+    var child3 = (function () {
+      return {
+        meta: {
+          "fragmentReason": false,
+          "revision": "Ember@2.3.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 42,
               "column": 6
             },
             "end": {
-              "line": 44,
+              "line": 49,
               "column": 6
             }
           },
@@ -1783,18 +1916,18 @@ define("mock-kodr/templates/application", ["exports"], function (exports) {
           return el0;
         },
         buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-          var element1 = dom.childAt(fragment, [3, 1]);
+          var element0 = dom.childAt(fragment, [3, 1]);
           var morphs = new Array(2);
           morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1, 1, 2]), 0, 0);
-          morphs[1] = dom.createElementMorph(element1);
+          morphs[1] = dom.createElementMorph(element0);
           return morphs;
         },
-        statements: [["content", "current_user.username", ["loc", [null, [39, 54], [39, 79]]]], ["element", "action", ["invalidateSession"], [], ["loc", [null, [42, 22], [42, 52]]]]],
+        statements: [["content", "current_user.username", ["loc", [null, [44, 54], [44, 79]]]], ["element", "action", ["invalidateSession"], [], ["loc", [null, [47, 22], [47, 52]]]]],
         locals: [],
         templates: []
       };
     })();
-    var child3 = (function () {
+    var child4 = (function () {
       return {
         meta: {
           "fragmentReason": false,
@@ -1802,11 +1935,11 @@ define("mock-kodr/templates/application", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 44,
+              "line": 49,
               "column": 6
             },
             "end": {
-              "line": 51,
+              "line": 56,
               "column": 6
             }
           },
@@ -1862,192 +1995,6 @@ define("mock-kodr/templates/application", ["exports"], function (exports) {
         templates: []
       };
     })();
-    var child4 = (function () {
-      return {
-        meta: {
-          "fragmentReason": false,
-          "revision": "Ember@2.3.2",
-          "loc": {
-            "source": null,
-            "start": {
-              "line": 60,
-              "column": 4
-            },
-            "end": {
-              "line": 102,
-              "column": 4
-            }
-          },
-          "moduleName": "mock-kodr/templates/application.hbs"
-        },
-        isEmpty: false,
-        arity: 0,
-        cachedFragment: null,
-        hasRendered: false,
-        buildFragment: function buildFragment(dom) {
-          var el0 = dom.createDocumentFragment();
-          var el1 = dom.createTextNode("      ");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("div");
-          dom.setAttribute(el1, "class", "page-header");
-          var el2 = dom.createTextNode("\n        ");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createElement("h2");
-          var el3 = dom.createTextNode("Skill Mastery");
-          dom.appendChild(el2, el3);
-          dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode("\n      ");
-          dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n      ");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("div");
-          dom.setAttribute(el1, "class", "row");
-          var el2 = dom.createTextNode("\n        ");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createElement("div");
-          dom.setAttribute(el2, "class", "col-md-3 well");
-          var el3 = dom.createTextNode("\n          ");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createComment("");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createTextNode("\n        ");
-          dom.appendChild(el2, el3);
-          dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode("\n        ");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createElement("div");
-          dom.setAttribute(el2, "class", "col-md-3 well");
-          var el3 = dom.createTextNode("\n          ");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createComment("");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createTextNode("\n        ");
-          dom.appendChild(el2, el3);
-          dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode("\n        ");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createElement("div");
-          dom.setAttribute(el2, "class", "col-md-3 well");
-          var el3 = dom.createTextNode("\n          ");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createComment("");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createTextNode("\n        ");
-          dom.appendChild(el2, el3);
-          dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode("\n        ");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createElement("div");
-          dom.setAttribute(el2, "class", "col-md-3 well");
-          var el3 = dom.createTextNode("\n          ");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createComment("");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createTextNode("\n        ");
-          dom.appendChild(el2, el3);
-          dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode("\n        ");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createElement("div");
-          dom.setAttribute(el2, "class", "col-md-3 well");
-          var el3 = dom.createTextNode("\n          ");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createComment("");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createTextNode("\n        ");
-          dom.appendChild(el2, el3);
-          dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode("\n        ");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createElement("div");
-          dom.setAttribute(el2, "class", "col-md-3 well");
-          var el3 = dom.createTextNode("\n          ");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createComment("");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createTextNode("\n        ");
-          dom.appendChild(el2, el3);
-          dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode("\n        ");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createElement("div");
-          dom.setAttribute(el2, "class", "col-md-3 well");
-          var el3 = dom.createTextNode("\n          ");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createComment("");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createTextNode("\n        ");
-          dom.appendChild(el2, el3);
-          dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode("\n        ");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createElement("div");
-          dom.setAttribute(el2, "class", "col-md-3 well");
-          var el3 = dom.createTextNode("\n          ");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createComment("");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createTextNode("\n        ");
-          dom.appendChild(el2, el3);
-          dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode("\n      ");
-          dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n      ");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("div");
-          dom.setAttribute(el1, "class", "page-header");
-          var el2 = dom.createTextNode("\n        ");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createElement("h2");
-          var el3 = dom.createTextNode("Challenges Solved");
-          dom.appendChild(el2, el3);
-          dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode("\n      ");
-          dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n      ");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("div");
-          dom.setAttribute(el1, "class", "row well");
-          var el2 = dom.createTextNode("\n\n        ");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createElement("div");
-          dom.setAttribute(el2, "class", "col-md-12");
-          var el3 = dom.createTextNode("\n          ");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createComment("");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createTextNode("\n        ");
-          dom.appendChild(el2, el3);
-          dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode("\n        \n      ");
-          dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n      \n      \n");
-          dom.appendChild(el0, el1);
-          return el0;
-        },
-        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-          var element0 = dom.childAt(fragment, [3]);
-          var morphs = new Array(9);
-          morphs[0] = dom.createMorphAt(dom.childAt(element0, [1]), 1, 1);
-          morphs[1] = dom.createMorphAt(dom.childAt(element0, [3]), 1, 1);
-          morphs[2] = dom.createMorphAt(dom.childAt(element0, [5]), 1, 1);
-          morphs[3] = dom.createMorphAt(dom.childAt(element0, [7]), 1, 1);
-          morphs[4] = dom.createMorphAt(dom.childAt(element0, [9]), 1, 1);
-          morphs[5] = dom.createMorphAt(dom.childAt(element0, [11]), 1, 1);
-          morphs[6] = dom.createMorphAt(dom.childAt(element0, [13]), 1, 1);
-          morphs[7] = dom.createMorphAt(dom.childAt(element0, [15]), 1, 1);
-          morphs[8] = dom.createMorphAt(dom.childAt(fragment, [7, 1]), 1, 1);
-          return morphs;
-        },
-        statements: [["inline", "ember-chart", [], ["type", "Doughnut", "data", ["subexpr", "@mut", [["get", "doData", ["loc", [null, [66, 45], [66, 51]]]]], [], []], "width", 250, "legend", true, "height", 100], ["loc", [null, [66, 10], [66, 87]]]], ["inline", "ember-chart", [], ["type", "Doughnut", "data", ["subexpr", "@mut", [["get", "doData", ["loc", [null, [69, 45], [69, 51]]]]], [], []], "width", 250, "legend", true, "height", 100], ["loc", [null, [69, 10], [69, 87]]]], ["inline", "ember-chart", [], ["type", "Doughnut", "data", ["subexpr", "@mut", [["get", "doData", ["loc", [null, [72, 45], [72, 51]]]]], [], []], "width", 250, "legend", true, "height", 100], ["loc", [null, [72, 10], [72, 87]]]], ["inline", "ember-chart", [], ["type", "Doughnut", "data", ["subexpr", "@mut", [["get", "doData", ["loc", [null, [75, 45], [75, 51]]]]], [], []], "width", 250, "legend", true, "height", 100], ["loc", [null, [75, 10], [75, 87]]]], ["inline", "ember-chart", [], ["type", "Doughnut", "data", ["subexpr", "@mut", [["get", "doData", ["loc", [null, [78, 45], [78, 51]]]]], [], []], "width", 250, "legend", true, "height", 100], ["loc", [null, [78, 10], [78, 87]]]], ["inline", "ember-chart", [], ["type", "Doughnut", "data", ["subexpr", "@mut", [["get", "doData", ["loc", [null, [81, 45], [81, 51]]]]], [], []], "width", 250, "legend", true, "height", 100], ["loc", [null, [81, 10], [81, 87]]]], ["inline", "ember-chart", [], ["type", "Doughnut", "data", ["subexpr", "@mut", [["get", "doData", ["loc", [null, [84, 45], [84, 51]]]]], [], []], "width", 250, "legend", true, "height", 100], ["loc", [null, [84, 10], [84, 87]]]], ["inline", "ember-chart", [], ["type", "Doughnut", "data", ["subexpr", "@mut", [["get", "doData", ["loc", [null, [87, 45], [87, 51]]]]], [], []], "width", 250, "legend", true, "height", 100], ["loc", [null, [87, 10], [87, 87]]]], ["inline", "ember-chart", [], ["type", ["subexpr", "@mut", [["get", "type", ["loc", [null, [96, 29], [96, 33]]]]], [], []], "data", ["subexpr", "@mut", [["get", "lineData", ["loc", [null, [96, 39], [96, 47]]]]], [], []], "width", 1000, "options", ["subexpr", "@mut", [["get", "options", ["loc", [null, [96, 67], [96, 74]]]]], [], []], "legend", true, "height", 200], ["loc", [null, [96, 10], [96, 99]]]]],
-        locals: [],
-        templates: []
-      };
-    })();
     return {
       meta: {
         "fragmentReason": {
@@ -2062,7 +2009,7 @@ define("mock-kodr/templates/application", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 107,
+            "line": 70,
             "column": 0
           }
         },
@@ -2115,7 +2062,17 @@ define("mock-kodr/templates/application", ["exports"], function (exports) {
         dom.appendChild(el3, el4);
         var el4 = dom.createComment("");
         dom.appendChild(el3, el4);
-        var el4 = dom.createTextNode("    ");
+        var el4 = dom.createTextNode("      ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("li");
+        var el5 = dom.createTextNode("\n");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createComment("");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("      ");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n    ");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
         var el3 = dom.createTextNode("\n    ");
@@ -2153,11 +2110,7 @@ define("mock-kodr/templates/application", ["exports"], function (exports) {
         dom.appendChild(el1, el2);
         var el2 = dom.createComment("");
         dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createComment("");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n");
+        var el2 = dom.createTextNode("\n    \n\n");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n\n");
@@ -2165,19 +2118,19 @@ define("mock-kodr/templates/application", ["exports"], function (exports) {
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var element2 = dom.childAt(fragment, [0, 1]);
-        var element3 = dom.childAt(element2, [4]);
-        var element4 = dom.childAt(fragment, [2]);
+        var element1 = dom.childAt(fragment, [0, 1]);
+        var element2 = dom.childAt(element1, [4]);
+        var element3 = dom.childAt(fragment, [2]);
         var morphs = new Array(6);
-        morphs[0] = dom.createMorphAt(dom.childAt(element3, [1]), 1, 1);
-        morphs[1] = dom.createMorphAt(element3, 3, 3);
-        morphs[2] = dom.createMorphAt(dom.childAt(element2, [6]), 1, 1);
-        morphs[3] = dom.createMorphAt(element4, 3, 3);
-        morphs[4] = dom.createMorphAt(element4, 5, 5);
-        morphs[5] = dom.createMorphAt(element4, 7, 7);
+        morphs[0] = dom.createMorphAt(dom.childAt(element2, [1]), 1, 1);
+        morphs[1] = dom.createMorphAt(element2, 3, 3);
+        morphs[2] = dom.createMorphAt(dom.childAt(element2, [5]), 1, 1);
+        morphs[3] = dom.createMorphAt(dom.childAt(element1, [6]), 1, 1);
+        morphs[4] = dom.createMorphAt(element3, 3, 3);
+        morphs[5] = dom.createMorphAt(element3, 5, 5);
         return morphs;
       },
-      statements: [["block", "link-to", ["userArenas"], [], 0, null, ["loc", [null, [19, 8], [21, 20]]]], ["block", "if", [["get", "current_user.atLeastTeacher", ["loc", [null, [23, 12], [23, 39]]]]], [], 1, null, ["loc", [null, [23, 6], [34, 13]]]], ["block", "if", [["get", "session.isAuthenticated", ["loc", [null, [37, 12], [37, 35]]]]], [], 2, 3, ["loc", [null, [37, 6], [51, 13]]]], ["content", "outlet", ["loc", [null, [58, 3], [58, 13]]]], ["inline", "login-page", [], ["store", ["subexpr", "@mut", [["get", "store", ["loc", [null, [59, 23], [59, 28]]]]], [], []]], ["loc", [null, [59, 4], [59, 30]]]], ["block", "if", [["get", "ready", ["loc", [null, [60, 10], [60, 15]]]]], [], 4, null, ["loc", [null, [60, 4], [102, 11]]]]],
+      statements: [["block", "link-to", ["userArenas"], [], 0, null, ["loc", [null, [19, 8], [21, 20]]]], ["block", "if", [["get", "current_user.atLeastTeacher", ["loc", [null, [23, 12], [23, 39]]]]], [], 1, null, ["loc", [null, [23, 6], [34, 13]]]], ["block", "link-to", ["charts"], [], 2, null, ["loc", [null, [36, 8], [38, 20]]]], ["block", "if", [["get", "session.isAuthenticated", ["loc", [null, [42, 12], [42, 35]]]]], [], 3, 4, ["loc", [null, [42, 6], [56, 13]]]], ["content", "outlet", ["loc", [null, [63, 3], [63, 13]]]], ["inline", "login-page", [], ["store", ["subexpr", "@mut", [["get", "store", ["loc", [null, [64, 23], [64, 28]]]]], [], []]], ["loc", [null, [64, 4], [64, 30]]]]],
       locals: [],
       templates: [child0, child1, child2, child3, child4]
     };
@@ -2648,6 +2601,399 @@ define("mock-kodr/templates/challenge/edit", ["exports"], function (exports) {
         return morphs;
       },
       statements: [["content", "model.name", ["loc", [null, [11, 48], [11, 62]]]], ["element", "action", ["save"], ["on", "submit"], ["loc", [null, [14, 58], [14, 87]]]], ["inline", "input", [], ["id", "name-edit", "value", ["subexpr", "@mut", [["get", "model.name", ["loc", [null, [16, 33], [16, 43]]]]], [], []], "class", "form-control", "placeholder", "Challenge Name"], ["loc", [null, [16, 4], [16, 95]]]], ["inline", "input", [], ["id", "exp-edit", "value", ["subexpr", "@mut", [["get", "model.exp", ["loc", [null, [18, 32], [18, 41]]]]], [], []], "class", "form-control", "placeholder", "Experience Points", "type", "number"], ["loc", [null, [18, 4], [18, 110]]]], ["block", "power-select-multiple", [], ["options", ["subexpr", "@mut", [["get", "concepts", ["loc", [null, [21, 17], [21, 25]]]]], [], []], "selected", ["subexpr", "@mut", [["get", "chosenConcepts", ["loc", [null, [22, 18], [22, 32]]]]], [], []], "placeholder", "Select some concepts...", "searchField", "name", "renderInPlace", true, "onchange", ["subexpr", "action", [["subexpr", "mut", [["get", "chosenConcepts", ["loc", [null, [26, 31], [26, 45]]]]], [], ["loc", [null, [26, 26], [26, 46]]]]], [], ["loc", [null, [26, 18], [26, 47]]]]], 0, null, ["loc", [null, [20, 4], [30, 33]]]], ["inline", "input", [], ["class", "form-control", "disabled", "true", "value", ["subexpr", "@mut", [["get", "current_user.username", ["loc", [null, [32, 55], [32, 76]]]]], [], []]], ["loc", [null, [32, 4], [32, 78]]]], ["inline", "input", [], ["class", "form-control", "disabled", "true", "value", ["subexpr", "@mut", [["get", "model.arena.name", ["loc", [null, [34, 55], [34, 71]]]]], [], []]], ["loc", [null, [34, 4], [34, 73]]]], ["block", "if", [["get", "errorMessage", ["loc", [null, [37, 10], [37, 22]]]]], [], 1, null, ["loc", [null, [37, 4], [39, 12]]]], ["content", "outlet", ["loc", [null, [51, 0], [51, 10]]]]],
+      locals: [],
+      templates: [child0, child1]
+    };
+  })());
+});
+define("mock-kodr/templates/charts", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    var child0 = (function () {
+      var child0 = (function () {
+        var child0 = (function () {
+          return {
+            meta: {
+              "fragmentReason": false,
+              "revision": "Ember@2.3.2",
+              "loc": {
+                "source": null,
+                "start": {
+                  "line": 13,
+                  "column": 7
+                },
+                "end": {
+                  "line": 15,
+                  "column": 7
+                }
+              },
+              "moduleName": "mock-kodr/templates/charts.hbs"
+            },
+            isEmpty: false,
+            arity: 0,
+            cachedFragment: null,
+            hasRendered: false,
+            buildFragment: function buildFragment(dom) {
+              var el0 = dom.createDocumentFragment();
+              var el1 = dom.createTextNode("	      	");
+              dom.appendChild(el0, el1);
+              var el1 = dom.createElement("a");
+              dom.setAttribute(el1, "href", "");
+              dom.setAttribute(el1, "class", "btn btn-warning btn-block");
+              var el2 = dom.createElement("i");
+              dom.setAttribute(el2, "class", "fa fa-exclamation-triangle");
+              dom.appendChild(el1, el2);
+              var el2 = dom.createTextNode(" Practice ");
+              dom.appendChild(el1, el2);
+              var el2 = dom.createComment("");
+              dom.appendChild(el1, el2);
+              dom.appendChild(el0, el1);
+              var el1 = dom.createTextNode("\n");
+              dom.appendChild(el0, el1);
+              return el0;
+            },
+            buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+              var morphs = new Array(1);
+              morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 2, 2);
+              return morphs;
+            },
+            statements: [["content", "data.conceptName", ["loc", [null, [14, 105], [14, 125]]]]],
+            locals: [],
+            templates: []
+          };
+        })();
+        var child1 = (function () {
+          return {
+            meta: {
+              "fragmentReason": false,
+              "revision": "Ember@2.3.2",
+              "loc": {
+                "source": null,
+                "start": {
+                  "line": 15,
+                  "column": 7
+                },
+                "end": {
+                  "line": 17,
+                  "column": 7
+                }
+              },
+              "moduleName": "mock-kodr/templates/charts.hbs"
+            },
+            isEmpty: false,
+            arity: 0,
+            cachedFragment: null,
+            hasRendered: false,
+            buildFragment: function buildFragment(dom) {
+              var el0 = dom.createDocumentFragment();
+              var el1 = dom.createTextNode("	      	");
+              dom.appendChild(el0, el1);
+              var el1 = dom.createElement("a");
+              dom.setAttribute(el1, "href", "");
+              dom.setAttribute(el1, "class", "btn btn-primary btn-block");
+              var el2 = dom.createTextNode("Practice ");
+              dom.appendChild(el1, el2);
+              var el2 = dom.createComment("");
+              dom.appendChild(el1, el2);
+              dom.appendChild(el0, el1);
+              var el1 = dom.createTextNode("\n");
+              dom.appendChild(el0, el1);
+              return el0;
+            },
+            buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+              var morphs = new Array(1);
+              morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 1, 1);
+              return morphs;
+            },
+            statements: [["content", "data.conceptName", ["loc", [null, [16, 62], [16, 82]]]]],
+            locals: [],
+            templates: []
+          };
+        })();
+        return {
+          meta: {
+            "fragmentReason": false,
+            "revision": "Ember@2.3.2",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 10,
+                "column": 3
+              },
+              "end": {
+                "line": 19,
+                "column": 3
+              }
+            },
+            "moduleName": "mock-kodr/templates/charts.hbs"
+          },
+          isEmpty: false,
+          arity: 1,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("  		");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("div");
+            dom.setAttribute(el1, "class", "col-md-3 well");
+            dom.setAttribute(el1, "style", "background-color: #fff");
+            var el2 = dom.createTextNode("\n	      ");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createComment("");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("\n");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createComment("");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("	    ");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var element0 = dom.childAt(fragment, [1]);
+            var morphs = new Array(2);
+            morphs[0] = dom.createMorphAt(element0, 1, 1);
+            morphs[1] = dom.createMorphAt(element0, 3, 3);
+            return morphs;
+          },
+          statements: [["inline", "ember-chart", [], ["type", "Doughnut", "data", ["subexpr", "@mut", [["get", "data.doughtnutDataList", ["loc", [null, [12, 42], [12, 64]]]]], [], []], "width", 250, "legend", true, "height", 100], ["loc", [null, [12, 7], [12, 100]]]], ["block", "if", [["get", "data.needsPractice", ["loc", [null, [13, 13], [13, 31]]]]], [], 0, 1, ["loc", [null, [13, 7], [17, 14]]]]],
+          locals: ["data"],
+          templates: [child0, child1]
+        };
+      })();
+      return {
+        meta: {
+          "fragmentReason": {
+            "name": "missing-wrapper",
+            "problems": ["multiple-nodes"]
+          },
+          "revision": "Ember@2.3.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 1,
+              "column": 0
+            },
+            "end": {
+              "line": 31,
+              "column": 0
+            }
+          },
+          "moduleName": "mock-kodr/templates/charts.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("  ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("div");
+          dom.setAttribute(el1, "class", "page-header");
+          var el2 = dom.createTextNode("\n    ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("h2");
+          var el3 = dom.createTextNode("Skill Mastery");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n  ");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n  ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("div");
+          dom.setAttribute(el1, "class", "alert alert-info");
+          var el2 = dom.createTextNode("\n  	");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("a");
+          dom.setAttribute(el2, "href", "#");
+          dom.setAttribute(el2, "class", "close");
+          dom.setAttribute(el2, "data-dismiss", "alert");
+          dom.setAttribute(el2, "aria-label", "close");
+          var el3 = dom.createTextNode("×");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n	  ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("strong");
+          var el3 = dom.createTextNode("Info!");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode(" Concepts that haven't been practiced in a long time are labeled ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("i");
+          dom.setAttribute(el2, "class", "fa fa-exclamation-triangle");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode(".\n	");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n  ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("div");
+          dom.setAttribute(el1, "class", "row");
+          var el2 = dom.createTextNode("\n");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createComment("");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("  ");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n  ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("div");
+          dom.setAttribute(el1, "class", "page-header");
+          var el2 = dom.createTextNode("\n    ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("h2");
+          var el3 = dom.createTextNode("Challenges Solved");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n  ");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n  ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("div");
+          dom.setAttribute(el1, "class", "row well");
+          var el2 = dom.createTextNode("\n\n    ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("div");
+          dom.setAttribute(el2, "class", "col-md-12");
+          var el3 = dom.createTextNode("\n      ");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createComment("");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n    ");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n    \n  ");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(2);
+          morphs[0] = dom.createMorphAt(dom.childAt(fragment, [5]), 1, 1);
+          morphs[1] = dom.createMorphAt(dom.childAt(fragment, [9, 1]), 1, 1);
+          return morphs;
+        },
+        statements: [["block", "each", [["get", "doughtnutData", ["loc", [null, [10, 11], [10, 24]]]]], [], 0, null, ["loc", [null, [10, 3], [19, 12]]]], ["inline", "ember-chart", [], ["type", ["subexpr", "@mut", [["get", "type", ["loc", [null, [27, 25], [27, 29]]]]], [], []], "data", ["subexpr", "@mut", [["get", "lineData", ["loc", [null, [27, 35], [27, 43]]]]], [], []], "width", 1000, "options", ["subexpr", "@mut", [["get", "options", ["loc", [null, [27, 63], [27, 70]]]]], [], []], "legend", true, "height", 200], ["loc", [null, [27, 6], [27, 95]]]]],
+        locals: [],
+        templates: [child0]
+      };
+    })();
+    var child1 = (function () {
+      return {
+        meta: {
+          "fragmentReason": false,
+          "revision": "Ember@2.3.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 31,
+              "column": 0
+            },
+            "end": {
+              "line": 36,
+              "column": 0
+            }
+          },
+          "moduleName": "mock-kodr/templates/charts.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("	");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("div");
+          dom.setAttribute(el1, "class", "text-center");
+          var el2 = dom.createTextNode("\n    ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("h1");
+          var el3 = dom.createTextNode("Calculating your statistics and drawing your charts ");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createElement("i");
+          dom.setAttribute(el3, "class", "fa fa-spinner fa-pulse fa-fw margin-bottom");
+          dom.setAttribute(el3, "aria-hidden", "true");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("      \n    ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("p");
+          var el3 = dom.createTextNode("Go grab a cup of coffee ");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createElement("i");
+          dom.setAttribute(el3, "class", "fa fa-coffee");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode(".");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n  ");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("  \n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() {
+          return [];
+        },
+        statements: [],
+        locals: [],
+        templates: []
+      };
+    })();
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "missing-wrapper",
+          "problems": ["wrong-type", "multiple-nodes"]
+        },
+        "revision": "Ember@2.3.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 38,
+            "column": 0
+          }
+        },
+        "moduleName": "mock-kodr/templates/charts.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(2);
+        morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+        morphs[1] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [["block", "if", [["get", "ready", ["loc", [null, [1, 6], [1, 11]]]]], [], 0, 1, ["loc", [null, [1, 0], [36, 7]]]], ["content", "outlet", ["loc", [null, [37, 0], [37, 10]]]]],
       locals: [],
       templates: [child0, child1]
     };
@@ -5351,7 +5697,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("mock-kodr/app")["default"].create({"name":"mock-kodr","version":"0.0.0+823e7a31"});
+  require("mock-kodr/app")["default"].create({"name":"mock-kodr","version":"0.0.0+0085731b"});
 }
 
 /* jshint ignore:end */

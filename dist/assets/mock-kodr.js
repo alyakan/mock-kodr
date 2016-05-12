@@ -513,6 +513,39 @@ define('mock-kodr/controllers/charts', ['exports', 'ember', 'ember-local-storage
     session: _ember['default'].inject.service('session'),
     current_user: (0, _emberLocalStorage.storageFor)('current_user'),
     lineData: {},
+    wData: {
+      labels: ["January", "February", "March", "April", "May", "June", "July"],
+      datasets: [{
+        label: "Challenges successfully solved over the past week",
+        fill: false,
+        lineTension: 0,
+        fillColor: "rgba(75,192,192,0.4)",
+        datasetFill: false,
+        data: []
+      }]
+    },
+    mData: {
+      labels: ["January", "February", "March", "April", "May", "June", "July"],
+      datasets: [{
+        label: "Challenges successfully solved over the past week",
+        fill: false,
+        lineTension: 0,
+        fillColor: "rgba(75,192,192,0.4)",
+        datasetFill: false,
+        data: []
+      }]
+    },
+    yData: {
+      labels: ["January", "February", "March", "April", "May", "June", "July"],
+      datasets: [{
+        label: "Challenges successfully solved over the past week",
+        fill: false,
+        lineTension: 0,
+        fillColor: "rgba(75,192,192,0.4)",
+        datasetFill: false,
+        data: []
+      }]
+    },
     data: {
       labels: ["January", "February", "March", "April", "May", "June", "July"],
       datasets: [{
@@ -520,23 +553,8 @@ define('mock-kodr/controllers/charts', ['exports', 'ember', 'ember-local-storage
         fill: false,
         lineTension: 0,
         fillColor: "rgba(75,192,192,0.4)",
-        backgroundColor: "rgba(75,192,192,0.4)",
-        borderColor: "rgba(75,192,192,1)",
-        borderCapStyle: 'butt',
-        borderDash: [],
-        borderDashOffset: 0.0,
-        borderJoinStyle: 'miter',
-        pointBorderColor: "rgba(75,192,192,1)",
-        pointBackgroundColor: "#fff",
-        pointBorderWidth: 1,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: "rgba(75,192,192,1)",
-        pointHoverBorderColor: "rgba(75,192,192,1)",
-        pointHoverBorderWidth: 2,
-        pointRadius: 1,
-        pointHitRadius: 10,
         datasetFill: false,
-        data: [3, 2, 4, 2, 4, 2, 2]
+        data: []
       }]
     },
     doData: [{
@@ -598,6 +616,9 @@ define('mock-kodr/controllers/charts', ['exports', 'ember', 'ember-local-storage
             dataList.push({
               doughtnutDataList: segment,
               conceptName: c.get('name'),
+              conceptExp: uc.get('exp'),
+              conceptMax: uc.get('max_exp'),
+              completed: uc.get('exp') === uc.get('max_exp'),
               needsPractice: needsPractice
             });
           });
@@ -605,11 +626,19 @@ define('mock-kodr/controllers/charts', ['exports', 'ember', 'ember-local-storage
         that.set('doughtnutData', dataList);
       }).then(function () {
         var current = new Date(Date.now());
-        var da = (0, _moment['default'])((0, _moment['default'])(current).subtract(1, 'year').calendar()).format();
-        var lineData = that.get('data');
+        var lastYear = (0, _moment['default'])((0, _moment['default'])(current).subtract(1, 'year').calendar()).format();
+        var lastMonth = (0, _moment['default'])((0, _moment['default'])(current).subtract(1, 'month').calendar()).format();
+        var lastWeek = (0, _moment['default'])((0, _moment['default'])(current).subtract(1, 'week').calendar()).format();
+        var lineData = Object.assign({}, that.get('data'));
+        var weekLineData = Object.assign({}, that.get('wData'));
+        var monthLineData = Object.assign({}, that.get('mData'));
+        var yearLineData = Object.assign({}, that.get('yData'));
         var labels = [];
         var data = [];
-        that.store.query('activity', { subjectId: that.get('current_user.id'), verb: "completed", time: { $gt: da } }).then(function (activities) {
+        var weekData = [];
+        var monthData = [];
+        var yearData = [];
+        that.store.query('activity', { subjectId: that.get('current_user.id'), verb: "completed", time: { $gt: lastYear } }).then(function (activities) {
           // Retrieve all date where a challenge was successfully completed
           var date;
           activities.map(function (activity) {
@@ -617,20 +646,49 @@ define('mock-kodr/controllers/charts', ['exports', 'ember', 'ember-local-storage
               Loop on each activity, group all challenges that were
               solved on the same day together 
              */
-            date = new Date(activity.get('time'));
-            date = (0, _moment['default'])(date).format('dddd, MMM Do').toString();
+            var act_date = new Date(activity.get('time'));
 
+            date = (0, _moment['default'])(act_date).format('dddd, MMM Do YY');
             if (!_lodashLodash['default'].includes(labels, date)) {
+              if ((0, _moment['default'])(act_date).isAfter((0, _moment['default'])(lastMonth))) {
+                if ((0, _moment['default'])(act_date).isAfter((0, _moment['default'])(lastWeek))) {
+                  weekData.push(1);
+                }
+                monthData.push(1);
+              }
               labels.push(date);
               data.push(1);
             } else {
+              if ((0, _moment['default'])(act_date).isAfter((0, _moment['default'])(lastMonth))) {
+                if ((0, _moment['default'])(act_date).isAfter((0, _moment['default'])(lastWeek))) {
+                  weekData[labels.indexOf(date)] += 1;
+                }
+                monthData[labels.indexOf(date)] += 1;
+              }
               data[labels.indexOf(date)] += 1;
             }
           });
+
           lineData.labels = labels;
-          lineData.datasets.data = data;
+          lineData.datasets[0].data = data;
+
+          monthLineData.labels = labels;
+          //monthLineData.datasets[0].data = monthData;
+
+          weekLineData.labels = labels;
+          //weekLineData.datasets[0].data = weekData;
+
           that.set('lineData', lineData);
+          that.set('wData', weekLineData);
+          that.set('mData', monthLineData);
+
           that.set('ready', true);
+        }).then(function () {
+          _ember['default'].run.scheduleOnce('afterRender', this, function () {
+            /* Hide last week and last month's challenges solved */
+            _ember['default'].$('#week').removeClass("active");
+            _ember['default'].$('#month').removeClass("active");
+          });
         });
       });
     }).on('init'),
@@ -655,46 +713,30 @@ define('mock-kodr/controllers/charts', ['exports', 'ember', 'ember-local-storage
         }
       },
       changeDate: function changeDate(period) {
-        var lineData = this.get('data');
-        var labels = [];
-        var data = [];
-        var that = this;
-        var current = (0, _moment['default'])(new Date(Date.now()));
-        var previous;
+        console.log(period, "ok");
+
         switch (period) {
           case 'week':
-            previous = (0, _moment['default'])(current.subtract(7, 'days').calendar()).format();
+            _ember['default'].$('.week').removeClass("hidden");
+            _ember['default'].$('.month').addClass("hidden");
+            _ember['default'].$('.year').addClass("hiden");
+            //previous = moment(current.subtract(7, 'days').calendar()).format();
             break;
           case 'month':
-            previous = (0, _moment['default'])(current.subtract(1, 'month').calendar()).format();
+            _ember['default'].$('.month').removeClass("hidden");
+            _ember['default'].$('.week').addClass("hidden");
+            _ember['default'].$('.year').addClass("hiden");
+            //previous = moment(current.subtract(1, 'month').calendar()).format();
             break;
           case 'year':
-            previous = (0, _moment['default'])(current.subtract(1, 'year').calendar()).format();
+            _ember['default'].$('.year').removeClass("hiden");
+            _ember['default'].$('.month').addClass("hidden");
+            _ember['default'].$('.week').addClass("hiden");
+            //previous = moment(current.subtract(1, 'year').calendar()).format();
             break;
         }
-        this.store.query('activity', { subjectId: that.get('current_user.id'), verb: "completed", time: { $gt: previous } }).then(function (activities) {
-          // Retrieve all date where a challenge was successfully completed
-          var date;
-          activities.map(function (activity) {
-            /*
-              Loop on each activity, group all challenges that were
-              solved on the same day together 
-             */
-            date = new Date(activity.get('time'));
-            date = (0, _moment['default'])(date).format('dddd, MMM Do').toString();
 
-            if (!_lodashLodash['default'].includes(labels, date)) {
-              labels.push(date);
-              data.push(1);
-            } else {
-              data[labels.indexOf(date)] += 1;
-            }
-          });
-          lineData.labels = labels;
-          lineData.datasets.data = data;
-          that.set('lineData', lineData);
-          that.set('ready', true);
-        });
+        this.set('lineDate', []);
       }
     }
   });
@@ -2618,11 +2660,146 @@ define("mock-kodr/templates/charts", ["exports"], function (exports) {
               "loc": {
                 "source": null,
                 "start": {
-                  "line": 13,
+                  "line": 15,
+                  "column": 6
+                },
+                "end": {
+                  "line": 18,
+                  "column": 6
+                }
+              },
+              "moduleName": "mock-kodr/templates/charts.hbs"
+            },
+            isEmpty: false,
+            arity: 0,
+            cachedFragment: null,
+            hasRendered: false,
+            buildFragment: function buildFragment(dom) {
+              var el0 = dom.createDocumentFragment();
+              var el1 = dom.createTextNode("				  	");
+              dom.appendChild(el0, el1);
+              var el1 = dom.createElement("a");
+              dom.setAttribute(el1, "href", "#");
+              dom.setAttribute(el1, "class", "list-group-item text-center alert alert-success");
+              var el2 = dom.createElement("code");
+              var el3 = dom.createElement("i");
+              dom.setAttribute(el3, "class", "fa fa-tag");
+              dom.appendChild(el2, el3);
+              var el3 = dom.createTextNode(" ");
+              dom.appendChild(el2, el3);
+              var el3 = dom.createComment("");
+              dom.appendChild(el2, el3);
+              dom.appendChild(el1, el2);
+              dom.appendChild(el0, el1);
+              var el1 = dom.createTextNode("\n				  	");
+              dom.appendChild(el0, el1);
+              var el1 = dom.createElement("a");
+              dom.setAttribute(el1, "href", "#");
+              dom.setAttribute(el1, "class", "list-group-item text-center disabled alert alert-success");
+              var el2 = dom.createElement("samp");
+              var el3 = dom.createTextNode("Mastered !");
+              dom.appendChild(el2, el3);
+              dom.appendChild(el1, el2);
+              dom.appendChild(el0, el1);
+              var el1 = dom.createTextNode("\n");
+              dom.appendChild(el0, el1);
+              return el0;
+            },
+            buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+              var morphs = new Array(1);
+              morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1, 0]), 2, 2);
+              return morphs;
+            },
+            statements: [["content", "data.conceptName", ["loc", [null, [16, 107], [16, 127]]]]],
+            locals: [],
+            templates: []
+          };
+        })();
+        var child1 = (function () {
+          return {
+            meta: {
+              "fragmentReason": false,
+              "revision": "Ember@2.3.2",
+              "loc": {
+                "source": null,
+                "start": {
+                  "line": 18,
+                  "column": 6
+                },
+                "end": {
+                  "line": 21,
+                  "column": 6
+                }
+              },
+              "moduleName": "mock-kodr/templates/charts.hbs"
+            },
+            isEmpty: false,
+            arity: 0,
+            cachedFragment: null,
+            hasRendered: false,
+            buildFragment: function buildFragment(dom) {
+              var el0 = dom.createDocumentFragment();
+              var el1 = dom.createTextNode("				  	");
+              dom.appendChild(el0, el1);
+              var el1 = dom.createElement("a");
+              dom.setAttribute(el1, "href", "#");
+              dom.setAttribute(el1, "class", "list-group-item text-center");
+              var el2 = dom.createElement("code");
+              var el3 = dom.createElement("i");
+              dom.setAttribute(el3, "class", "fa fa-tag");
+              dom.appendChild(el2, el3);
+              var el3 = dom.createTextNode(" ");
+              dom.appendChild(el2, el3);
+              var el3 = dom.createComment("");
+              dom.appendChild(el2, el3);
+              dom.appendChild(el1, el2);
+              dom.appendChild(el0, el1);
+              var el1 = dom.createTextNode("\n				  	");
+              dom.appendChild(el0, el1);
+              var el1 = dom.createElement("a");
+              dom.setAttribute(el1, "href", "#");
+              dom.setAttribute(el1, "class", "list-group-item text-center disabled");
+              var el2 = dom.createElement("samp");
+              var el3 = dom.createComment("");
+              dom.appendChild(el2, el3);
+              var el3 = dom.createTextNode(" out of ");
+              dom.appendChild(el2, el3);
+              var el3 = dom.createComment("");
+              dom.appendChild(el2, el3);
+              var el3 = dom.createTextNode(" Exp");
+              dom.appendChild(el2, el3);
+              dom.appendChild(el1, el2);
+              dom.appendChild(el0, el1);
+              var el1 = dom.createTextNode("\n");
+              dom.appendChild(el0, el1);
+              return el0;
+            },
+            buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+              var element0 = dom.childAt(fragment, [3, 0]);
+              var morphs = new Array(3);
+              morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1, 0]), 2, 2);
+              morphs[1] = dom.createMorphAt(element0, 0, 0);
+              morphs[2] = dom.createMorphAt(element0, 2, 2);
+              return morphs;
+            },
+            statements: [["content", "data.conceptName", ["loc", [null, [19, 87], [19, 107]]]], ["content", "data.conceptExp", ["loc", [null, [20, 70], [20, 89]]]], ["content", "data.conceptMax", ["loc", [null, [20, 97], [20, 116]]]]],
+            locals: [],
+            templates: []
+          };
+        })();
+        var child2 = (function () {
+          return {
+            meta: {
+              "fragmentReason": false,
+              "revision": "Ember@2.3.2",
+              "loc": {
+                "source": null,
+                "start": {
+                  "line": 24,
                   "column": 7
                 },
                 "end": {
-                  "line": 15,
+                  "line": 26,
                   "column": 7
                 }
               },
@@ -2656,12 +2833,12 @@ define("mock-kodr/templates/charts", ["exports"], function (exports) {
               morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 2, 2);
               return morphs;
             },
-            statements: [["content", "data.conceptName", ["loc", [null, [14, 105], [14, 125]]]]],
+            statements: [["content", "data.conceptName", ["loc", [null, [25, 105], [25, 125]]]]],
             locals: [],
             templates: []
           };
         })();
-        var child1 = (function () {
+        var child3 = (function () {
           return {
             meta: {
               "fragmentReason": false,
@@ -2669,11 +2846,11 @@ define("mock-kodr/templates/charts", ["exports"], function (exports) {
               "loc": {
                 "source": null,
                 "start": {
-                  "line": 15,
+                  "line": 26,
                   "column": 7
                 },
                 "end": {
-                  "line": 17,
+                  "line": 28,
                   "column": 7
                 }
               },
@@ -2704,7 +2881,7 @@ define("mock-kodr/templates/charts", ["exports"], function (exports) {
               morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 1, 1);
               return morphs;
             },
-            statements: [["content", "data.conceptName", ["loc", [null, [16, 62], [16, 82]]]]],
+            statements: [["content", "data.conceptName", ["loc", [null, [27, 62], [27, 82]]]]],
             locals: [],
             templates: []
           };
@@ -2720,7 +2897,7 @@ define("mock-kodr/templates/charts", ["exports"], function (exports) {
                 "column": 3
               },
               "end": {
-                "line": 19,
+                "line": 30,
                 "column": 3
               }
             },
@@ -2736,10 +2913,20 @@ define("mock-kodr/templates/charts", ["exports"], function (exports) {
             dom.appendChild(el0, el1);
             var el1 = dom.createElement("div");
             dom.setAttribute(el1, "class", "col-md-3 well");
-            dom.setAttribute(el1, "style", "background-color: #fff");
             var el2 = dom.createTextNode("\n	      ");
             dom.appendChild(el1, el2);
             var el2 = dom.createComment("");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("\n	      ");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createElement("div");
+            dom.setAttribute(el2, "class", "list-group");
+            var el3 = dom.createTextNode("\n				  \n");
+            dom.appendChild(el2, el3);
+            var el3 = dom.createComment("");
+            dom.appendChild(el2, el3);
+            var el3 = dom.createTextNode("				  \n				");
+            dom.appendChild(el2, el3);
             dom.appendChild(el1, el2);
             var el2 = dom.createTextNode("\n");
             dom.appendChild(el1, el2);
@@ -2753,15 +2940,16 @@ define("mock-kodr/templates/charts", ["exports"], function (exports) {
             return el0;
           },
           buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-            var element0 = dom.childAt(fragment, [1]);
-            var morphs = new Array(2);
-            morphs[0] = dom.createMorphAt(element0, 1, 1);
-            morphs[1] = dom.createMorphAt(element0, 3, 3);
+            var element1 = dom.childAt(fragment, [1]);
+            var morphs = new Array(3);
+            morphs[0] = dom.createMorphAt(element1, 1, 1);
+            morphs[1] = dom.createMorphAt(dom.childAt(element1, [3]), 1, 1);
+            morphs[2] = dom.createMorphAt(element1, 5, 5);
             return morphs;
           },
-          statements: [["inline", "ember-chart", [], ["type", "Doughnut", "data", ["subexpr", "@mut", [["get", "data.doughtnutDataList", ["loc", [null, [12, 42], [12, 64]]]]], [], []], "width", 250, "legend", true, "height", 100], ["loc", [null, [12, 7], [12, 100]]]], ["block", "if", [["get", "data.needsPractice", ["loc", [null, [13, 13], [13, 31]]]]], [], 0, 1, ["loc", [null, [13, 7], [17, 14]]]]],
+          statements: [["inline", "ember-chart", [], ["type", "Doughnut", "data", ["subexpr", "@mut", [["get", "data.doughtnutDataList", ["loc", [null, [12, 42], [12, 64]]]]], [], []], "width", 250, "height", 100], ["loc", [null, [12, 7], [12, 88]]]], ["block", "if", [["get", "data.completed", ["loc", [null, [15, 12], [15, 26]]]]], [], 0, 1, ["loc", [null, [15, 6], [21, 13]]]], ["block", "if", [["get", "data.needsPractice", ["loc", [null, [24, 13], [24, 31]]]]], [], 2, 3, ["loc", [null, [24, 7], [28, 14]]]]],
           locals: ["data"],
-          templates: [child0, child1]
+          templates: [child0, child1, child2, child3]
         };
       })();
       return {
@@ -2778,7 +2966,7 @@ define("mock-kodr/templates/charts", ["exports"], function (exports) {
               "column": 0
             },
             "end": {
-              "line": 31,
+              "line": 63,
               "column": 0
             }
           },
@@ -2855,35 +3043,121 @@ define("mock-kodr/templates/charts", ["exports"], function (exports) {
           var el2 = dom.createTextNode("\n  ");
           dom.appendChild(el1, el2);
           dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n  ");
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n	");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("ul");
+          dom.setAttribute(el1, "class", "nav nav-tabs");
+          var el2 = dom.createTextNode("\n	  ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("li");
+          dom.setAttribute(el2, "class", "active");
+          var el3 = dom.createElement("a");
+          dom.setAttribute(el3, "data-toggle", "tab");
+          dom.setAttribute(el3, "href", "#year");
+          var el4 = dom.createTextNode("Last Year");
+          dom.appendChild(el3, el4);
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n	  ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("li");
+          var el3 = dom.createElement("a");
+          dom.setAttribute(el3, "data-toggle", "tab");
+          dom.setAttribute(el3, "href", "#month");
+          var el4 = dom.createTextNode("Last Month");
+          dom.appendChild(el3, el4);
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n	  ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("li");
+          var el3 = dom.createElement("a");
+          dom.setAttribute(el3, "data-toggle", "tab");
+          dom.setAttribute(el3, "href", "#week");
+          var el4 = dom.createTextNode("Last Week");
+          dom.appendChild(el3, el4);
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n	");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n\n	");
           dom.appendChild(el0, el1);
           var el1 = dom.createElement("div");
-          dom.setAttribute(el1, "class", "row well");
-          var el2 = dom.createTextNode("\n\n    ");
+          dom.setAttribute(el1, "class", "tab-content");
+          var el2 = dom.createTextNode("\n	  ");
           dom.appendChild(el1, el2);
           var el2 = dom.createElement("div");
-          dom.setAttribute(el2, "class", "col-md-12");
-          var el3 = dom.createTextNode("\n      ");
+          dom.setAttribute(el2, "id", "year");
+          dom.setAttribute(el2, "class", "tab-pane fade in active");
+          var el3 = dom.createTextNode("\n	    ");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createElement("h3");
+          var el4 = dom.createTextNode("Last Year");
+          dom.appendChild(el3, el4);
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n	    ");
           dom.appendChild(el2, el3);
           var el3 = dom.createComment("");
           dom.appendChild(el2, el3);
-          var el3 = dom.createTextNode("\n    ");
+          var el3 = dom.createTextNode("		\n	  ");
           dom.appendChild(el2, el3);
           dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode("\n    \n  ");
+          var el2 = dom.createTextNode("\n	  ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("div");
+          dom.setAttribute(el2, "id", "month");
+          dom.setAttribute(el2, "class", "tab-pane fade active");
+          var el3 = dom.createTextNode("\n	    ");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createElement("h3");
+          var el4 = dom.createTextNode("Last Month");
+          dom.appendChild(el3, el4);
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n	    ");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createComment("");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("		\n	  ");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n	  ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("div");
+          dom.setAttribute(el2, "id", "week");
+          dom.setAttribute(el2, "class", "tab-pane fade active");
+          var el3 = dom.createTextNode("\n	    ");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createElement("h3");
+          var el4 = dom.createTextNode("Last Week");
+          dom.appendChild(el3, el4);
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n	    ");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createComment("");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("		\n	  ");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n	");
           dom.appendChild(el1, el2);
           dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n");
+          var el1 = dom.createTextNode("\n	\n\n");
           dom.appendChild(el0, el1);
           return el0;
         },
         buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-          var morphs = new Array(2);
+          var element2 = dom.childAt(fragment, [12]);
+          var morphs = new Array(4);
           morphs[0] = dom.createMorphAt(dom.childAt(fragment, [5]), 1, 1);
-          morphs[1] = dom.createMorphAt(dom.childAt(fragment, [9, 1]), 1, 1);
+          morphs[1] = dom.createMorphAt(dom.childAt(element2, [1]), 3, 3);
+          morphs[2] = dom.createMorphAt(dom.childAt(element2, [3]), 3, 3);
+          morphs[3] = dom.createMorphAt(dom.childAt(element2, [5]), 3, 3);
           return morphs;
         },
-        statements: [["block", "each", [["get", "doughtnutData", ["loc", [null, [10, 11], [10, 24]]]]], [], 0, null, ["loc", [null, [10, 3], [19, 12]]]], ["inline", "ember-chart", [], ["type", ["subexpr", "@mut", [["get", "type", ["loc", [null, [27, 25], [27, 29]]]]], [], []], "data", ["subexpr", "@mut", [["get", "lineData", ["loc", [null, [27, 35], [27, 43]]]]], [], []], "width", 1000, "options", ["subexpr", "@mut", [["get", "options", ["loc", [null, [27, 63], [27, 70]]]]], [], []], "legend", true, "height", 200], ["loc", [null, [27, 6], [27, 95]]]]],
+        statements: [["block", "each", [["get", "doughtnutData", ["loc", [null, [10, 11], [10, 24]]]]], [], 0, null, ["loc", [null, [10, 3], [30, 12]]]], ["inline", "ember-chart", [], ["type", ["subexpr", "@mut", [["get", "type", ["loc", [null, [50, 24], [50, 28]]]]], [], []], "data", ["subexpr", "@mut", [["get", "data", ["loc", [null, [50, 34], [50, 38]]]]], [], []], "width", 1000, "options", ["subexpr", "@mut", [["get", "options", ["loc", [null, [50, 58], [50, 65]]]]], [], []], "height", 200], ["loc", [null, [50, 5], [50, 78]]]], ["inline", "ember-chart", [], ["type", ["subexpr", "@mut", [["get", "type", ["loc", [null, [54, 24], [54, 28]]]]], [], []], "data", ["subexpr", "@mut", [["get", "mData", ["loc", [null, [54, 34], [54, 39]]]]], [], []], "width", 1000, "options", ["subexpr", "@mut", [["get", "options", ["loc", [null, [54, 59], [54, 66]]]]], [], []], "height", 200], ["loc", [null, [54, 5], [54, 79]]]], ["inline", "ember-chart", [], ["type", ["subexpr", "@mut", [["get", "type", ["loc", [null, [58, 24], [58, 28]]]]], [], []], "data", ["subexpr", "@mut", [["get", "wData", ["loc", [null, [58, 34], [58, 39]]]]], [], []], "width", 1000, "options", ["subexpr", "@mut", [["get", "options", ["loc", [null, [58, 59], [58, 66]]]]], [], []], "height", 200], ["loc", [null, [58, 5], [58, 79]]]]],
         locals: [],
         templates: [child0]
       };
@@ -2896,11 +3170,11 @@ define("mock-kodr/templates/charts", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 31,
+              "line": 63,
               "column": 0
             },
             "end": {
-              "line": 36,
+              "line": 68,
               "column": 0
             }
           },
@@ -2922,17 +3196,19 @@ define("mock-kodr/templates/charts", ["exports"], function (exports) {
           var el3 = dom.createTextNode("Calculating your statistics and drawing your charts ");
           dom.appendChild(el2, el3);
           var el3 = dom.createElement("i");
-          dom.setAttribute(el3, "class", "fa fa-spinner fa-pulse fa-fw margin-bottom");
+          dom.setAttribute(el3, "class", "fa fa-circle-o-notch fa-spin fa-fw margin-bottom");
           dom.setAttribute(el3, "aria-hidden", "true");
           dom.appendChild(el2, el3);
           dom.appendChild(el1, el2);
           var el2 = dom.createTextNode("      \n    ");
           dom.appendChild(el1, el2);
           var el2 = dom.createElement("p");
-          var el3 = dom.createTextNode("Go grab a cup of coffee ");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createElement("i");
-          dom.setAttribute(el3, "class", "fa fa-coffee");
+          var el3 = dom.createElement("code");
+          var el4 = dom.createTextNode("Go grab a cup of coffee ");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createElement("i");
+          dom.setAttribute(el4, "class", "fa fa-coffee");
+          dom.appendChild(el3, el4);
           dom.appendChild(el2, el3);
           var el3 = dom.createTextNode(".");
           dom.appendChild(el2, el3);
@@ -2966,7 +3242,7 @@ define("mock-kodr/templates/charts", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 38,
+            "line": 70,
             "column": 0
           }
         },
@@ -2993,7 +3269,7 @@ define("mock-kodr/templates/charts", ["exports"], function (exports) {
         dom.insertBoundary(fragment, 0);
         return morphs;
       },
-      statements: [["block", "if", [["get", "ready", ["loc", [null, [1, 6], [1, 11]]]]], [], 0, 1, ["loc", [null, [1, 0], [36, 7]]]], ["content", "outlet", ["loc", [null, [37, 0], [37, 10]]]]],
+      statements: [["block", "if", [["get", "ready", ["loc", [null, [1, 6], [1, 11]]]]], [], 0, 1, ["loc", [null, [1, 0], [68, 7]]]], ["content", "outlet", ["loc", [null, [69, 0], [69, 10]]]]],
       locals: [],
       templates: [child0, child1]
     };
@@ -5697,7 +5973,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("mock-kodr/app")["default"].create({"name":"mock-kodr","version":"0.0.0+0085731b"});
+  require("mock-kodr/app")["default"].create({"name":"mock-kodr","version":"0.0.0+306cdd14"});
 }
 
 /* jshint ignore:end */

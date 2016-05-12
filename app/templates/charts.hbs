@@ -8,8 +8,19 @@
 	</div>
   <div class="row">
   	{{#each doughtnutData as |data|}}
-  		<div class="col-md-3 well" style="background-color: #fff">
-	      {{ember-chart type="Doughnut" data=data.doughtnutDataList width=250 legend=true height=100 }}
+  		<div class="col-md-3 well">
+	      {{ember-chart type="Doughnut" data=data.doughtnutDataList width=250 height=100 }}
+	      <div class="list-group">
+				  
+				  {{#if data.completed}}
+				  	<a href="#" class="list-group-item text-center alert alert-success"><code><i class="fa fa-tag"></i> {{data.conceptName}}</code></a>
+				  	<a href="#" class="list-group-item text-center disabled alert alert-success"><samp>Mastered !</samp></a>
+				  {{else}}
+				  	<a href="#" class="list-group-item text-center"><code><i class="fa fa-tag"></i> {{data.conceptName}}</code></a>
+				  	<a href="#" class="list-group-item text-center disabled"><samp>{{data.conceptExp}} out of {{data.conceptMax}} Exp</samp></a>
+				  {{/if}}
+				  
+				</div>
 	      {{#if data.needsPractice}}
 	      	<a href="" class="btn btn-warning btn-block"><i class="fa fa-exclamation-triangle"></i> Practice {{data.conceptName}}</a>
 	      {{else}}
@@ -21,17 +32,38 @@
   <div class="page-header">
     <h2>Challenges Solved</h2>
   </div>
-  <div class="row well">
+{{!--   <ul class="nav nav-tabs">
+				  <li class="active"><a href="#" {{action 'changeDate' 'year'}}>Last Year</a></li>
+				  <li><a href="#" {{action 'changeDate' 'month'}}>Last Month</a></li>
+				  <li><a href="#" {{action 'changeDate' 'week'}}>Last Week</a></li>
+				</ul> --}}
 
-    <div class="col-md-12">
-      {{ember-chart type=type data=lineData width=1000 options=options legend=true height=200}}
-    </div>
-    
-  </div>
+	<ul class="nav nav-tabs">
+	  <li class="active"><a data-toggle="tab" href="#year">Last Year</a></li>
+	  <li><a data-toggle="tab" href="#month">Last Month</a></li>
+	  <li><a data-toggle="tab" href="#week">Last Week</a></li>
+	</ul>
+
+	<div class="tab-content">
+	  <div id="year" class="tab-pane fade in active">
+	    <h3>Last Year</h3>
+	    {{ember-chart type=type data=data width=1000 options=options height=200}}		
+	  </div>
+	  <div id="month" class="tab-pane fade active">
+	    <h3>Last Month</h3>
+	    {{ember-chart type=type data=mData width=1000 options=options height=200}}		
+	  </div>
+	  <div id="week" class="tab-pane fade active">
+	    <h3>Last Week</h3>
+	    {{ember-chart type=type data=wData width=1000 options=options height=200}}		
+	  </div>
+	</div>
+	
+
 {{else}}
 	<div class="text-center">
-    <h1>Calculating your statistics and drawing your charts <i class="fa fa-spinner fa-pulse fa-fw margin-bottom" aria-hidden="true"></i></h1>      
-    <p>Go grab a cup of coffee <i class="fa fa-coffee"></i>.</p>
+    <h1>Calculating your statistics and drawing your charts <i class="fa fa-circle-o-notch fa-spin fa-fw margin-bottom" aria-hidden="true"></i></h1>      
+    <p><code>Go grab a cup of coffee <i class="fa fa-coffee"></i></code>.</p>
   </div>  
 {{/if}}
 {{outlet}}

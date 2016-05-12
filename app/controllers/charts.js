@@ -7,6 +7,45 @@ export default Ember.Controller.extend({
 	session: Ember.inject.service('session'),
 	current_user: storageFor('current_user'),
   lineData: {},
+  wData: {
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    datasets: [
+      {
+        label: "Challenges successfully solved over the past week",
+        fill: false,
+        lineTension: 0,
+        fillColor: "rgba(75,192,192,0.4)",
+        datasetFill: false,
+        data: [],
+      }
+    ]
+  },
+  mData: {
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    datasets: [
+      {
+        label: "Challenges successfully solved over the past week",
+        fill: false,
+        lineTension: 0,
+        fillColor: "rgba(75,192,192,0.4)",
+        datasetFill: false,
+        data: [],
+      }
+    ]
+  },
+  yData: {
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    datasets: [
+      {
+        label: "Challenges successfully solved over the past week",
+        fill: false,
+        lineTension: 0,
+        fillColor: "rgba(75,192,192,0.4)",
+        datasetFill: false,
+        data: [],
+      }
+    ]
+  },
   data: {
     labels: ["January", "February", "March", "April", "May", "June", "July"],
     datasets: [
@@ -15,23 +54,8 @@ export default Ember.Controller.extend({
         fill: false,
         lineTension: 0,
         fillColor: "rgba(75,192,192,0.4)",
-        backgroundColor: "rgba(75,192,192,0.4)",
-        borderColor: "rgba(75,192,192,1)",
-        borderCapStyle: 'butt',
-        borderDash: [],
-        borderDashOffset: 0.0,
-        borderJoinStyle: 'miter',
-        pointBorderColor: "rgba(75,192,192,1)",
-        pointBackgroundColor: "#fff",
-        pointBorderWidth: 1,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: "rgba(75,192,192,1)",
-        pointHoverBorderColor: "rgba(75,192,192,1)",
-        pointHoverBorderWidth: 2,
-        pointRadius: 1,
-        pointHitRadius: 10,
         datasetFill: false,
-        data: [3, 2, 4, 2, 4, 2, 2],
+        data: [],
       }
     ]
   },
@@ -94,6 +118,9 @@ export default Ember.Controller.extend({
 	    		dataList.push({
 	    			doughtnutDataList: segment,
 	    			conceptName: c.get('name'),
+	    			conceptExp: uc.get('exp'),
+	    			conceptMax: uc.get('max_exp'),
+	    			completed: (uc.get('exp') === uc.get('max_exp')),
 	    			needsPractice: needsPractice
 	    		});	    		
     		});   		
@@ -101,11 +128,19 @@ export default Ember.Controller.extend({
     	that.set('doughtnutData', dataList);
     }).then(function() {
     	var current = new Date(Date.now());
-	    var da = moment(moment(current).subtract(1, 'year').calendar()).format();
-	    var lineData = that.get('data');
+	    var lastYear = moment(moment(current).subtract(1, 'year').calendar()).format();
+	    var lastMonth = moment(moment(current).subtract(1, 'month').calendar()).format();
+	    var lastWeek = moment(moment(current).subtract(1, 'week').calendar()).format();
+	    var lineData = Object.assign({}, that.get('data'));
+	    var weekLineData = Object.assign({}, that.get('wData'));
+	    var monthLineData = Object.assign({}, that.get('mData'));
+	    var yearLineData = Object.assign({}, that.get('yData'));
 	    var labels = [];
 	    var data = [];
-	    that.store.query('activity', {subjectId: that.get('current_user.id'), verb: "completed", time: { $gt: da }}).then(function(activities) {
+	    var weekData = [];
+	    var monthData = [];
+	    var yearData = [];
+	    that.store.query('activity', {subjectId: that.get('current_user.id'), verb: "completed", time: { $gt: lastYear }}).then(function(activities) {
 	      // Retrieve all date where a challenge was successfully completed
 	      var date;
 	      activities.map(function(activity) {
@@ -113,23 +148,54 @@ export default Ember.Controller.extend({
 	          Loop on each activity, group all challenges that were
 	          solved on the same day together 
 	         */
-	        date = new Date(activity.get('time'));
-	        date = (moment(date).format('dddd, MMM Do')).toString();
+	        var act_date = new Date(activity.get('time'));
+	        
 
+	        date = (moment(act_date).format('dddd, MMM Do YY'));
 	        if (!(_.includes(labels, date))) {
-	          labels.push(date);
-	          data.push(1);
+	        	if ( moment(act_date).isAfter(moment(lastMonth)) ) {
+		        	if (moment(act_date).isAfter(moment(lastWeek))) {
+		        		weekData.push(1);
+		        	}
+		        	monthData.push(1);
+		        }
+	        	labels.push(date);
+	          	data.push(1);
 	        }
 	        else {
-	          data[labels.indexOf(date)] += 1;
+	        	if (moment(act_date).isAfter(moment(lastMonth))) {
+		        	if (moment(act_date).isAfter(moment(lastWeek))) {
+		        		weekData[labels.indexOf(date)] += 1;
+		        	}
+		        	monthData[labels.indexOf(date)] += 1;
+		        }
+	          	data[labels.indexOf(date)] += 1;
 	        }
 
 	        
 	      });
+	      
 	      lineData.labels = labels;
-	      lineData.datasets.data = data;
+	      lineData.datasets[0].data = data;
+
+	      monthLineData.labels = labels;
+	      //monthLineData.datasets[0].data = monthData;
+
+	      weekLineData.labels = labels;
+	      //weekLineData.datasets[0].data = weekData;
+	      
 	      that.set('lineData', lineData);
+	      that.set('wData', weekLineData);
+	      that.set('mData', monthLineData);
+
 	      that.set('ready', true);
+	      	
+	    }).then(function() {
+		    Ember.run.scheduleOnce('afterRender', this, function() {
+		    	/* Hide last week and last month's challenges solved */
+                Ember.$('#week').removeClass("active");
+                Ember.$('#month').removeClass("active");
+            });
 	    });
     });
   }.on('init'),
@@ -156,49 +222,30 @@ export default Ember.Controller.extend({
       }
     },
     changeDate: function(period) {
-      var lineData = this.get('data');
-      var labels = [];
-      var data = [];
-      var that = this;
-      var current = moment(new Date(Date.now()));
-      var previous;
-      switch (period){
-        case 'week': 
-          previous = moment(current.subtract(7, 'days').calendar()).format();
-          break;
-        case 'month':
-          previous = moment(current.subtract(1, 'month').calendar()).format();
-          break;
-        case 'year':
-          previous = moment(current.subtract(1, 'year').calendar()).format();
-          break;
-      }
-      this.store.query('activity', {subjectId: that.get('current_user.id'), verb: "completed", time: { $gt: previous }}).then(function(activities) {
-        // Retrieve all date where a challenge was successfully completed
-        var date;
-        activities.map(function(activity) {
-          /*
-            Loop on each activity, group all challenges that were
-            solved on the same day together 
-           */
-          date = new Date(activity.get('time'));
-          date = (moment(date).format('dddd, MMM Do')).toString();
+    	console.log(period, "ok")
 
-          if (!(_.includes(labels, date))) {
-            labels.push(date);
-            data.push(1);
-          }
-          else {
-            data[labels.indexOf(date)] += 1;
-          }
+		switch (period){
+			case 'week':
+				Ember.$('.week').removeClass("hidden");
+				Ember.$('.month').addClass("hidden");
+				Ember.$('.year').addClass("hiden");
+				//previous = moment(current.subtract(7, 'days').calendar()).format();
+				break;
+			case 'month':
+				Ember.$('.month').removeClass("hidden");
+				Ember.$('.week').addClass("hidden");
+				Ember.$('.year').addClass("hiden");
+				//previous = moment(current.subtract(1, 'month').calendar()).format();
+			  	break;
+			case 'year':
+				Ember.$('.year').removeClass("hiden");
+				Ember.$('.month').addClass("hidden");
+				Ember.$('.week').addClass("hiden");
+			  	//previous = moment(current.subtract(1, 'year').calendar()).format();
+			 	break;
+		}
 
-          
-        });
-        lineData.labels = labels;
-        lineData.datasets.data = data;
-        that.set('lineData', lineData);
-        that.set('ready', true);
-      });
+		this.set('lineDate', []);
 
       
     }

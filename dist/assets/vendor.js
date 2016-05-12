@@ -67608,7 +67608,7 @@ requireModule("ember");
 		animateScale : false,
 
 		//String - A legend template
-		// legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend list-group\"><% for (var i=0; i<segments.length; i++){%><li class=\"list-group-item\"><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
+		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend list-group\"><% for (var i=0; i<segments.length; i++){%><li class=\"list-group-item\"><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
 
 	};
 
@@ -67789,7 +67789,7 @@ requireModule("ember");
 		bezierCurveTension : 0.4,
 
 		//Boolean - Whether to show a dot for each point
-		pointDot : true,
+		pointDot : false,
 
 		//Number - Radius of each point dot in pixels
 		pointDotRadius : 4,
@@ -67804,7 +67804,7 @@ requireModule("ember");
 		datasetStroke : true,
 
 		//Number - Pixel width of dataset stroke
-		datasetStrokeWidth : 2,
+		datasetStrokeWidth : 4,
 
 		//Boolean - Whether to fill the dataset with a colour
 		datasetFill : true,

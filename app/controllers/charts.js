@@ -24,7 +24,7 @@ export default Ember.Controller.extend({
     labels: ["January", "February", "March", "April", "May", "June", "July"],
     datasets: [
       {
-        label: "Challenges successfully solved over the past week",
+        label: "Challenges successfully solved over the past month",
         fill: false,
         lineTension: 0,
         fillColor: "rgba(75,192,192,0.4)",
@@ -37,7 +37,7 @@ export default Ember.Controller.extend({
     labels: ["January", "February", "March", "April", "May", "June", "July"],
     datasets: [
       {
-        label: "Challenges successfully solved over the past week",
+        label: "Challenges successfully solved over the past year",
         fill: false,
         lineTension: 0,
         fillColor: "rgba(75,192,192,0.4)",
@@ -50,7 +50,7 @@ export default Ember.Controller.extend({
     labels: ["January", "February", "March", "April", "May", "June", "July"],
     datasets: [
       {
-        label: "Challenges successfully solved over the past week",
+        label: "Exp",
         fill: false,
         lineTension: 0,
         fillColor: "rgba(75,192,192,0.4)",
@@ -131,10 +131,10 @@ export default Ember.Controller.extend({
 	    var lastYear = moment(moment(current).subtract(1, 'year').calendar()).format();
 	    var lastMonth = moment(moment(current).subtract(1, 'month').calendar()).format();
 	    var lastWeek = moment(moment(current).subtract(1, 'week').calendar()).format();
-	    var lineData = Object.assign({}, that.get('data'));
-	    var weekLineData = Object.assign({}, that.get('wData'));
-	    var monthLineData = Object.assign({}, that.get('mData'));
-	    var yearLineData = Object.assign({}, that.get('yData'));
+	    var lineData = that.get('data');
+	    var weekLineData = that.get('wData')
+	    var monthLineData = that.get('mData')
+	    var yearLineData = that.get('yData')
 	    var labels = [];
 	    var data = [];
 	    var weekData = [];
@@ -150,7 +150,9 @@ export default Ember.Controller.extend({
 	         */
 	        var act_date = new Date(activity.get('time'));
 	        
-
+	        that.store.findRecord('trial', activity.get('objectId')).then(function(trial) {
+	        	console.log(trial.get('exp'))
+	        })
 	        date = (moment(act_date).format('dddd, MMM Do YY'));
 	        if (!(_.includes(labels, date))) {
 	        	if ( moment(act_date).isAfter(moment(lastMonth)) ) {

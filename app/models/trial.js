@@ -1,8 +1,8 @@
 import DS from 'ember-data';
 
 export default  DS.Model.extend({
-    work: DS.attr('mixed'),
-    blueprint: DS.attr('mixed'),
+    // work: DS.attr('mixed'),
+    // blueprint: DS.attr('mixed'),
     times: DS.attr('number'),
     exp: DS.attr('number'),
     order: DS.attr('number'),

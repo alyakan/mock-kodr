@@ -509,237 +509,240 @@ define('mock-kodr/controllers/challenge/edit', ['exports', 'ember', 'ember-local
   });
 });
 define('mock-kodr/controllers/charts', ['exports', 'ember', 'ember-local-storage', 'moment', 'lodash/lodash'], function (exports, _ember, _emberLocalStorage, _moment, _lodashLodash) {
-  exports['default'] = _ember['default'].Controller.extend({
-    session: _ember['default'].inject.service('session'),
-    current_user: (0, _emberLocalStorage.storageFor)('current_user'),
-    lineData: {},
-    wData: {
-      labels: ["January", "February", "March", "April", "May", "June", "July"],
-      datasets: [{
-        label: "Challenges successfully solved over the past week",
-        fill: false,
-        lineTension: 0,
-        fillColor: "rgba(75,192,192,0.4)",
-        datasetFill: false,
-        data: []
-      }]
-    },
-    mData: {
-      labels: ["January", "February", "March", "April", "May", "June", "July"],
-      datasets: [{
-        label: "Challenges successfully solved over the past week",
-        fill: false,
-        lineTension: 0,
-        fillColor: "rgba(75,192,192,0.4)",
-        datasetFill: false,
-        data: []
-      }]
-    },
-    yData: {
-      labels: ["January", "February", "March", "April", "May", "June", "July"],
-      datasets: [{
-        label: "Challenges successfully solved over the past week",
-        fill: false,
-        lineTension: 0,
-        fillColor: "rgba(75,192,192,0.4)",
-        datasetFill: false,
-        data: []
-      }]
-    },
-    data: {
-      labels: ["January", "February", "March", "April", "May", "June", "July"],
-      datasets: [{
-        label: "Challenges successfully solved over the past week",
-        fill: false,
-        lineTension: 0,
-        fillColor: "rgba(75,192,192,0.4)",
-        datasetFill: false,
-        data: []
-      }]
-    },
-    doData: [{
-      value: 8,
-      color: "#00B233",
-      label: "Conditionals"
-    }, {
-      value: 2,
-      color: "#7CB2AF",
-      label: "Incomplete"
-    }],
-    options: {
-      responsive: true,
-      bezierCurveTension: 0.1,
-      datasetFill: false,
-      angleLineWidth: 3,
-      angleLineColor: "rgba(179,181,198,.5)",
-      scaleBeginAtZero: true
-      // showLines: false,
-    },
-    type: "Line",
-    ready: false,
-    doughtnutData: [],
+		exports['default'] = _ember['default'].Controller.extend({
+				session: _ember['default'].inject.service('session'),
+				current_user: (0, _emberLocalStorage.storageFor)('current_user'),
+				lineData: {},
+				wData: {
+						labels: ["January", "February", "March", "April", "May", "June", "July"],
+						datasets: [{
+								label: "Challenges successfully solved over the past week",
+								fill: false,
+								lineTension: 0,
+								fillColor: "rgba(75,192,192,0.4)",
+								datasetFill: false,
+								data: []
+						}]
+				},
+				mData: {
+						labels: ["January", "February", "March", "April", "May", "June", "July"],
+						datasets: [{
+								label: "Challenges successfully solved over the past month",
+								fill: false,
+								lineTension: 0,
+								fillColor: "rgba(75,192,192,0.4)",
+								datasetFill: false,
+								data: []
+						}]
+				},
+				yData: {
+						labels: ["January", "February", "March", "April", "May", "June", "July"],
+						datasets: [{
+								label: "Challenges successfully solved over the past year",
+								fill: false,
+								lineTension: 0,
+								fillColor: "rgba(75,192,192,0.4)",
+								datasetFill: false,
+								data: []
+						}]
+				},
+				data: {
+						labels: ["January", "February", "March", "April", "May", "June", "July"],
+						datasets: [{
+								label: "Exp",
+								fill: false,
+								lineTension: 0,
+								fillColor: "rgba(75,192,192,0.4)",
+								datasetFill: false,
+								data: []
+						}]
+				},
+				doData: [{
+						value: 8,
+						color: "#00B233",
+						label: "Conditionals"
+				}, {
+						value: 2,
+						color: "#7CB2AF",
+						label: "Incomplete"
+				}],
+				options: {
+						responsive: true,
+						bezierCurveTension: 0.1,
+						datasetFill: false,
+						angleLineWidth: 3,
+						angleLineColor: "rgba(179,181,198,.5)",
+						scaleBeginAtZero: true
+						// showLines: false,
+				},
+				type: "Line",
+				ready: false,
+				doughtnutData: [],
 
-    'in': (function () {
+				'in': (function () {
 
-      var that = this;
-      this.store.query('userConcept', { user: that.get('current_user.id') }).then(function (userConcepts) {
-        // Retrieve UserConcepts to display concept mastery in a doughnut chart	
-        var dataList = [];
-        userConcepts.map(function (uc) {
-          var segment = [];
-          uc.get('concept').then(function (c) {
-            segment[0] = {
-              value: uc.get('exp'),
-              color: "#00B233",
-              label: c.get('name')
-            };
-            if (uc.get('max_exp') - uc.get('exp') !== 0) {
-              segment[1] = {
-                value: uc.get('max_exp') - uc.get('exp'),
-                color: "#7CB2AF",
-                label: "Incomplete"
-              };
-            } else {
-              segment[1] = {
-                value: 0,
-                color: "#7CB2AF",
-                label: "Complete!"
-              };
-            }
-            var needsPractice = false;
-            var threeDaysAgo = new Date(Date.now());
-            threeDaysAgo = (0, _moment['default'])(threeDaysAgo).subtract(3, 'day').format('dddd, MMM Do');
-            var last_practiced = (0, _moment['default'])(uc.get('last_practiced')).format('dddd, MMM Do');
-            if (threeDaysAgo > last_practiced) {
-              needsPractice = true;
-            }
-            dataList.push({
-              doughtnutDataList: segment,
-              conceptName: c.get('name'),
-              conceptExp: uc.get('exp'),
-              conceptMax: uc.get('max_exp'),
-              completed: uc.get('exp') === uc.get('max_exp'),
-              needsPractice: needsPractice
-            });
-          });
-        });
-        that.set('doughtnutData', dataList);
-      }).then(function () {
-        var current = new Date(Date.now());
-        var lastYear = (0, _moment['default'])((0, _moment['default'])(current).subtract(1, 'year').calendar()).format();
-        var lastMonth = (0, _moment['default'])((0, _moment['default'])(current).subtract(1, 'month').calendar()).format();
-        var lastWeek = (0, _moment['default'])((0, _moment['default'])(current).subtract(1, 'week').calendar()).format();
-        var lineData = Object.assign({}, that.get('data'));
-        var weekLineData = Object.assign({}, that.get('wData'));
-        var monthLineData = Object.assign({}, that.get('mData'));
-        var yearLineData = Object.assign({}, that.get('yData'));
-        var labels = [];
-        var data = [];
-        var weekData = [];
-        var monthData = [];
-        var yearData = [];
-        that.store.query('activity', { subjectId: that.get('current_user.id'), verb: "completed", time: { $gt: lastYear } }).then(function (activities) {
-          // Retrieve all date where a challenge was successfully completed
-          var date;
-          activities.map(function (activity) {
-            /*
+						var that = this;
+						this.store.query('userConcept', { user: that.get('current_user.id') }).then(function (userConcepts) {
+								// Retrieve UserConcepts to display concept mastery in a doughnut chart	
+								var dataList = [];
+								userConcepts.map(function (uc) {
+										var segment = [];
+										uc.get('concept').then(function (c) {
+												segment[0] = {
+														value: uc.get('exp'),
+														color: "#00B233",
+														label: c.get('name')
+												};
+												if (uc.get('max_exp') - uc.get('exp') !== 0) {
+														segment[1] = {
+																value: uc.get('max_exp') - uc.get('exp'),
+																color: "#7CB2AF",
+																label: "Incomplete"
+														};
+												} else {
+														segment[1] = {
+																value: 0,
+																color: "#7CB2AF",
+																label: "Complete!"
+														};
+												}
+												var needsPractice = false;
+												var threeDaysAgo = new Date(Date.now());
+												threeDaysAgo = (0, _moment['default'])(threeDaysAgo).subtract(3, 'day').format('dddd, MMM Do');
+												var last_practiced = (0, _moment['default'])(uc.get('last_practiced')).format('dddd, MMM Do');
+												if (threeDaysAgo > last_practiced) {
+														needsPractice = true;
+												}
+												dataList.push({
+														doughtnutDataList: segment,
+														conceptName: c.get('name'),
+														conceptExp: uc.get('exp'),
+														conceptMax: uc.get('max_exp'),
+														completed: uc.get('exp') === uc.get('max_exp'),
+														needsPractice: needsPractice
+												});
+										});
+								});
+								that.set('doughtnutData', dataList);
+						}).then(function () {
+								var current = new Date(Date.now());
+								var lastYear = (0, _moment['default'])((0, _moment['default'])(current).subtract(1, 'year').calendar()).format();
+								var lastMonth = (0, _moment['default'])((0, _moment['default'])(current).subtract(1, 'month').calendar()).format();
+								var lastWeek = (0, _moment['default'])((0, _moment['default'])(current).subtract(1, 'week').calendar()).format();
+								var lineData = that.get('data');
+								var weekLineData = that.get('wData');
+								var monthLineData = that.get('mData');
+								var yearLineData = that.get('yData');
+								var labels = [];
+								var data = [];
+								var weekData = [];
+								var monthData = [];
+								var yearData = [];
+								that.store.query('activity', { subjectId: that.get('current_user.id'), verb: "completed", time: { $gt: lastYear } }).then(function (activities) {
+										// Retrieve all date where a challenge was successfully completed
+										var date;
+										activities.map(function (activity) {
+												/*
               Loop on each activity, group all challenges that were
               solved on the same day together 
              */
-            var act_date = new Date(activity.get('time'));
+												var act_date = new Date(activity.get('time'));
 
-            date = (0, _moment['default'])(act_date).format('dddd, MMM Do YY');
-            if (!_lodashLodash['default'].includes(labels, date)) {
-              if ((0, _moment['default'])(act_date).isAfter((0, _moment['default'])(lastMonth))) {
-                if ((0, _moment['default'])(act_date).isAfter((0, _moment['default'])(lastWeek))) {
-                  weekData.push(1);
-                }
-                monthData.push(1);
-              }
-              labels.push(date);
-              data.push(1);
-            } else {
-              if ((0, _moment['default'])(act_date).isAfter((0, _moment['default'])(lastMonth))) {
-                if ((0, _moment['default'])(act_date).isAfter((0, _moment['default'])(lastWeek))) {
-                  weekData[labels.indexOf(date)] += 1;
-                }
-                monthData[labels.indexOf(date)] += 1;
-              }
-              data[labels.indexOf(date)] += 1;
-            }
-          });
+												that.store.findRecord('trial', activity.get('objectId')).then(function (trial) {
+														console.log(trial.get('exp'));
+												});
+												date = (0, _moment['default'])(act_date).format('dddd, MMM Do YY');
+												if (!_lodashLodash['default'].includes(labels, date)) {
+														if ((0, _moment['default'])(act_date).isAfter((0, _moment['default'])(lastMonth))) {
+																if ((0, _moment['default'])(act_date).isAfter((0, _moment['default'])(lastWeek))) {
+																		weekData.push(1);
+																}
+																monthData.push(1);
+														}
+														labels.push(date);
+														data.push(1);
+												} else {
+														if ((0, _moment['default'])(act_date).isAfter((0, _moment['default'])(lastMonth))) {
+																if ((0, _moment['default'])(act_date).isAfter((0, _moment['default'])(lastWeek))) {
+																		weekData[labels.indexOf(date)] += 1;
+																}
+																monthData[labels.indexOf(date)] += 1;
+														}
+														data[labels.indexOf(date)] += 1;
+												}
+										});
 
-          lineData.labels = labels;
-          lineData.datasets[0].data = data;
+										lineData.labels = labels;
+										lineData.datasets[0].data = data;
 
-          monthLineData.labels = labels;
-          //monthLineData.datasets[0].data = monthData;
+										monthLineData.labels = labels;
+										//monthLineData.datasets[0].data = monthData;
 
-          weekLineData.labels = labels;
-          //weekLineData.datasets[0].data = weekData;
+										weekLineData.labels = labels;
+										//weekLineData.datasets[0].data = weekData;
 
-          that.set('lineData', lineData);
-          that.set('wData', weekLineData);
-          that.set('mData', monthLineData);
+										that.set('lineData', lineData);
+										that.set('wData', weekLineData);
+										that.set('mData', monthLineData);
 
-          that.set('ready', true);
-        }).then(function () {
-          _ember['default'].run.scheduleOnce('afterRender', this, function () {
-            /* Hide last week and last month's challenges solved */
-            _ember['default'].$('#week').removeClass("active");
-            _ember['default'].$('#month').removeClass("active");
-          });
-        });
-      });
-    }).on('init'),
-    actions: {
-      session: _ember['default'].inject.service('session'),
-      invalidateSession: function invalidateSession() {
-        _ember['default'].$.ajax({
-          type: 'DELETE',
-          url: '/logout'
-        });
-        this.set('current_user', null);
-        this.get('session').invalidate();
-      },
-      changeType: function changeType() {
+										that.set('ready', true);
+								}).then(function () {
+										_ember['default'].run.scheduleOnce('afterRender', this, function () {
+												/* Hide last week and last month's challenges solved */
+												_ember['default'].$('#week').removeClass("active");
+												_ember['default'].$('#month').removeClass("active");
+										});
+								});
+						});
+				}).on('init'),
+				actions: {
+						session: _ember['default'].inject.service('session'),
+						invalidateSession: function invalidateSession() {
+								_ember['default'].$.ajax({
+										type: 'DELETE',
+										url: '/logout'
+								});
+								this.set('current_user', null);
+								this.get('session').invalidate();
+						},
+						changeType: function changeType() {
 
-        if (this.get('type') === 'Bar') {
-          console.log("ok");
-          this.set('type', 'Line');
-        } else {
-          console.log("no");
-          this.set('type', 'Bar');
-        }
-      },
-      changeDate: function changeDate(period) {
-        console.log(period, "ok");
+								if (this.get('type') === 'Bar') {
+										console.log("ok");
+										this.set('type', 'Line');
+								} else {
+										console.log("no");
+										this.set('type', 'Bar');
+								}
+						},
+						changeDate: function changeDate(period) {
+								console.log(period, "ok");
 
-        switch (period) {
-          case 'week':
-            _ember['default'].$('.week').removeClass("hidden");
-            _ember['default'].$('.month').addClass("hidden");
-            _ember['default'].$('.year').addClass("hiden");
-            //previous = moment(current.subtract(7, 'days').calendar()).format();
-            break;
-          case 'month':
-            _ember['default'].$('.month').removeClass("hidden");
-            _ember['default'].$('.week').addClass("hidden");
-            _ember['default'].$('.year').addClass("hiden");
-            //previous = moment(current.subtract(1, 'month').calendar()).format();
-            break;
-          case 'year':
-            _ember['default'].$('.year').removeClass("hiden");
-            _ember['default'].$('.month').addClass("hidden");
-            _ember['default'].$('.week').addClass("hiden");
-            //previous = moment(current.subtract(1, 'year').calendar()).format();
-            break;
-        }
+								switch (period) {
+										case 'week':
+												_ember['default'].$('.week').removeClass("hidden");
+												_ember['default'].$('.month').addClass("hidden");
+												_ember['default'].$('.year').addClass("hiden");
+												//previous = moment(current.subtract(7, 'days').calendar()).format();
+												break;
+										case 'month':
+												_ember['default'].$('.month').removeClass("hidden");
+												_ember['default'].$('.week').addClass("hidden");
+												_ember['default'].$('.year').addClass("hiden");
+												//previous = moment(current.subtract(1, 'month').calendar()).format();
+												break;
+										case 'year':
+												_ember['default'].$('.year').removeClass("hiden");
+												_ember['default'].$('.month').addClass("hidden");
+												_ember['default'].$('.week').addClass("hiden");
+												//previous = moment(current.subtract(1, 'year').calendar()).format();
+												break;
+								}
 
-        this.set('lineDate', []);
-      }
-    }
-  });
+								this.set('lineDate', []);
+						}
+				}
+		});
 });
 define('mock-kodr/controllers/object', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = _ember['default'].Controller;
@@ -1411,8 +1414,8 @@ define('mock-kodr/models/mixed', ['exports', 'ember'], function (exports, _ember
 });
 define('mock-kodr/models/trial', ['exports', 'ember-data'], function (exports, _emberData) {
     exports['default'] = _emberData['default'].Model.extend({
-        work: _emberData['default'].attr('mixed'),
-        blueprint: _emberData['default'].attr('mixed'),
+        // work: DS.attr('mixed'),
+        // blueprint: DS.attr('mixed'),
         times: _emberData['default'].attr('number'),
         exp: _emberData['default'].attr('number'),
         order: _emberData['default'].attr('number'),
@@ -2697,7 +2700,10 @@ define("mock-kodr/templates/charts", ["exports"], function (exports) {
               dom.setAttribute(el1, "href", "#");
               dom.setAttribute(el1, "class", "list-group-item text-center disabled alert alert-success");
               var el2 = dom.createElement("samp");
-              var el3 = dom.createTextNode("Mastered !");
+              var el3 = dom.createElement("i");
+              dom.setAttribute(el3, "class", "fa fa-thumbs-o-up");
+              dom.appendChild(el2, el3);
+              var el3 = dom.createTextNode(" Mastered !");
               dom.appendChild(el2, el3);
               dom.appendChild(el1, el2);
               dom.appendChild(el0, el1);

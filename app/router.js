@@ -7,14 +7,17 @@ const Router = Ember.Router.extend({
 
 Router.map(function() {
   this.route('login');
+
   this.resource('arenas', {
     path: '/arenas'
   }, function() {
     this.route('create');
   });
+
   this.resource('userArenas', {
   	path: '/user-arenas'
   });
+
   this.resource('arena', {
     path: '/arenas/:arena_id'
   }, function() {
@@ -32,8 +35,20 @@ Router.map(function() {
       this.route('create');
     });      
   });
+
   this.resource('concepts');
   this.route('charts');
+
+  this.route('userArena', {
+    path: '/arena/:user_arena_id' //used to load a user arena
+  }, function() {
+    this.route('trial', {
+      path: '/try/:trial_id' //used to load trial
+    });
+    this.resource('randomChallenge', {
+      path: '/random'
+    });
+  });
 });
 
 export default Router;

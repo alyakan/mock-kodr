@@ -21,7 +21,7 @@ var Arena = DS.Model.extend({
       return true;
     return false;
   }).property('hasPrerequisit'),
-  isPublished: attr('boolean', {defaultValue:false}),
+  isPublished: attr('boolean', {defaultValue:true}),
   author: DS.belongsTo('user', {async:true, inverse:'arenas'}),
   prerequisit: DS.belongsTo('arena', {defaultValue:null}),
   trials: DS.hasMany('trial', {async:true, inverse: 'arena'}),

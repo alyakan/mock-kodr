@@ -6,7 +6,7 @@
   	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 	  <strong>Info!</strong> Concepts that haven't been practiced in a long time are labeled <i class="fa fa-exclamation-triangle"></i>.
 	</div>
-  <div class="row">
+  <div class="row well">
   	{{#each doughtnutData as |data|}}
   		<div class="col-md-3 well">
 	      {{ember-chart type="Doughnut" data=data.doughtnutDataList width=250 height=100 }}
@@ -32,12 +32,8 @@
   <div class="page-header">
     <h2>Challenges Solved</h2>
   </div>
-{{!--   <ul class="nav nav-tabs">
-				  <li class="active"><a href="#" {{action 'changeDate' 'year'}}>Last Year</a></li>
-				  <li><a href="#" {{action 'changeDate' 'month'}}>Last Month</a></li>
-				  <li><a href="#" {{action 'changeDate' 'week'}}>Last Week</a></li>
-				</ul> --}}
 
+	<div class="row well">
 	<ul class="nav nav-tabs">
 	  <li class="active"><a data-toggle="tab" href="#year">Last Year</a></li>
 	  <li><a data-toggle="tab" href="#month">Last Month</a></li>
@@ -57,6 +53,7 @@
 	    <h3>Last Week</h3>
 	    {{ember-chart type=type data=wData width=1000 options=options height=200}}		
 	  </div>
+	</div>
 	</div>
 	
 

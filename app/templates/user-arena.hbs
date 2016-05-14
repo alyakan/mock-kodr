@@ -1,2 +1,16 @@
-{{model.id}}
+{{user-arena-detail userArena=userArena}}
+<br>
+
+{{!-- <div class="row">
+	{{#each userArena.trials as |trial|}}
+		<a href="" class="col-md-4  text-center well">
+			{{trial.challenge.name}}
+		</a>
+		
+	{{/each}}
+</div> --}}
+
+{{trial-item trial=randomTrial store=store trials=trials}}
+
+
 {{outlet}}

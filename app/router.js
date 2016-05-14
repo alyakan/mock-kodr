@@ -8,35 +8,40 @@ const Router = Ember.Router.extend({
 Router.map(function() {
   this.route('login');
 
-  this.resource('arenas', {
+  this.route('arenas', {
+    resetNameSpace: true,
     path: '/arenas'
   }, function() {
     this.route('create');
   });
 
-  this.resource('userArenas', {
+  this.route('userArenas', {
+    resetNameSpace: true,
   	path: '/user-arenas'
   });
 
-  this.resource('arena', {
+  this.route('arena', {
+    resetNameSpace: true,
     path: '/arenas/:arena_id'
   }, function() {
     this.route('edit');
-    this.resource('challenge', {
+    this.route('challenge', {
+      resetNameSpace: true,
       path: 'challenge/:challenge_id'
     }, function() {
       this.route('edit');
       this.route('try');
       this.route('copy');
     });
-    this.resource('challenges', {
+    this.route('challenges', {
+      resetNameSpace: true,
       path: 'challenge'
     }, function() {
       this.route('create');
     });      
   });
 
-  this.resource('concepts');
+  this.route('concepts', {resetNameSpace: true});
   this.route('charts');
 
   this.route('userArena', {
@@ -45,7 +50,8 @@ Router.map(function() {
     this.route('trial', {
       path: '/try/:trial_id' //used to load trial
     });
-    this.resource('randomChallenge', {
+    this.route('randomChallenge', {
+      resetNameSpace: true,
       path: '/random'
     });
   });

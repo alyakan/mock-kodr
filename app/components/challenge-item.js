@@ -10,7 +10,7 @@ export default Ember.Component.extend({
 		Ember.run.scheduleOnce('afterRender', this, function() {
 			this.store.findRecord('challenge', id).then(function(ch) {
 
-				console.log(ch.get('concepts'));
+				
 				that.set('challenge', ch);
 				that.set('concepts', ch.get('concepts').toArray());
 			});

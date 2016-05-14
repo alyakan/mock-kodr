@@ -12,7 +12,6 @@ export default DS.Model.extend({
 		// Number of completed trials / Total number of trials
 
   	var prog = (this.get('completed') / this.get('trials').toArray().length) * 100
-    console.log(Ember.typeOf(prog))
     if (prog > 0)
       var a = 0;
     else

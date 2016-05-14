@@ -1,0 +1,13 @@
+<div class="text-center">
+	<h2 class="page-header">
+		{{userArena.arena.name}}
+	</h2>
+	<code>{{userArena.arena.description}}</code><br><br>
+	<div class="progress text-center">
+	  <div class="progress-bar progress-bar-success progress-bar-striped text-center" role="progressbar" aria-valuenow="{{userArena.progress}}"
+	  aria-valuemin="0" aria-valuemax="100" style="width:{{userArena.progress}}%">
+	    {{userArena.progress}}%
+	  </div>
+	</div>
+</div>
+{{yield}}

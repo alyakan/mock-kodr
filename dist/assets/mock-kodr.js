@@ -246,7 +246,6 @@ define('mock-kodr/components/challenge-item', ['exports', 'ember'], function (ex
 			_ember['default'].run.scheduleOnce('afterRender', this, function () {
 				this.store.findRecord('challenge', id).then(function (ch) {
 
-					console.log(ch.get('concepts'));
 					that.set('challenge', ch);
 					that.set('concepts', ch.get('concepts').toArray());
 				});
@@ -403,6 +402,49 @@ define('mock-kodr/components/power-select', ['exports', 'ember-power-select/comp
       return _emberPowerSelectComponentsPowerSelect['default'];
     }
   });
+});
+define('mock-kodr/components/trial-item', ['exports', 'ember'], function (exports, _ember) {
+	exports['default'] = _ember['default'].Component.extend({
+		store: null,
+		trial: null,
+		concepts: [],
+		challenge: null,
+		trials: [],
+		done: false,
+		onInit: (function () {
+			var that = this;
+
+			_ember['default'].run.scheduleOnce('afterRender', this, function () {
+				if (that.get('trial.challenge')) {
+					var ch_id = that.get('trial.challenge').get('id');
+					that.store.findRecord('challenge', ch_id).then(function (challenge) {
+						that.set('concepts', challenge.get('concepts').toArray());
+					});
+				}
+			});
+		}).on('init'),
+		actions: {
+			correctAnswer: function correctAnswer() {
+				var trials = this.get('trials').toArray();
+				var that = this;
+				if (trials.length) {
+					var trial = trials[Math.floor(Math.random() * trials.length)];
+					var ch_id = trial.get('challenge').get('id');
+					this.store.findRecord('challenge', ch_id).then(function (challenge) {
+						that.set('concepts', challenge.get('concepts').toArray());
+					});
+					trials = trials.removeObject(trial);
+					this.set('trial', trial);
+					this.set('trials', trials);
+				} else {
+					this.set('done', true);
+				}
+			}
+		}
+	});
+});
+define('mock-kodr/components/user-arena-detail', ['exports', 'ember'], function (exports, _ember) {
+  exports['default'] = _ember['default'].Component.extend({});
 });
 define("mock-kodr/components/user-arena-item", ["exports", "ember"], function (exports, _ember) {
 	exports["default"] = _ember["default"].Component.extend({
@@ -746,6 +788,20 @@ define('mock-kodr/controllers/charts', ['exports', 'ember', 'ember-local-storage
 });
 define('mock-kodr/controllers/object', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = _ember['default'].Controller;
+});
+define('mock-kodr/controllers/user-arena', ['exports', 'ember'], function (exports, _ember) {
+	exports['default'] = _ember['default'].Controller.extend({
+		trials: [],
+		userArena: {},
+		randomTrial: {},
+		actions: {
+			getRandom: function getRandom() {
+				var trials = this.get('userArena.trials');
+				var item = trials.toArray()[Math.floor(Math.random() * trials.toArray().length)];
+				this.set('randomTrial', item);
+			}
+		}
+	});
 });
 define('mock-kodr/helpers/and', ['exports', 'ember', 'ember-truth-helpers/helpers/and'], function (exports, _ember, _emberTruthHelpersHelpersAnd) {
 
@@ -1462,7 +1518,6 @@ define('mock-kodr/models/user-arena', ['exports', 'ember-data', 'ember'], functi
       // Number of completed trials / Total number of trials
 
       var prog = this.get('completed') / this.get('trials').toArray().length * 100;
-      console.log(_ember['default'].typeOf(prog));
       if (prog > 0) var a = 0;else prog = 0;
       return Math.round(prog);
     }).property('progress'),
@@ -1536,35 +1591,40 @@ define('mock-kodr/router', ['exports', 'ember', 'mock-kodr/config/environment'],
   Router.map(function () {
     this.route('login');
 
-    this.resource('arenas', {
+    this.route('arenas', {
+      resetNameSpace: true,
       path: '/arenas'
     }, function () {
       this.route('create');
     });
 
-    this.resource('userArenas', {
+    this.route('userArenas', {
+      resetNameSpace: true,
       path: '/user-arenas'
     });
 
-    this.resource('arena', {
+    this.route('arena', {
+      resetNameSpace: true,
       path: '/arenas/:arena_id'
     }, function () {
       this.route('edit');
-      this.resource('challenge', {
+      this.route('challenge', {
+        resetNameSpace: true,
         path: 'challenge/:challenge_id'
       }, function () {
         this.route('edit');
         this.route('try');
         this.route('copy');
       });
-      this.resource('challenges', {
+      this.route('challenges', {
+        resetNameSpace: true,
         path: 'challenge'
       }, function () {
         this.route('create');
       });
     });
 
-    this.resource('concepts');
+    this.route('concepts', { resetNameSpace: true });
     this.route('charts');
 
     this.route('userArena', {
@@ -1573,7 +1633,8 @@ define('mock-kodr/router', ['exports', 'ember', 'mock-kodr/config/environment'],
       this.route('trial', {
         path: '/try/:trial_id' //used to load trial
       });
-      this.resource('randomChallenge', {
+      this.route('randomChallenge', {
+        resetNameSpace: true,
         path: '/random'
       });
     });
@@ -1620,14 +1681,27 @@ define('mock-kodr/routes/user-arena', ['exports', 'ember', 'ember-local-storage'
 		current_user: (0, _emberLocalStorage.storageFor)('current_user'),
 		model: function model(params) {
 			var router = this;
-			// return router.store.query('userArena', {'id': params.user_arena_id}).then(function(ua) {
-			// 		console.log(ua.get('id'))
-			// 	})
-
 			return this.store.findRecord('userArena', params.user_arena_id).then(function (userArena) {
 
-				router.store.query('trial', { 'arena': userArena.get('arena.id'), 'user': router.get('current_user.user.id') }).then(function (trials) {});
-				return userArena;
+				return router.store.query('trial', { 'arena': userArena.get('arena.id'), 'user': router.get('current_user.user.id'), 'complete': false }).then(function (trials) {
+
+					var trial = trials.toArray()[Math.floor(Math.random() * trials.toArray().length)];
+
+					trials = trials.toArray().removeObject(trial);
+					router.controllerFor('userArena').set('userArena.progress', userArena.get('progress'));
+					router.controllerFor('userArena').set('randomTrial', trial);
+					router.controllerFor('userArena').set('userArena.arena', userArena.get('arena'));
+					router.controllerFor('userArena').set('userArena.trials', trials);
+					router.controllerFor('userArena').set('trials', trials);
+					// router.controllerFor('userArena').setProperties({
+					// userArena.progress: userArena.get('progress'),
+					// randomTrial: trial,
+					// userArena.arena: userArena.get('arena'),
+					// userArena.trials: trials,
+					// trials: trials
+					// })
+					return userArena;
+				});
 			});
 		}
 	});
@@ -5414,6 +5488,427 @@ define("mock-kodr/templates/components/login-page", ["exports"], function (expor
     };
   })());
 });
+define("mock-kodr/templates/components/trial-item", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    var child0 = (function () {
+      return {
+        meta: {
+          "fragmentReason": false,
+          "revision": "Ember@2.3.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 2,
+              "column": 1
+            },
+            "end": {
+              "line": 4,
+              "column": 1
+            }
+          },
+          "moduleName": "mock-kodr/templates/components/trial-item.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("		");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("h3");
+          var el2 = dom.createTextNode("No more challenges here ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("i");
+          dom.setAttribute(el2, "class", "fa fa-frown-o");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() {
+          return [];
+        },
+        statements: [],
+        locals: [],
+        templates: []
+      };
+    })();
+    var child1 = (function () {
+      var child0 = (function () {
+        var child0 = (function () {
+          return {
+            meta: {
+              "fragmentReason": false,
+              "revision": "Ember@2.3.2",
+              "loc": {
+                "source": null,
+                "start": {
+                  "line": 7,
+                  "column": 3
+                },
+                "end": {
+                  "line": 9,
+                  "column": 9
+                }
+              },
+              "moduleName": "mock-kodr/templates/components/trial-item.hbs"
+            },
+            isEmpty: false,
+            arity: 1,
+            cachedFragment: null,
+            hasRendered: false,
+            buildFragment: function buildFragment(dom) {
+              var el0 = dom.createDocumentFragment();
+              var el1 = dom.createTextNode("	        	");
+              dom.appendChild(el0, el1);
+              var el1 = dom.createElement("div");
+              dom.setAttribute(el1, "class", "label label-default");
+              var el2 = dom.createElement("a");
+              dom.setAttribute(el2, "href", "#");
+              dom.setAttribute(el2, "style", "color: white");
+              var el3 = dom.createElement("i");
+              dom.setAttribute(el3, "class", "fa fa-tags");
+              dom.appendChild(el2, el3);
+              var el3 = dom.createTextNode(" ");
+              dom.appendChild(el2, el3);
+              var el3 = dom.createComment("");
+              dom.appendChild(el2, el3);
+              dom.appendChild(el1, el2);
+              dom.appendChild(el0, el1);
+              var el1 = dom.createTextNode("\n");
+              dom.appendChild(el0, el1);
+              return el0;
+            },
+            buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+              var morphs = new Array(1);
+              morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1, 0]), 2, 2);
+              return morphs;
+            },
+            statements: [["content", "concept.name", ["loc", [null, [8, 103], [8, 119]]]]],
+            locals: ["concept"],
+            templates: []
+          };
+        })();
+        return {
+          meta: {
+            "fragmentReason": false,
+            "revision": "Ember@2.3.2",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 6,
+                "column": 2
+              },
+              "end": {
+                "line": 10,
+                "column": 5
+              }
+            },
+            "moduleName": "mock-kodr/templates/components/trial-item.hbs"
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createComment("");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+            dom.insertBoundary(fragment, 0);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [["block", "each", [["get", "concepts", ["loc", [null, [7, 11], [7, 19]]]]], [], 0, null, ["loc", [null, [7, 3], [9, 18]]]]],
+          locals: [],
+          templates: [child0]
+        };
+      })();
+      var child1 = (function () {
+        return {
+          meta: {
+            "fragmentReason": false,
+            "revision": "Ember@2.3.2",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 10,
+                "column": 5
+              },
+              "end": {
+                "line": 12,
+                "column": 5
+              }
+            },
+            "moduleName": "mock-kodr/templates/components/trial-item.hbs"
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("	    	");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("span");
+            dom.setAttribute(el1, "class", "label label-default");
+            var el2 = dom.createElement("i");
+            dom.setAttribute(el2, "class", "fa fa-tags");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode(" No Tags");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes() {
+            return [];
+          },
+          statements: [],
+          locals: [],
+          templates: []
+        };
+      })();
+      return {
+        meta: {
+          "fragmentReason": false,
+          "revision": "Ember@2.3.2",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 4,
+              "column": 1
+            },
+            "end": {
+              "line": 18,
+              "column": 1
+            }
+          },
+          "moduleName": "mock-kodr/templates/components/trial-item.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("		");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("h3");
+          var el2 = dom.createComment("");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createComment("");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("	   	");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("br");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("br");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n		");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("div");
+          dom.setAttribute(el1, "class", "btn-group");
+          var el2 = dom.createTextNode("\n			");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("a");
+          dom.setAttribute(el2, "href", "");
+          dom.setAttribute(el2, "class", "btn btn-success");
+          var el3 = dom.createTextNode("Right Answer");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n			");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("a");
+          dom.setAttribute(el2, "href", "");
+          dom.setAttribute(el2, "class", "btn btn-danger");
+          var el3 = dom.createTextNode("Wrong Answer");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n		");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var element0 = dom.childAt(fragment, [8, 1]);
+          var morphs = new Array(3);
+          morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
+          morphs[1] = dom.createMorphAt(fragment, 3, 3, contextualElement);
+          morphs[2] = dom.createElementMorph(element0);
+          return morphs;
+        },
+        statements: [["content", "trial.challenge.name", ["loc", [null, [5, 6], [5, 30]]]], ["block", "if", [["get", "concepts", ["loc", [null, [6, 8], [6, 16]]]]], [], 0, 1, ["loc", [null, [6, 2], [12, 12]]]], ["element", "action", ["correctAnswer"], [], ["loc", [null, [15, 14], [15, 40]]]]],
+        locals: [],
+        templates: [child0, child1]
+      };
+    })();
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "missing-wrapper",
+          "problems": ["multiple-nodes", "wrong-type"]
+        },
+        "revision": "Ember@2.3.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 21,
+            "column": 0
+          }
+        },
+        "moduleName": "mock-kodr/templates/components/trial-item.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "col-md-4 col-md-offset-4 well text-center");
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(2);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [0]), 1, 1);
+        morphs[1] = dom.createMorphAt(fragment, 2, 2, contextualElement);
+        return morphs;
+      },
+      statements: [["block", "if", [["get", "done", ["loc", [null, [2, 7], [2, 11]]]]], [], 0, 1, ["loc", [null, [2, 1], [18, 8]]]], ["content", "yield", ["loc", [null, [20, 0], [20, 9]]]]],
+      locals: [],
+      templates: [child0, child1]
+    };
+  })());
+});
+define("mock-kodr/templates/components/user-arena-detail", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "missing-wrapper",
+          "problems": ["multiple-nodes", "wrong-type"]
+        },
+        "revision": "Ember@2.3.2",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 14,
+            "column": 0
+          }
+        },
+        "moduleName": "mock-kodr/templates/components/user-arena-detail.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "text-center");
+        var el2 = dom.createTextNode("\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("h2");
+        dom.setAttribute(el2, "class", "page-header");
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n	");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("code");
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("br");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("br");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "progress text-center");
+        var el3 = dom.createTextNode("\n	  ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        dom.setAttribute(el3, "class", "progress-bar progress-bar-success progress-bar-striped text-center");
+        dom.setAttribute(el3, "role", "progressbar");
+        dom.setAttribute(el3, "aria-valuemin", "0");
+        dom.setAttribute(el3, "aria-valuemax", "100");
+        var el4 = dom.createTextNode("\n	    ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("%\n	  ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n	");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element0 = dom.childAt(fragment, [0]);
+        var element1 = dom.childAt(element0, [7, 1]);
+        var morphs = new Array(6);
+        morphs[0] = dom.createMorphAt(dom.childAt(element0, [1]), 1, 1);
+        morphs[1] = dom.createMorphAt(dom.childAt(element0, [3]), 0, 0);
+        morphs[2] = dom.createAttrMorph(element1, 'aria-valuenow');
+        morphs[3] = dom.createAttrMorph(element1, 'style');
+        morphs[4] = dom.createMorphAt(element1, 1, 1);
+        morphs[5] = dom.createMorphAt(fragment, 2, 2, contextualElement);
+        return morphs;
+      },
+      statements: [["content", "userArena.arena.name", ["loc", [null, [3, 2], [3, 26]]]], ["content", "userArena.arena.description", ["loc", [null, [5, 7], [5, 38]]]], ["attribute", "aria-valuenow", ["concat", [["get", "userArena.progress", ["loc", [null, [7, 119], [7, 137]]]]]]], ["attribute", "style", ["concat", ["width:", ["get", "userArena.progress", ["loc", [null, [8, 56], [8, 74]]]], "%"]]], ["content", "userArena.progress", ["loc", [null, [9, 5], [9, 27]]]], ["content", "yield", ["loc", [null, [13, 0], [13, 9]]]]],
+      locals: [],
+      templates: []
+    };
+  })());
+});
 define("mock-kodr/templates/components/user-arena-item", ["exports"], function (exports) {
   exports["default"] = Ember.HTMLBars.template((function () {
     var child0 = (function () {
@@ -5572,7 +6067,7 @@ define("mock-kodr/templates/components/user-arena-item", ["exports"], function (
         morphs[4] = dom.createMorphAt(fragment, 4, 4, contextualElement);
         return morphs;
       },
-      statements: [["block", "link-to", ["userArena", ["get", "userArena", ["loc", [null, [11, 26], [11, 35]]]]], ["class", "btn btn-primary btn-sm"], 0, null, ["loc", [null, [11, 3], [13, 15]]]], ["content", "userArena.arena.name", ["loc", [null, [22, 7], [22, 31]]]], ["content", "userArena.arena.description", ["loc", [null, [24, 33], [24, 64]]]], ["content", "userArena.progress", ["loc", [null, [29, 5], [29, 27]]]], ["content", "yield", ["loc", [null, [34, 0], [34, 9]]]]],
+      statements: [["block", "link-to", ["userArena", ["get", "userArena.id", ["loc", [null, [11, 26], [11, 38]]]]], ["class", "btn btn-primary btn-sm"], 0, null, ["loc", [null, [11, 3], [13, 15]]]], ["content", "userArena.arena.name", ["loc", [null, [22, 7], [22, 31]]]], ["content", "userArena.arena.description", ["loc", [null, [24, 33], [24, 64]]]], ["content", "userArena.progress", ["loc", [null, [29, 5], [29, 27]]]], ["content", "yield", ["loc", [null, [34, 0], [34, 9]]]]],
       locals: [],
       templates: [child0]
     };
@@ -5981,7 +6476,7 @@ define("mock-kodr/templates/user-arena", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 3,
+            "line": 17,
             "column": 0
           }
         },
@@ -5997,6 +6492,16 @@ define("mock-kodr/templates/user-arena", ["exports"], function (exports) {
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
+        var el1 = dom.createElement("br");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n\n");
+        dom.appendChild(el0, el1);
         var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n");
@@ -6004,13 +6509,14 @@ define("mock-kodr/templates/user-arena", ["exports"], function (exports) {
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(2);
+        var morphs = new Array(3);
         morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
-        morphs[1] = dom.createMorphAt(fragment, 2, 2, contextualElement);
+        morphs[1] = dom.createMorphAt(fragment, 5, 5, contextualElement);
+        morphs[2] = dom.createMorphAt(fragment, 7, 7, contextualElement);
         dom.insertBoundary(fragment, 0);
         return morphs;
       },
-      statements: [["content", "model.id", ["loc", [null, [1, 0], [1, 12]]]], ["content", "outlet", ["loc", [null, [2, 0], [2, 10]]]]],
+      statements: [["inline", "user-arena-detail", [], ["userArena", ["subexpr", "@mut", [["get", "userArena", ["loc", [null, [1, 30], [1, 39]]]]], [], []]], ["loc", [null, [1, 0], [1, 41]]]], ["inline", "trial-item", [], ["trial", ["subexpr", "@mut", [["get", "randomTrial", ["loc", [null, [13, 19], [13, 30]]]]], [], []], "store", ["subexpr", "@mut", [["get", "store", ["loc", [null, [13, 37], [13, 42]]]]], [], []], "trials", ["subexpr", "@mut", [["get", "trials", ["loc", [null, [13, 50], [13, 56]]]]], [], []]], ["loc", [null, [13, 0], [13, 58]]]], ["content", "outlet", ["loc", [null, [16, 0], [16, 10]]]]],
       locals: [],
       templates: []
     };

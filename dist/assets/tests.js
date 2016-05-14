@@ -124,6 +124,24 @@ define('mock-kodr/tests/components/login-page.jshint', ['exports'], function (ex
     assert.ok(false, 'components/login-page.js should pass jshint.\ncomponents/login-page.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncomponents/login-page.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncomponents/login-page.js: line 4, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\ncomponents/login-page.js: line 8, col 5, \'concise methods\' is available in ES6 (use \'esversion: 6\') or Mozilla JS extensions (use moz).\ncomponents/login-page.js: line 11, col 5, \'concise methods\' is available in ES6 (use \'esversion: 6\') or Mozilla JS extensions (use moz).\ncomponents/login-page.js: line 13, col 7, \'let\' is available in ES6 (use \'esversion: 6\') or Mozilla JS extensions (use moz).\ncomponents/login-page.js: line 13, col 7, \'destructuring binding\' is available in ES6 (use \'esversion: 6\') or Mozilla JS extensions (use moz).\ncomponents/login-page.js: line 15, col 90, \'arrow function syntax (=>)\' is only available in ES6 (use \'esversion: 6\').\n\n8 errors');
   });
 });
+define('mock-kodr/tests/components/trial-item.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - components/trial-item.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(false, 'components/trial-item.js should pass jshint.\ncomponents/trial-item.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncomponents/trial-item.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\n\n2 errors');
+  });
+});
+define('mock-kodr/tests/components/user-arena-detail.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - components/user-arena-detail.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(false, 'components/user-arena-detail.js should pass jshint.\ncomponents/user-arena-detail.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncomponents/user-arena-detail.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\n\n2 errors');
+  });
+});
 define('mock-kodr/tests/components/user-arena-item.jshint', ['exports'], function (exports) {
   'use strict';
 
@@ -185,6 +203,15 @@ define('mock-kodr/tests/controllers/charts.jshint', ['exports'], function (expor
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(false, 'controllers/charts.js should pass jshint.\ncontrollers/charts.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/charts.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/charts.js: line 3, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/charts.js: line 3, col 28, Missing semicolon.\ncontrollers/charts.js: line 4, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/charts.js: line 6, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/charts.js: line 135, col 45, Missing semicolon.\ncontrollers/charts.js: line 136, col 46, Missing semicolon.\ncontrollers/charts.js: line 137, col 45, Missing semicolon.\ncontrollers/charts.js: line 154, col 46, Missing semicolon.\ncontrollers/charts.js: line 155, col 15, Missing semicolon.\ncontrollers/charts.js: line 206, col 5, \'concise methods\' is available in ES6 (use \'esversion: 6\') or Mozilla JS extensions (use moz).\ncontrollers/charts.js: line 218, col 26, Missing semicolon.\ncontrollers/charts.js: line 222, col 26, Missing semicolon.\ncontrollers/charts.js: line 227, col 34, Missing semicolon.\n\n15 errors');
+  });
+});
+define('mock-kodr/tests/controllers/user-arena.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - controllers/user-arena.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(false, 'controllers/user-arena.js should pass jshint.\ncontrollers/user-arena.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/user-arena.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\ncontrollers/user-arena.js: line 10, col 91, Missing semicolon.\n\n3 errors');
   });
 });
 define('mock-kodr/tests/helpers/destroy-app', ['exports', 'ember'], function (exports, _ember) {
@@ -1894,6 +1921,304 @@ define('mock-kodr/tests/integration/components/login-page-test.jshint', ['export
     assert.ok(true, 'integration/components/login-page-test.js should pass jshint.');
   });
 });
+define('mock-kodr/tests/integration/components/trial-item-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleForComponent)('trial-item', 'Integration | Component | trial item', {
+    integration: true
+  });
+
+  (0, _emberQunit.test)('it renders', function (assert) {
+    // Set any properties with this.set('myProperty', 'value');
+    // Handle any actions with this.on('myAction', function(val) { ... });"
+
+    this.render(Ember.HTMLBars.template((function () {
+      return {
+        meta: {
+          'fragmentReason': {
+            'name': 'missing-wrapper',
+            'problems': ['wrong-type']
+          },
+          'revision': 'Ember@2.3.2',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 1,
+              'column': 14
+            }
+          }
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [['content', 'trial-item', ['loc', [null, [1, 0], [1, 14]]]]],
+        locals: [],
+        templates: []
+      };
+    })()));
+
+    assert.equal(this.$().text().trim(), '');
+
+    // Template block usage:"
+    this.render(Ember.HTMLBars.template((function () {
+      var child0 = (function () {
+        return {
+          meta: {
+            'fragmentReason': false,
+            'revision': 'Ember@2.3.2',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 2,
+                'column': 4
+              },
+              'end': {
+                'line': 4,
+                'column': 4
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('      template block text\n');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes() {
+            return [];
+          },
+          statements: [],
+          locals: [],
+          templates: []
+        };
+      })();
+
+      return {
+        meta: {
+          'fragmentReason': {
+            'name': 'missing-wrapper',
+            'problems': ['wrong-type']
+          },
+          'revision': 'Ember@2.3.2',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 5,
+              'column': 2
+            }
+          }
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode('\n');
+          dom.appendChild(el0, el1);
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode('  ');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+          return morphs;
+        },
+        statements: [['block', 'trial-item', [], [], 0, null, ['loc', [null, [2, 4], [4, 19]]]]],
+        locals: [],
+        templates: [child0]
+      };
+    })()));
+
+    assert.equal(this.$().text().trim(), 'template block text');
+  });
+});
+define('mock-kodr/tests/integration/components/trial-item-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - integration/components/trial-item-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'integration/components/trial-item-test.js should pass jshint.');
+  });
+});
+define('mock-kodr/tests/integration/components/user-arena-detail-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleForComponent)('user-arena-detail', 'Integration | Component | user arena detail', {
+    integration: true
+  });
+
+  (0, _emberQunit.test)('it renders', function (assert) {
+    // Set any properties with this.set('myProperty', 'value');
+    // Handle any actions with this.on('myAction', function(val) { ... });"
+
+    this.render(Ember.HTMLBars.template((function () {
+      return {
+        meta: {
+          'fragmentReason': {
+            'name': 'missing-wrapper',
+            'problems': ['wrong-type']
+          },
+          'revision': 'Ember@2.3.2',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 1,
+              'column': 21
+            }
+          }
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [['content', 'user-arena-detail', ['loc', [null, [1, 0], [1, 21]]]]],
+        locals: [],
+        templates: []
+      };
+    })()));
+
+    assert.equal(this.$().text().trim(), '');
+
+    // Template block usage:"
+    this.render(Ember.HTMLBars.template((function () {
+      var child0 = (function () {
+        return {
+          meta: {
+            'fragmentReason': false,
+            'revision': 'Ember@2.3.2',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 2,
+                'column': 4
+              },
+              'end': {
+                'line': 4,
+                'column': 4
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('      template block text\n');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes() {
+            return [];
+          },
+          statements: [],
+          locals: [],
+          templates: []
+        };
+      })();
+
+      return {
+        meta: {
+          'fragmentReason': {
+            'name': 'missing-wrapper',
+            'problems': ['wrong-type']
+          },
+          'revision': 'Ember@2.3.2',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 5,
+              'column': 2
+            }
+          }
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode('\n');
+          dom.appendChild(el0, el1);
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode('  ');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+          return morphs;
+        },
+        statements: [['block', 'user-arena-detail', [], [], 0, null, ['loc', [null, [2, 4], [4, 26]]]]],
+        locals: [],
+        templates: [child0]
+      };
+    })()));
+
+    assert.equal(this.$().text().trim(), 'template block text');
+  });
+});
+define('mock-kodr/tests/integration/components/user-arena-detail-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - integration/components/user-arena-detail-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'integration/components/user-arena-detail-test.js should pass jshint.');
+  });
+});
 define('mock-kodr/tests/integration/components/user-arena-item-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
 
   (0, _emberQunit.moduleForComponent)('user-arena-item', 'Integration | Component | user arena item', {
@@ -2252,7 +2577,7 @@ define('mock-kodr/tests/models/user-arena.jshint', ['exports'], function (export
   QUnit.module('JSHint - models/user-arena.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'models/user-arena.js should pass jshint.\nmodels/user-arena.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nmodels/user-arena.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nmodels/user-arena.js: line 6, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\nmodels/user-arena.js: line 14, col 85, Missing semicolon.\nmodels/user-arena.js: line 15, col 36, Missing semicolon.\nmodels/user-arena.js: line 20, col 30, Missing semicolon.\n\n6 errors');
+    assert.ok(false, 'models/user-arena.js should pass jshint.\nmodels/user-arena.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nmodels/user-arena.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nmodels/user-arena.js: line 6, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\nmodels/user-arena.js: line 14, col 85, Missing semicolon.\nmodels/user-arena.js: line 19, col 30, Missing semicolon.\n\n5 errors');
   });
 });
 define('mock-kodr/tests/models/user-concept.jshint', ['exports'], function (exports) {
@@ -2288,7 +2613,7 @@ define('mock-kodr/tests/router.jshint', ['exports'], function (exports) {
   QUnit.module('JSHint - router.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'router.js should pass jshint.\nrouter.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nrouter.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nrouter.js: line 4, col 1, \'const\' is available in ES6 (use \'esversion: 6\') or Mozilla JS extensions (use moz).\nrouter.js: line 54, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\n\n4 errors');
+    assert.ok(false, 'router.js should pass jshint.\nrouter.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nrouter.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nrouter.js: line 4, col 1, \'const\' is available in ES6 (use \'esversion: 6\') or Mozilla JS extensions (use moz).\nrouter.js: line 60, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\n\n4 errors');
   });
 });
 define('mock-kodr/tests/routes/application.jshint', ['exports'], function (exports) {
@@ -2351,7 +2676,7 @@ define('mock-kodr/tests/routes/user-arena.jshint', ['exports'], function (export
   QUnit.module('JSHint - routes/user-arena.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'routes/user-arena.js should pass jshint.\nroutes/user-arena.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nroutes/user-arena.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nroutes/user-arena.js: line 4, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\nroutes/user-arena.js: line 17, col 15, Missing semicolon.\nroutes/user-arena.js: line 18, col 29, Missing semicolon.\n\n5 errors');
+    assert.ok(false, 'routes/user-arena.js should pass jshint.\nroutes/user-arena.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nroutes/user-arena.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nroutes/user-arena.js: line 4, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\nroutes/user-arena.js: line 15, col 103, Missing semicolon.\n\n4 errors');
   });
 });
 define('mock-kodr/tests/routes/user-arenas.jshint', ['exports'], function (exports) {
@@ -2511,6 +2836,28 @@ define('mock-kodr/tests/unit/controllers/charts-test.jshint', ['exports'], funct
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'unit/controllers/charts-test.js should pass jshint.');
+  });
+});
+define('mock-kodr/tests/unit/controllers/user-arena-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleFor)('controller:user-arena', 'Unit | Controller | user arena', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  });
+
+  // Replace this with your real tests.
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var controller = this.subject();
+    assert.ok(controller);
+  });
+});
+define('mock-kodr/tests/unit/controllers/user-arena-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - unit/controllers/user-arena-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/controllers/user-arena-test.js should pass jshint.');
   });
 });
 define('mock-kodr/tests/unit/models/activity-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {

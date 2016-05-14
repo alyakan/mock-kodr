@@ -3,13 +3,21 @@
 		<h3>No more challenges here <i class="fa fa-frown-o"></i></h3>
 	{{else}}
 		<h3>{{trial.challenge.name}}</h3>
-		{{#if concepts}}
-			{{#each concepts as |concept|}}
-	        	<div class="label label-default"><a href="#" style="color: white"><i class="fa fa-tags"></i> {{concept.name}}</a></div>
-	        {{/each}}
-	    {{else}}
-	    	<span class="label label-default"><i class="fa fa-tags"></i> No Tags</span>
-	   	{{/if}}
+		<ul class="list-group">
+			<li class="list-group-item">
+				{{#if concepts}}
+					{{#each concepts as |concept|}}
+			        	<div class="label label-default"><a href="#" style="color: white"><i class="fa fa-tags"></i> {{concept.name}}</a></div>
+			        {{/each}}
+			    {{else}}
+			    	<span class="label label-default"><i class="fa fa-tags"></i> No Tags</span>
+			   	{{/if}}
+			</li>
+			<li class="list-group-item">
+				<code>Rewards: {{trial.exp}} Exp</code>
+			</li>
+		</ul>
+		
 	   	<br><br>
 		<div class="btn-group">
 			<a href="" {{action 'correctAnswer'}} class="btn btn-success">Right Answer</a>

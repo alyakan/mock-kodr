@@ -8,16 +8,30 @@ export default DS.Model.extend({
   completed: attr('number'),
   complete: attr('boolean'),  
   locked: attr('boolean'),
-  progress: Ember.computed('trials', 'completed', function() {
+  mock: attr('boolean'),
+  max_exp: attr('number'),
+  progress: Ember.computed('trials', 'completed', 'max_exp', function() {
 		// Number of completed trials / Total number of trials
 
   	var prog = (this.get('completed') / this.get('trials').toArray().length) * 100
-    if (prog > 0)
-      var a = 0;
-    else
+    if (prog > 0) {
+      if (prog > this.get('max_exp')) {
+        prog = 100;
+      }
+    }
+    else {
       prog = 0;
-  	return Math.round(prog)
+    }
+
+  	return Math.round(prog);
   }).property('progress'),
+  styleProgress: Ember.computed('progress', function() {
+    // Number of completed trials / Total number of trials
+
+    var prog = this.get('progress')
+    return Ember.String.htmlSafe("width: " + prog + "%")
+  }).property('styleProgress'),
+
   prerequisit: DS.belongsTo('arena', {inverse: 'users', async:true}),
   trials: DS.hasMany('trials', {inverse: 'userArena', async:true}),
   user:DS.belongsTo('user', {inverse: 'userArenas', async:true}),

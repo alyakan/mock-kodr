@@ -12,11 +12,12 @@ export default DS.Model.extend({
     order: attr('number', {
         defaultValue: 0
     }),
-    group: attr('string', {
-        defaultValue: null
-    }),
     exp: attr('number', {
         defaultValue: 0
+    }),
+    
+    group: attr('string', {
+        defaultValue: null
     }),
     // blueprint: attr('mixed', {
     //     defaultValue: function(model) {

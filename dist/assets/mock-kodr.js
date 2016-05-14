@@ -410,15 +410,18 @@ define('mock-kodr/components/trial-item', ['exports', 'ember'], function (export
 		concepts: [],
 		challenge: null,
 		trials: [],
-		done: false,
+		done: true,
+		userArena: null,
 		onInit: (function () {
 			var that = this;
 
 			_ember['default'].run.scheduleOnce('afterRender', this, function () {
 				if (that.get('trial.challenge')) {
+					that.set('done', false);
 					var ch_id = that.get('trial.challenge').get('id');
 					that.store.findRecord('challenge', ch_id).then(function (challenge) {
 						that.set('concepts', challenge.get('concepts').toArray());
+						that.set('trial.exp', challenge.get('exp'));
 					});
 				}
 			});
@@ -427,18 +430,57 @@ define('mock-kodr/components/trial-item', ['exports', 'ember'], function (export
 			correctAnswer: function correctAnswer() {
 				var trials = this.get('trials').toArray();
 				var that = this;
-				if (trials.length) {
-					var trial = trials[Math.floor(Math.random() * trials.length)];
-					var ch_id = trial.get('challenge').get('id');
-					this.store.findRecord('challenge', ch_id).then(function (challenge) {
-						that.set('concepts', challenge.get('concepts').toArray());
+				this.store.findRecord('trial', this.get('trial.id')).then(function (trial) {
+					/*
+     	Correct Answer provided, update current trial accordingly
+     */
+					var date = new Date(Date.now());
+					trial.setProperties({
+						complete: true,
+						entTime: date
 					});
+					// TODO: Update Trial's exp, create activity
+					trial.save();
 					trials = trials.removeObject(trial);
-					this.set('trial', trial);
-					this.set('trials', trials);
-				} else {
-					this.set('done', true);
-				}
+					that.set('trials', trials);
+					return trial;
+				}).then(function () {
+					that.store.findRecord('userArena', that.get('userArena.id')).then(function (userArena) {
+						/*
+      	Increment userArena's Exp with trial's Exp
+      */
+						var current_exp = userArena.get('exp');
+						var trial_exp = trial.get('exp');
+
+						var new_exp = current_exp + trial_exp;
+						var complete = false;
+						if (userArena.get('max_exp') < new_exp) {
+							/*
+       	The user just completed this userArena
+       */
+							complete = true;
+						}
+						userArena.setProperties({
+							exp: new_exp,
+							complete: complete
+						});
+					});
+					if (trials.length) {
+						var randomTrial = trials[Math.floor(Math.random() * trials.length)];
+						var ch_id = randomTrial.get('challenge').get('id');
+						that.store.findRecord('challenge', ch_id).then(function (challenge) {
+							// console.log(challenge.get('concepts').toArray()); // KEEP this console.log !!
+
+							that.set('trial', randomTrial);
+
+							var cons = challenge.get('concepts').toArray();
+							that.set('concepts', cons);
+							that.set('trial.exp', challenge.get('exp'));
+						});
+					} else {
+						that.set('done', true);
+					}
+				});
 			}
 		}
 	});
@@ -1316,11 +1358,12 @@ define('mock-kodr/models/challenge', ['exports', 'ember-data', 'mock-kodr/models
         order: attr('number', {
             defaultValue: 0
         }),
-        group: attr('string', {
-            defaultValue: null
-        }),
         exp: attr('number', {
             defaultValue: 0
+        }),
+
+        group: attr('string', {
+            defaultValue: null
         }),
         // blueprint: attr('mixed', {
         //     defaultValue: function(model) {
@@ -1472,14 +1515,13 @@ define('mock-kodr/models/trial', ['exports', 'ember-data'], function (exports, _
     exports['default'] = _emberData['default'].Model.extend({
         // work: DS.attr('mixed'),
         // blueprint: DS.attr('mixed'),
-        times: _emberData['default'].attr('number'),
         exp: _emberData['default'].attr('number'),
-        order: _emberData['default'].attr('number'),
+        complete: _emberData['default'].attr('boolean'),
+        completed: _emberData['default'].attr('number'),
         started: _emberData['default'].attr('boolean'),
         startTime: _emberData['default'].attr('date'),
         endTime: _emberData['default'].attr('date'),
-        complete: _emberData['default'].attr('boolean'),
-        completed: _emberData['default'].attr('number'),
+        order: _emberData['default'].attr('number'),
         report: _emberData['default'].attr(),
         challenge: _emberData['default'].belongsTo('challenge', { async: true }),
         user: _emberData['default'].belongsTo('user'),
@@ -1514,13 +1556,29 @@ define('mock-kodr/models/user-arena', ['exports', 'ember-data', 'ember'], functi
     completed: attr('number'),
     complete: attr('boolean'),
     locked: attr('boolean'),
-    progress: _ember['default'].computed('trials', 'completed', function () {
+    mock: attr('boolean'),
+    max_exp: attr('number'),
+    progress: _ember['default'].computed('trials', 'completed', 'max_exp', function () {
       // Number of completed trials / Total number of trials
 
       var prog = this.get('completed') / this.get('trials').toArray().length * 100;
-      if (prog > 0) var a = 0;else prog = 0;
+      if (prog > 0) {
+        if (prog > this.get('max_exp')) {
+          prog = 100;
+        }
+      } else {
+        prog = 0;
+      }
+
       return Math.round(prog);
     }).property('progress'),
+    styleProgress: _ember['default'].computed('progress', function () {
+      // Number of completed trials / Total number of trials
+
+      var prog = this.get('progress');
+      return _ember['default'].String.htmlSafe("width: " + prog + "%");
+    }).property('styleProgress'),
+
     prerequisit: _emberData['default'].belongsTo('arena', { inverse: 'users', async: true }),
     trials: _emberData['default'].hasMany('trials', { inverse: 'userArena', async: true }),
     user: _emberData['default'].belongsTo('user', { inverse: 'userArenas', async: true }),
@@ -1608,8 +1666,7 @@ define('mock-kodr/router', ['exports', 'ember', 'mock-kodr/config/environment'],
       path: '/arenas/:arena_id'
     }, function () {
       this.route('edit');
-      this.route('challenge', {
-        resetNameSpace: true,
+      this.resource('challenge', {
         path: 'challenge/:challenge_id'
       }, function () {
         this.route('edit');
@@ -1683,7 +1740,7 @@ define('mock-kodr/routes/user-arena', ['exports', 'ember', 'ember-local-storage'
 			var router = this;
 			return this.store.findRecord('userArena', params.user_arena_id).then(function (userArena) {
 
-				return router.store.query('trial', { 'arena': userArena.get('arena.id'), 'user': router.get('current_user.user.id'), 'complete': false }).then(function (trials) {
+				return router.store.query('trial', { 'arena': userArena.get('arena.id'), 'user': router.get('current_user.user.id') }).then(function (trials) {
 
 					var trial = trials.toArray()[Math.floor(Math.random() * trials.toArray().length)];
 
@@ -1693,23 +1750,17 @@ define('mock-kodr/routes/user-arena', ['exports', 'ember', 'ember-local-storage'
 					router.controllerFor('userArena').set('userArena.arena', userArena.get('arena'));
 					router.controllerFor('userArena').set('userArena.trials', trials);
 					router.controllerFor('userArena').set('trials', trials);
-					// router.controllerFor('userArena').setProperties({
-					// userArena.progress: userArena.get('progress'),
-					// randomTrial: trial,
-					// userArena.arena: userArena.get('arena'),
-					// userArena.trials: trials,
-					// trials: trials
-					// })
 					return userArena;
 				});
 			});
 		}
 	});
 });
-define('mock-kodr/routes/user-arenas', ['exports', 'ember', 'ember-simple-auth/mixins/authenticated-route-mixin'], function (exports, _ember, _emberSimpleAuthMixinsAuthenticatedRouteMixin) {
+define('mock-kodr/routes/user-arenas', ['exports', 'ember', 'ember-simple-auth/mixins/authenticated-route-mixin', 'ember-local-storage'], function (exports, _ember, _emberSimpleAuthMixinsAuthenticatedRouteMixin, _emberLocalStorage) {
 	exports['default'] = _ember['default'].Route.extend(_emberSimpleAuthMixinsAuthenticatedRouteMixin['default'], {
+		current_user: (0, _emberLocalStorage.storageFor)('current_user'),
 		model: function model() {
-			return this.store.findAll('userArena');
+			return this.store.query('userArena', { 'user': this.get('current_user.user.id'), 'mock': true });
 		}
 	});
 });
@@ -4461,7 +4512,7 @@ define("mock-kodr/templates/components/challenge-item", ["exports"], function (e
           morphs[0] = dom.createElementMorph(element0);
           return morphs;
         },
-        statements: [["element", "action", ["edit"], [], ["loc", [null, [15, 60], [15, 77]]]]],
+        statements: [["element", "action", ["edit"], [], ["loc", [null, [15, 63], [15, 80]]]]],
         locals: [],
         templates: []
       };
@@ -4885,7 +4936,7 @@ define("mock-kodr/templates/components/challenge-item", ["exports"], function (e
         morphs[4] = dom.createMorphAt(fragment, 2, 2, contextualElement);
         return morphs;
       },
-      statements: [["block", "link-to", ["challenge.edit", ["get", "challenge", ["loc", [null, [15, 41], [15, 50]]]]], [], 0, null, ["loc", [null, [15, 13], [17, 22]]]], ["content", "challenge.name", ["loc", [null, [22, 7], [22, 25]]]], ["content", "challenge.exp", ["loc", [null, [29, 54], [29, 71]]]], ["block", "if", [["get", "challenge.concepts", ["loc", [null, [30, 16], [30, 34]]]]], [], 1, 2, ["loc", [null, [30, 10], [42, 14]]]], ["content", "yield", ["loc", [null, [54, 0], [54, 9]]]]],
+      statements: [["block", "link-to", ["challenge.edit", ["get", "challenge.id", ["loc", [null, [15, 41], [15, 53]]]]], [], 0, null, ["loc", [null, [15, 13], [17, 22]]]], ["content", "challenge.name", ["loc", [null, [22, 7], [22, 25]]]], ["content", "challenge.exp", ["loc", [null, [29, 54], [29, 71]]]], ["block", "if", [["get", "challenge.concepts", ["loc", [null, [30, 16], [30, 34]]]]], [], 1, 2, ["loc", [null, [30, 10], [42, 14]]]], ["content", "yield", ["loc", [null, [54, 0], [54, 9]]]]],
       locals: [],
       templates: [child0, child1, child2]
     };
@@ -5545,12 +5596,12 @@ define("mock-kodr/templates/components/trial-item", ["exports"], function (expor
               "loc": {
                 "source": null,
                 "start": {
-                  "line": 7,
-                  "column": 3
+                  "line": 9,
+                  "column": 5
                 },
                 "end": {
-                  "line": 9,
-                  "column": 9
+                  "line": 11,
+                  "column": 11
                 }
               },
               "moduleName": "mock-kodr/templates/components/trial-item.hbs"
@@ -5561,7 +5612,7 @@ define("mock-kodr/templates/components/trial-item", ["exports"], function (expor
             hasRendered: false,
             buildFragment: function buildFragment(dom) {
               var el0 = dom.createDocumentFragment();
-              var el1 = dom.createTextNode("	        	");
+              var el1 = dom.createTextNode("			        	");
               dom.appendChild(el0, el1);
               var el1 = dom.createElement("div");
               dom.setAttribute(el1, "class", "label label-default");
@@ -5586,7 +5637,7 @@ define("mock-kodr/templates/components/trial-item", ["exports"], function (expor
               morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1, 0]), 2, 2);
               return morphs;
             },
-            statements: [["content", "concept.name", ["loc", [null, [8, 103], [8, 119]]]]],
+            statements: [["content", "concept.name", ["loc", [null, [10, 105], [10, 121]]]]],
             locals: ["concept"],
             templates: []
           };
@@ -5598,12 +5649,12 @@ define("mock-kodr/templates/components/trial-item", ["exports"], function (expor
             "loc": {
               "source": null,
               "start": {
-                "line": 6,
-                "column": 2
+                "line": 8,
+                "column": 4
               },
               "end": {
-                "line": 10,
-                "column": 5
+                "line": 12,
+                "column": 7
               }
             },
             "moduleName": "mock-kodr/templates/components/trial-item.hbs"
@@ -5625,7 +5676,7 @@ define("mock-kodr/templates/components/trial-item", ["exports"], function (expor
             dom.insertBoundary(fragment, null);
             return morphs;
           },
-          statements: [["block", "each", [["get", "concepts", ["loc", [null, [7, 11], [7, 19]]]]], [], 0, null, ["loc", [null, [7, 3], [9, 18]]]]],
+          statements: [["block", "each", [["get", "concepts", ["loc", [null, [9, 13], [9, 21]]]]], [], 0, null, ["loc", [null, [9, 5], [11, 20]]]]],
           locals: [],
           templates: [child0]
         };
@@ -5638,12 +5689,12 @@ define("mock-kodr/templates/components/trial-item", ["exports"], function (expor
             "loc": {
               "source": null,
               "start": {
-                "line": 10,
-                "column": 5
+                "line": 12,
+                "column": 7
               },
               "end": {
-                "line": 12,
-                "column": 5
+                "line": 14,
+                "column": 7
               }
             },
             "moduleName": "mock-kodr/templates/components/trial-item.hbs"
@@ -5654,7 +5705,7 @@ define("mock-kodr/templates/components/trial-item", ["exports"], function (expor
           hasRendered: false,
           buildFragment: function buildFragment(dom) {
             var el0 = dom.createDocumentFragment();
-            var el1 = dom.createTextNode("	    	");
+            var el1 = dom.createTextNode("			    	");
             dom.appendChild(el0, el1);
             var el1 = dom.createElement("span");
             dom.setAttribute(el1, "class", "label label-default");
@@ -5687,7 +5738,7 @@ define("mock-kodr/templates/components/trial-item", ["exports"], function (expor
               "column": 1
             },
             "end": {
-              "line": 18,
+              "line": 26,
               "column": 1
             }
           },
@@ -5705,11 +5756,42 @@ define("mock-kodr/templates/components/trial-item", ["exports"], function (expor
           var el2 = dom.createComment("");
           dom.appendChild(el1, el2);
           dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n");
+          var el1 = dom.createTextNode("\n		");
           dom.appendChild(el0, el1);
-          var el1 = dom.createComment("");
+          var el1 = dom.createElement("ul");
+          dom.setAttribute(el1, "class", "list-group");
+          var el2 = dom.createTextNode("\n			");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("li");
+          dom.setAttribute(el2, "class", "list-group-item");
+          var el3 = dom.createTextNode("\n");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createComment("");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("			");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n			");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("li");
+          dom.setAttribute(el2, "class", "list-group-item");
+          var el3 = dom.createTextNode("\n				");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createElement("code");
+          var el4 = dom.createTextNode("Rewards: ");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createComment("");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createTextNode(" Exp");
+          dom.appendChild(el3, el4);
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n			");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n		");
+          dom.appendChild(el1, el2);
           dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("	   	");
+          var el1 = dom.createTextNode("\n		\n	   	");
           dom.appendChild(el0, el1);
           var el1 = dom.createElement("br");
           dom.appendChild(el0, el1);
@@ -5743,14 +5825,16 @@ define("mock-kodr/templates/components/trial-item", ["exports"], function (expor
           return el0;
         },
         buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-          var element0 = dom.childAt(fragment, [8, 1]);
-          var morphs = new Array(3);
+          var element0 = dom.childAt(fragment, [3]);
+          var element1 = dom.childAt(fragment, [8, 1]);
+          var morphs = new Array(4);
           morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
-          morphs[1] = dom.createMorphAt(fragment, 3, 3, contextualElement);
-          morphs[2] = dom.createElementMorph(element0);
+          morphs[1] = dom.createMorphAt(dom.childAt(element0, [1]), 1, 1);
+          morphs[2] = dom.createMorphAt(dom.childAt(element0, [3, 1]), 1, 1);
+          morphs[3] = dom.createElementMorph(element1);
           return morphs;
         },
-        statements: [["content", "trial.challenge.name", ["loc", [null, [5, 6], [5, 30]]]], ["block", "if", [["get", "concepts", ["loc", [null, [6, 8], [6, 16]]]]], [], 0, 1, ["loc", [null, [6, 2], [12, 12]]]], ["element", "action", ["correctAnswer"], [], ["loc", [null, [15, 14], [15, 40]]]]],
+        statements: [["content", "trial.challenge.name", ["loc", [null, [5, 6], [5, 30]]]], ["block", "if", [["get", "concepts", ["loc", [null, [8, 10], [8, 18]]]]], [], 0, 1, ["loc", [null, [8, 4], [14, 14]]]], ["content", "trial.exp", ["loc", [null, [17, 19], [17, 32]]]], ["element", "action", ["correctAnswer"], [], ["loc", [null, [23, 14], [23, 40]]]]],
         locals: [],
         templates: [child0, child1]
       };
@@ -5769,7 +5853,7 @@ define("mock-kodr/templates/components/trial-item", ["exports"], function (expor
             "column": 0
           },
           "end": {
-            "line": 21,
+            "line": 29,
             "column": 0
           }
         },
@@ -5802,7 +5886,7 @@ define("mock-kodr/templates/components/trial-item", ["exports"], function (expor
         morphs[1] = dom.createMorphAt(fragment, 2, 2, contextualElement);
         return morphs;
       },
-      statements: [["block", "if", [["get", "done", ["loc", [null, [2, 7], [2, 11]]]]], [], 0, 1, ["loc", [null, [2, 1], [18, 8]]]], ["content", "yield", ["loc", [null, [20, 0], [20, 9]]]]],
+      statements: [["block", "if", [["get", "done", ["loc", [null, [2, 7], [2, 11]]]]], [], 0, 1, ["loc", [null, [2, 1], [26, 8]]]], ["content", "yield", ["loc", [null, [28, 0], [28, 9]]]]],
       locals: [],
       templates: [child0, child1]
     };
@@ -5903,7 +5987,7 @@ define("mock-kodr/templates/components/user-arena-detail", ["exports"], function
         morphs[5] = dom.createMorphAt(fragment, 2, 2, contextualElement);
         return morphs;
       },
-      statements: [["content", "userArena.arena.name", ["loc", [null, [3, 2], [3, 26]]]], ["content", "userArena.arena.description", ["loc", [null, [5, 7], [5, 38]]]], ["attribute", "aria-valuenow", ["concat", [["get", "userArena.progress", ["loc", [null, [7, 119], [7, 137]]]]]]], ["attribute", "style", ["concat", ["width:", ["get", "userArena.progress", ["loc", [null, [8, 56], [8, 74]]]], "%"]]], ["content", "userArena.progress", ["loc", [null, [9, 5], [9, 27]]]], ["content", "yield", ["loc", [null, [13, 0], [13, 9]]]]],
+      statements: [["content", "userArena.arena.name", ["loc", [null, [3, 2], [3, 26]]]], ["content", "userArena.arena.description", ["loc", [null, [5, 7], [5, 38]]]], ["attribute", "aria-valuenow", ["concat", [["get", "userArena.progress", ["loc", [null, [7, 119], [7, 137]]]]]]], ["attribute", "style", ["get", "userArena.styleProgress", ["loc", [null, [8, 49], [8, 72]]]]], ["content", "userArena.progress", ["loc", [null, [9, 5], [9, 27]]]], ["content", "yield", ["loc", [null, [13, 0], [13, 9]]]]],
       locals: [],
       templates: []
     };
@@ -5966,8 +6050,8 @@ define("mock-kodr/templates/components/user-arena-item", ["exports"], function (
             "column": 0
           },
           "end": {
-            "line": 35,
-            "column": 0
+            "line": 33,
+            "column": 9
           }
         },
         "moduleName": "mock-kodr/templates/components/user-arena-item.hbs"
@@ -6031,10 +6115,8 @@ define("mock-kodr/templates/components/user-arena-item", ["exports"], function (
         var el3 = dom.createElement("div");
         dom.setAttribute(el3, "class", "progress-bar progress-bar-success progress-bar-striped");
         dom.setAttribute(el3, "role", "progressbar");
-        dom.setAttribute(el3, "aria-valuenow", "70");
         dom.setAttribute(el3, "aria-valuemin", "0");
         dom.setAttribute(el3, "aria-valuemax", "100");
-        dom.setAttribute(el3, "style", "width:70%");
         var el4 = dom.createTextNode("\n	    ");
         dom.appendChild(el3, el4);
         var el4 = dom.createComment("");
@@ -6045,29 +6127,30 @@ define("mock-kodr/templates/components/user-arena-item", ["exports"], function (
         var el3 = dom.createTextNode("\n	");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n\n");
+        var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
         var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n");
-        dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var element0 = dom.childAt(fragment, [2]);
         var element1 = dom.childAt(element0, [1]);
-        var morphs = new Array(5);
+        var element2 = dom.childAt(element0, [7, 1]);
+        var morphs = new Array(6);
         morphs[0] = dom.createMorphAt(dom.childAt(element1, [1]), 1, 1);
         morphs[1] = dom.createMorphAt(dom.childAt(element1, [3]), 0, 0);
         morphs[2] = dom.createMorphAt(dom.childAt(element0, [3]), 0, 0);
-        morphs[3] = dom.createMorphAt(dom.childAt(element0, [7, 1]), 1, 1);
-        morphs[4] = dom.createMorphAt(fragment, 4, 4, contextualElement);
+        morphs[3] = dom.createAttrMorph(element2, 'style');
+        morphs[4] = dom.createMorphAt(element2, 1, 1);
+        morphs[5] = dom.createMorphAt(fragment, 4, 4, contextualElement);
+        dom.insertBoundary(fragment, null);
         return morphs;
       },
-      statements: [["block", "link-to", ["userArena", ["get", "userArena.id", ["loc", [null, [11, 26], [11, 38]]]]], ["class", "btn btn-primary btn-sm"], 0, null, ["loc", [null, [11, 3], [13, 15]]]], ["content", "userArena.arena.name", ["loc", [null, [22, 7], [22, 31]]]], ["content", "userArena.arena.description", ["loc", [null, [24, 33], [24, 64]]]], ["content", "userArena.progress", ["loc", [null, [29, 5], [29, 27]]]], ["content", "yield", ["loc", [null, [34, 0], [34, 9]]]]],
+      statements: [["block", "link-to", ["userArena", ["get", "userArena.id", ["loc", [null, [11, 26], [11, 38]]]]], ["class", "btn btn-primary btn-sm"], 0, null, ["loc", [null, [11, 3], [13, 15]]]], ["content", "userArena.arena.name", ["loc", [null, [22, 7], [22, 31]]]], ["content", "userArena.arena.description", ["loc", [null, [24, 33], [24, 64]]]], ["attribute", "style", ["get", "userArena.styleProgress", ["loc", [null, [28, 49], [28, 72]]]]], ["content", "userArena.progress", ["loc", [null, [29, 5], [29, 27]]]], ["content", "yield", ["loc", [null, [33, 0], [33, 9]]]]],
       locals: [],
       templates: [child0]
     };
@@ -6516,7 +6599,7 @@ define("mock-kodr/templates/user-arena", ["exports"], function (exports) {
         dom.insertBoundary(fragment, 0);
         return morphs;
       },
-      statements: [["inline", "user-arena-detail", [], ["userArena", ["subexpr", "@mut", [["get", "userArena", ["loc", [null, [1, 30], [1, 39]]]]], [], []]], ["loc", [null, [1, 0], [1, 41]]]], ["inline", "trial-item", [], ["trial", ["subexpr", "@mut", [["get", "randomTrial", ["loc", [null, [13, 19], [13, 30]]]]], [], []], "store", ["subexpr", "@mut", [["get", "store", ["loc", [null, [13, 37], [13, 42]]]]], [], []], "trials", ["subexpr", "@mut", [["get", "trials", ["loc", [null, [13, 50], [13, 56]]]]], [], []]], ["loc", [null, [13, 0], [13, 58]]]], ["content", "outlet", ["loc", [null, [16, 0], [16, 10]]]]],
+      statements: [["inline", "user-arena-detail", [], ["userArena", ["subexpr", "@mut", [["get", "userArena", ["loc", [null, [1, 30], [1, 39]]]]], [], []]], ["loc", [null, [1, 0], [1, 41]]]], ["inline", "trial-item", [], ["trial", ["subexpr", "@mut", [["get", "randomTrial", ["loc", [null, [13, 19], [13, 30]]]]], [], []], "store", ["subexpr", "@mut", [["get", "store", ["loc", [null, [13, 37], [13, 42]]]]], [], []], "trials", ["subexpr", "@mut", [["get", "trials", ["loc", [null, [13, 50], [13, 56]]]]], [], []], "userArena", ["subexpr", "@mut", [["get", "userArena", ["loc", [null, [13, 67], [13, 76]]]]], [], []]], ["loc", [null, [13, 0], [13, 78]]]], ["content", "outlet", ["loc", [null, [16, 0], [16, 10]]]]],
       locals: [],
       templates: []
     };

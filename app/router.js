@@ -25,8 +25,7 @@ Router.map(function() {
     path: '/arenas/:arena_id'
   }, function() {
     this.route('edit');
-    this.route('challenge', {
-      resetNameSpace: true,
+    this.resource('challenge', {
       path: 'challenge/:challenge_id'
     }, function() {
       this.route('edit');

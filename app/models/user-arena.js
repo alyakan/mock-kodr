@@ -10,10 +10,10 @@ export default DS.Model.extend({
   locked: attr('boolean'),
   mock: attr('boolean'),
   max_exp: attr('number'),
-  progress: Ember.computed('trials', 'completed', 'max_exp', function() {
+  progress: Ember.computed('exp', 'completed', 'max_exp', function() {
 		// Number of completed trials / Total number of trials
 
-  	var prog = (this.get('completed') / this.get('trials').toArray().length) * 100
+  	var prog = (this.get('exp') / this.get('max_exp')) * 100
     if (prog > 0) {
       if (prog > this.get('max_exp')) {
         prog = 100;
@@ -22,7 +22,6 @@ export default DS.Model.extend({
     else {
       prog = 0;
     }
-
   	return Math.round(prog);
   }).property('progress'),
   styleProgress: Ember.computed('progress', function() {

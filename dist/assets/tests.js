@@ -70,6 +70,15 @@ define('mock-kodr/tests/components/arena-list.jshint', ['exports'], function (ex
     assert.ok(false, 'components/arena-list.js should pass jshint.\ncomponents/arena-list.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncomponents/arena-list.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\n\n2 errors');
   });
 });
+define('mock-kodr/tests/components/bs-modal/component.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - components/bs-modal/component.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(false, 'components/bs-modal/component.js should pass jshint.\ncomponents/bs-modal/component.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncomponents/bs-modal/component.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\n\n2 errors');
+  });
+});
 define('mock-kodr/tests/components/challenge-create.jshint', ['exports'], function (exports) {
   'use strict';
 
@@ -130,7 +139,7 @@ define('mock-kodr/tests/components/trial-item.jshint', ['exports'], function (ex
   QUnit.module('JSHint - components/trial-item.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'components/trial-item.js should pass jshint.\ncomponents/trial-item.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncomponents/trial-item.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\ncomponents/trial-item.js: line 58, col 40, Missing semicolon.\ncomponents/trial-item.js: line 66, col 19, Missing semicolon.\ncomponents/trial-item.js: line 75, col 71, Missing semicolon.\ncomponents/trial-item.js: line 85, col 15, Missing semicolon.\n\n6 errors');
+    assert.ok(false, 'components/trial-item.js should pass jshint.\ncomponents/trial-item.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncomponents/trial-item.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\ncomponents/trial-item.js: line 59, col 40, Missing semicolon.\ncomponents/trial-item.js: line 88, col 75, Missing semicolon.\ncomponents/trial-item.js: line 98, col 19, Missing semicolon.\ncomponents/trial-item.js: line 100, col 15, Missing semicolon.\n\n6 errors');
   });
 });
 define('mock-kodr/tests/components/user-arena-detail.jshint', ['exports'], function (exports) {
@@ -139,7 +148,7 @@ define('mock-kodr/tests/components/user-arena-detail.jshint', ['exports'], funct
   QUnit.module('JSHint - components/user-arena-detail.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'components/user-arena-detail.js should pass jshint.\ncomponents/user-arena-detail.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncomponents/user-arena-detail.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\n\n2 errors');
+    assert.ok(false, 'components/user-arena-detail.js should pass jshint.\ncomponents/user-arena-detail.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncomponents/user-arena-detail.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\ncomponents/user-arena-detail.js: line 9, col 75, Missing semicolon.\ncomponents/user-arena-detail.js: line 10, col 85, Missing semicolon.\ncomponents/user-arena-detail.js: line 15, col 46, Missing semicolon.\n\n5 errors');
   });
 });
 define('mock-kodr/tests/components/user-arena-item.jshint', ['exports'], function (exports) {
@@ -578,6 +587,15 @@ define('mock-kodr/tests/helpers/start-app.jshint', ['exports'], function (export
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'helpers/start-app.js should pass jshint.');
+  });
+});
+define('mock-kodr/tests/initializers/event-bus.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - initializers/event-bus.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(false, 'initializers/event-bus.js should pass jshint.\ninitializers/event-bus.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ninitializers/event-bus.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\n\n2 errors');
   });
 });
 define('mock-kodr/tests/integration/components/arena-create-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
@@ -2577,7 +2595,7 @@ define('mock-kodr/tests/models/user-arena.jshint', ['exports'], function (export
   QUnit.module('JSHint - models/user-arena.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'models/user-arena.js should pass jshint.\nmodels/user-arena.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nmodels/user-arena.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nmodels/user-arena.js: line 6, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\nmodels/user-arena.js: line 16, col 85, Missing semicolon.\nmodels/user-arena.js: line 31, col 36, Missing semicolon.\nmodels/user-arena.js: line 32, col 57, Missing semicolon.\n\n6 errors');
+    assert.ok(false, 'models/user-arena.js should pass jshint.\nmodels/user-arena.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nmodels/user-arena.js: line 2, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nmodels/user-arena.js: line 6, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\nmodels/user-arena.js: line 16, col 63, Missing semicolon.\nmodels/user-arena.js: line 30, col 36, Missing semicolon.\nmodels/user-arena.js: line 31, col 57, Missing semicolon.\n\n6 errors');
   });
 });
 define('mock-kodr/tests/models/user-concept.jshint', ['exports'], function (exports) {
@@ -2695,6 +2713,15 @@ define('mock-kodr/tests/serializers/application.jshint', ['exports'], function (
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(false, 'serializers/application.js should pass jshint.\nserializers/application.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nserializers/application.js: line 7, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\n\n2 errors');
+  });
+});
+define('mock-kodr/tests/services/event-bus.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - services/event-bus.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(false, 'services/event-bus.js should pass jshint.\nservices/event-bus.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\nservices/event-bus.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\n\n2 errors');
   });
 });
 define('mock-kodr/tests/sessions/custom.jshint', ['exports'], function (exports) {

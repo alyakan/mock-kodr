@@ -17,7 +17,11 @@
 				<code>Rewards: {{trial.exp}} Exp</code>
 			</li>
 		</ul>
-		
+		{{#if next_trial}}
+			{{#bs-modal title=trial.challenge.name}}
+				You have successfully solved this challenge and gained <code>{{trial.exp}} Exp</code>
+			{{/bs-modal}}
+		{{/if}}
 	   	<br><br>
 		<div class="btn-group">
 			<a href="" {{action 'correctAnswer'}} class="btn btn-success">Right Answer</a>

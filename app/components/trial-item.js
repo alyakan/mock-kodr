@@ -1,5 +1,5 @@
 import Ember from 'ember';
-
+//import Bootstrap from 'ember-bootstrap'
 export default Ember.Component.extend({
 	store: null,
 	trial: null,
@@ -8,6 +8,7 @@ export default Ember.Component.extend({
 	trials: [],
 	done: true,
 	userArena: null,
+	next_trial: false,
 	onInit: function() {
 		var that = this;
 		
@@ -41,8 +42,8 @@ export default Ember.Component.extend({
 				trials = trials.removeObject(trial);
 				that.set('trials', trials);
 				return trial;
-			}).then(function() {
-				that.store.findRecord('userArena', that.get('userArena.id')).then(function(userArena) {
+			}).then(function(trial) {
+				return that.store.findRecord('userArena', that.get('userArena.id')).then(function(userArena) {
 					/*
 						Increment userArena's Exp with trial's Exp
 					*/
@@ -57,31 +58,45 @@ export default Ember.Component.extend({
 						*/
 						complete = true
 					}
+					var progress = Math.round((new_exp / userArena.get('max_exp')) * 100);
+					if (progress > 0) {
+				    	if (progress > userArena.get('max_exp')) {
+				        	progress = 100;
+				      	}
+				    }
+				    else {
+				      progress = 0;
+				    }
 					userArena.setProperties({
 						exp: new_exp,
-						complete: complete
+						complete: complete,
+						progress: progress
 					});
 					
+					return userArena.save();
 					
+				}).then(function() {
+					if (trials.length) {
+						
+						var randomTrial = trials[Math.floor(Math.random()*trials.length)];
+						var ch_id = randomTrial.get('challenge').get('id');
+						that.store.findRecord('challenge', ch_id).then(function(challenge) {
+							// console.log(challenge.get('concepts').toArray()); // KEEP this console.log !!
+							
+							that.set('trial', randomTrial);
+							
+							var cons = challenge.get('concepts').toArray()
+							that.set('concepts', cons);
+							that.set('trial.exp', challenge.get('exp'));
+
+							//that.set('next_trial', true);
+						});
+						
+					} else {
+						that.set('done', true);
+					}
 				})
-				if (trials.length) {
-					var randomTrial = trials[Math.floor(Math.random()*trials.length)];
-					var ch_id = randomTrial.get('challenge').get('id');
-					that.store.findRecord('challenge', ch_id).then(function(challenge) {
-						// console.log(challenge.get('concepts').toArray()); // KEEP this console.log !!
-						
-						that.set('trial', randomTrial);
-						
-						var cons = challenge.get('concepts').toArray()
-						that.set('concepts', cons);
-						that.set('trial.exp', challenge.get('exp'));
-
-
-					});
-					
-				} else {
-					that.set('done', true);
-				}
+				
 			})
 			
 			

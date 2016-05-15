@@ -139,7 +139,7 @@ define('mock-kodr/tests/components/trial-item.jshint', ['exports'], function (ex
   QUnit.module('JSHint - components/trial-item.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'components/trial-item.js should pass jshint.\ncomponents/trial-item.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncomponents/trial-item.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\ncomponents/trial-item.js: line 59, col 40, Missing semicolon.\ncomponents/trial-item.js: line 88, col 75, Missing semicolon.\ncomponents/trial-item.js: line 98, col 19, Missing semicolon.\ncomponents/trial-item.js: line 100, col 15, Missing semicolon.\n\n6 errors');
+    assert.ok(false, 'components/trial-item.js should pass jshint.\ncomponents/trial-item.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncomponents/trial-item.js: line 3, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\ncomponents/trial-item.js: line 49, col 25, \'date\' is already defined.\ncomponents/trial-item.js: line 52, col 30, \'date\' used out of scope.\ncomponents/trial-item.js: line 73, col 40, Missing semicolon.\ncomponents/trial-item.js: line 103, col 75, Missing semicolon.\ncomponents/trial-item.js: line 119, col 27, Missing semicolon.\ncomponents/trial-item.js: line 124, col 19, Missing semicolon.\ncomponents/trial-item.js: line 126, col 15, Missing semicolon.\n\n9 errors');
   });
 });
 define('mock-kodr/tests/components/user-arena-detail.jshint', ['exports'], function (exports) {

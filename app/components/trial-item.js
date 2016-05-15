@@ -19,6 +19,17 @@ export default Ember.Component.extend({
 				that.store.findRecord('challenge', ch_id).then(function(challenge) {
 					that.set('concepts', challenge.get('concepts').toArray());
 					that.set('trial.exp', challenge.get('exp'));
+				}).then(function() {
+					if (!that.get('trial.started')) {
+						that.store.findRecord('trial', that.get('trial.id')).then(function(trial) {
+							var date = new Date(Date.now());
+							trial.setProperties({
+								started: true,
+								startTime: date
+							});
+							trial.save();
+						});
+					}
 				});
 			}
 				  
@@ -32,12 +43,15 @@ export default Ember.Component.extend({
 				/*
 					Correct Answer provided, update current trial accordingly
 				*/
-				var date = new Date(Date.now());
+				if (trial.get('completed'))
+					var date = trial.get('endTime');
+				else
+					var date = new Date(Date.now());
 				trial.setProperties({
 					complete: true,
-					entTime: date
+					endTime: date
 				});
-				// TODO: Update Trial's exp, create activity
+				// TODO: create activity
 				trial.save();
 				trials = trials.removeObject(trial);
 				that.set('trials', trials);
@@ -70,7 +84,8 @@ export default Ember.Component.extend({
 					userArena.setProperties({
 						exp: new_exp,
 						complete: complete,
-						progress: progress
+						progress: progress,
+						completed: userArena.get('completed') + 1
 					});
 					
 					return userArena.save();
@@ -90,7 +105,18 @@ export default Ember.Component.extend({
 							that.set('trial.exp', challenge.get('exp'));
 
 							//that.set('next_trial', true);
-						});
+						}).then(function() {
+							if (!randomTrial.get('started')) {
+								that.store.findRecord('trial', randomTrial.get('id')).then(function(trial) {
+									var date = new Date(Date.now());
+									trial.setProperties({
+										started: true,
+										startTime: date
+									});
+									trial.save();
+								});
+							}
+						})
 						
 					} else {
 						that.set('done', true);

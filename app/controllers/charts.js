@@ -150,13 +150,17 @@ export default Ember.Controller.extend({
 	         */
 	        var act_date = new Date(activity.get('time'));
 	        
-	        that.store.findRecord('trial', activity.get('objectId')).then(function(trial) {
-	        	console.log(trial.get('exp'))
-	        })
+	        // that.store.findRecord('trial', activity.get('objectId')).then(function(trial) {
+	        // 	console.log(trial.get('exp'))
+	        // })
+
 	        date = (moment(act_date).format('dddd, MMM Do YY'));
+	        console.log(date, '---' ,moment(lastMonth).format('dddd, MMM Do YY'), moment(date).isAfter(moment(lastMonth)))
+	        console.log("")
 	        if (!(_.includes(labels, date))) {
-	        	if ( moment(act_date).isAfter(moment(lastMonth)) ) {
+	        	if (moment(act_date).isAfter(moment(lastMonth))) {
 		        	if (moment(act_date).isAfter(moment(lastWeek))) {
+		        		console.log('week')
 		        		weekData.push(1);
 		        	}
 		        	monthData.push(1);

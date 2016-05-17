@@ -10,7 +10,26 @@
 	{{/each}}
 </div> --}}
 
-{{trial-item trial=randomTrial store=store trials=trials userArena=model}}
+
+<div class="row">
+	<div class="col-md-4">
+		<ul class="list-group text-center">
+			<a href="" class="list-group-item" {{action 'reset'}}>
+				<samp>Reset UserArenas and Trials</samp>
+			</a>
+			<a href="" class="list-group-item" {{action 'resetUC'}}>
+				<samp>Reset UserConcepts</samp>
+			</a>
+		</ul>
+		
+		
+	</div>
+
+	<div class="col-md-4">
+	{{trial-item trial=randomTrial store=store trials=trials userArena=model}}
+	</div>
+</div>
+
 
 
 {{outlet}}

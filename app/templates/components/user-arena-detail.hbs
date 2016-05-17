@@ -2,12 +2,15 @@
 	<h2 class="page-header">
 		{{userArena.arena.name}}
 	</h2>
-	<code>{{userArena.arena.description}}</code><br><br>
-	<div class="progress text-center">
-	  <div class="progress-bar progress-bar-success progress-bar-striped text-center" id="detail-prog-bar" role="progressbar" aria-valuenow="{{userArena.progress}}"
-	  aria-valuemin="0" aria-valuemax="100" style={{userArena.styleProgress}}>
-	    {{userArena.progress}}%
+	
+	<div class="progress col-md-6 col-md-offset-3">
+	  <div class="progress-bar progress-bar-success progress-bar-striped" id="detail-prog-bar" role="progressbar" aria-valuenow="{{userArena.progress}}"
+	  aria-valuemin="0" aria-valuemax="100" style={{userArena.styleProgress}}>{{userArena.progress}}%
 	  </div>
 	</div>
+	<br><br>
+	<code>{{userArena.arena.description}}</code>
+	<kbd class="pull-right">Total Exp: {{userArena.exp}}</kbd>
+	<hr>
 </div>
 {{yield}}

@@ -1,5 +1,6 @@
 import Ember from 'ember';
 //import Bootstrap from 'ember-bootstrap'
+import { storageFor } from 'ember-local-storage';
 export default Ember.Component.extend({
 	store: null,
 	trial: null,
@@ -9,6 +10,7 @@ export default Ember.Component.extend({
 	done: true,
 	userArena: null,
 	next_trial: false,
+	current_user: storageFor('current_user'),
 	onInit: function() {
 		var that = this;
 		
@@ -17,9 +19,12 @@ export default Ember.Component.extend({
 				that.set('done', false);
 				var ch_id = that.get('trial.challenge').get('id');
 				that.store.findRecord('challenge', ch_id).then(function(challenge) {
+					that.set('challenge', challenge);
 					that.set('concepts', challenge.get('concepts').toArray());
 					that.set('trial.exp', challenge.get('exp'));
-				}).then(function() {
+					return challenge;
+				}).then(function(challenge) {
+
 					if (!that.get('trial.started')) {
 						that.store.findRecord('trial', that.get('trial.id')).then(function(trial) {
 							var date = new Date(Date.now());
@@ -30,6 +35,7 @@ export default Ember.Component.extend({
 							trial.save();
 						});
 					}
+
 				});
 			}
 				  
@@ -92,7 +98,10 @@ export default Ember.Component.extend({
 					
 				}).then(function() {
 					if (trials.length) {
-						
+						/*
+							Retrieve a new trial by removing the current one from the list
+							and getting a random new one.
+						*/
 						var randomTrial = trials[Math.floor(Math.random()*trials.length)];
 						var ch_id = randomTrial.get('challenge').get('id');
 						that.store.findRecord('challenge', ch_id).then(function(challenge) {
@@ -103,10 +112,14 @@ export default Ember.Component.extend({
 							var cons = challenge.get('concepts').toArray()
 							that.set('concepts', cons);
 							that.set('trial.exp', challenge.get('exp'));
-
+							return challenge;
 							//that.set('next_trial', true);
-						}).then(function() {
+						}).then(function(challenge) {
+							/*
+								set start date to now and started to true
+							*/
 							if (!randomTrial.get('started')) {
+
 								that.store.findRecord('trial', randomTrial.get('id')).then(function(trial) {
 									var date = new Date(Date.now());
 									trial.setProperties({
@@ -116,16 +129,18 @@ export default Ember.Component.extend({
 									trial.save();
 								});
 							}
-						})
+						});
 						
 					} else {
 						that.set('done', true);
 					}
-				})
+				});
 				
-			})
+			});
 			
 			
-		}
-	}
+		},
+		
+	},
+	
 });

@@ -139,7 +139,7 @@ define('mock-kodr/tests/components/trial-item.jshint', ['exports'], function (ex
   QUnit.module('JSHint - components/trial-item.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'components/trial-item.js should pass jshint.\ncomponents/trial-item.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncomponents/trial-item.js: line 3, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncomponents/trial-item.js: line 4, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\ncomponents/trial-item.js: line 55, col 25, \'date\' is already defined.\ncomponents/trial-item.js: line 58, col 30, \'date\' used out of scope.\ncomponents/trial-item.js: line 79, col 40, Missing semicolon.\ncomponents/trial-item.js: line 112, col 75, Missing semicolon.\n\n7 errors');
+    assert.ok(false, 'components/trial-item.js should pass jshint.\ncomponents/trial-item.js: line 1, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncomponents/trial-item.js: line 3, col 1, \'import\' is only available in ES6 (use \'esversion: 6\').\ncomponents/trial-item.js: line 4, col 1, \'export\' is only available in ES6 (use \'esversion: 6\').\ncomponents/trial-item.js: line 55, col 25, \'date\' is already defined.\ncomponents/trial-item.js: line 58, col 30, \'date\' used out of scope.\ncomponents/trial-item.js: line 79, col 40, Missing semicolon.\n\n6 errors');
   });
 });
 define('mock-kodr/tests/components/user-arena-detail.jshint', ['exports'], function (exports) {

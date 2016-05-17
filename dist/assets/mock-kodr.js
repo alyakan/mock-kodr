@@ -738,12 +738,10 @@ define('mock-kodr/components/trial-item', ['exports', 'ember', 'ember-local-stor
 
 								that.set('trial', randomTrial);
 
-								var cons = challenge.get('concepts').toArray();
+								var cons = challenge.get('concepts');
 								that.set('concepts', cons);
 								that.set('trial.exp', challenge.get('exp'));
-								return challenge;
-								//that.set('next_trial', true);
-							}).then(function (challenge) {
+							}).then(function () {
 								/*
         	set start date to now and started to true
         */
@@ -760,6 +758,7 @@ define('mock-kodr/components/trial-item', ['exports', 'ember', 'ember-local-stor
 								}
 							});
 						} else {
+							/* Finished all trials in userArena */
 							that.set('done', true);
 						}
 					});
